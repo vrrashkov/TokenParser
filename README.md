@@ -27,7 +27,7 @@ The process for generating the usable tokens is split into two.
 If you have already generated the usable json files you can just run the end code generation by running.
 
 ```shell
- "executable" --generate --config "path/design_tokens_config.yaml"
+ "executable" --config "path/design_tokens_config.yaml"
 ```
 
 ## Configuration
