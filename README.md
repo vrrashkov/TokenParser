@@ -6,6 +6,8 @@ Token Parser is a tool for generating runnable code for any language from your [
 
 ## Setup
 
+You can get the whole project and build it yourself or if you don't have Rust or just don't want to deal with the builds yourself, go in the Release section and get the executables from there. 
+
 1. Setup the **configuration.yaml** file
 
 2. Run with 
