@@ -1,0 +1,87 @@
+{% if let Some(c_header) = header %}{{c_header}}{% endif -%}
+{% if let Some(c_class_exists) = class -%}
+{% if let Some(c_class) = class %}{{ c_class }}{% endif %} {% if let Some(c_class_name) = class_name %}{{ c_class_name }}{% endif -%} {
+{% endif %}
+{% if let Some(c_sub_header) = sub_header %}{{c_sub_header}}{% endif %}
+    {% match color_values -%}
+    {% when Some with (color_values_list) -%}
+    {% for color in color_values_list -%}
+    {{color}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match font_values -%}
+    {% when Some with (font_values_list) -%}
+    {% for font in font_values_list -%}
+    {{font}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match spacing_values -%}
+    {% when Some with (spacing_values_list) -%}
+    {% for spacing in spacing_values_list -%}
+    {{spacing}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match border_width_values -%}
+    {% when Some with (border_width_values_list) -%}
+    {% for border_width in border_width_values_list -%}
+    {{border_width}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match border_radius_values -%}
+    {% when Some with (border_radius_values_list) -%}
+    {% for border_radius in border_radius_values_list -%}
+    {{border_radius}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match letter_spacing_values -%}
+    {% when Some with (letter_spacing_values_list) -%}
+    {% for letter_spacing in letter_spacing_values_list -%}
+    {{letter_spacing}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match font_sizes_values -%}
+    {% when Some with (font_sizes_values_list) -%}
+    {% for font_sizes in font_sizes_values_list -%}
+    {{font_sizes}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match font_weights_values -%}
+    {% when Some with (font_weights_values_list) -%}
+    {% for font_weights in font_weights_values_list -%}
+    {{font_weights}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match font_families_values -%}
+    {% when Some with (font_families_values_list) -%}
+    {% for font_families in font_families_values_list -%}
+    {{font_families}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match line_height_values -%}
+    {% when Some with (line_height_values_list) -%}
+    {% for line_height in line_height_values_list -%}
+    {{line_height}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch -%}
+    {% match box_shadow_values -%}
+    {% when Some with (box_shadow_values_list) -%}
+    {% for box_shadow in box_shadow_values_list -%}
+    {{box_shadow}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch %}
+{% if let Some(c_sub_footer) = sub_footer %}{{c_sub_footer}}{% endif %}
+{% if let Some(c_class_exists) = class %}
+}
+{% endif -%}
+{% if let Some(c_footer) = footer %}{{c_footer}}{% endif -%}

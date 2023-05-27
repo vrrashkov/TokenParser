@@ -1,0 +1,108 @@
+# GLOBAL 
+# {variable_name:snake} - [snake, kebab, camel, lower, upper]
+# color
+# {color:hex}
+# {color:rgb_r_v1}, {color:rgb_g_v1}, {color:rgb_b_v1}, {color:rgb_a_v1} from 0 to 1
+# {color:rgb_r_v2}, {color:rgb_g_v2}, {color:rgb_b_v2}, {color:rgb_a_v2} from 0 to 255
+# typography
+# {font_family:default} - [no_space, default], {font_weight:default}, {line_height:default}, {font_size:default}, {letter_spacing:default}
+# spacing
+# {spacing:default}
+# borderWidth
+# {border_width:default}
+# letterSpacing
+# {spacing:default}
+# lineHeight
+# {line_height:default}
+# fontSizes
+# {font_size:default}
+# fontWeights
+# {font_weight:default}
+# fontFamilies
+# {font_family:default} - [no_space, default]
+# fontFamilies
+# {font_family:default}
+# boxShadow
+# All the color related values from above
+# For every new line of the boxShadow value, a new index can be used. For example:
+# On line 1 you have only values with index 0 - "{variable_name:camel} = Shadow(\"{color:hex:0}\")"
+# On line 2 you have values with index 0 and 1 - "{variable_name:camel} = Shadow(\"{color:hex:0}\", \"{color:hex:1}\")"
+# On line 3 you have values with index 0, 1 and 2 and etc.. 
+# All possible variants should be made with a template
+# If there is a missing one you will be notified with an error to add it
+global:
+  # Core files will be merged togehter
+  core_path: 
+    - "assets/figma/core.json"
+    - "assets/figma/typography.json"
+    - "assets/figma/global.json"
+    - "assets/figma/mobile.json"
+  # Styles will be kept separate
+  style_path:
+    - "assets/figma/dark.json"
+    - "assets/figma/light.json"
+  # Output path 
+  style_output_path: "assets/generated_styles"
+templates:
+  - settings_general:
+      generate_file_path: "generated_templates"
+      file_name:
+        format: "cds-{style}"
+        extension: "css"
+        case: "kebab"
+        #This will replace the class_name from template_type as well
+        #use_as_class_name: true
+    settings_custom:
+      header: ":root {"
+      #sub_header: "test sub header"
+      #sub_footer: "test sub footer"
+      footer: "}"
+      # Only if class is set, class_name will be displayed
+      #class: "public class"
+      #class_name: "DSCore{style}"
+      template_type:
+        - type: color
+          value: "--{variable_name:kebab}: {color:hex};"
+        - type: typography
+          value: "--{variable_name:kebab}: {font_size:default}px/{line_height:default}px {font_family:default};"
+  - settings_general:
+      generate_file_path: "generated_templates"
+      file_name:
+        format: "DSCore{style}"
+        extension: "swift"
+        #case: "camel"
+        #This will replace the class_name from template_type as well
+        #use_as_class_name: true
+    settings_custom:
+      header: "import SwiftUI"
+      #sub_header: "test sub header"
+      #sub_footer: "test sub footer"
+      #footer: "test footer"
+      # Only if class is set, class_name will be displayed
+      class: "public class"
+      class_name: "DSCore{style}"
+      template_type:
+        - type: color
+          value: "--{variable_name:snake}..base(\"{color:hex}\")"
+        - type: typography
+          value: "public static let {variable_name:camel} = TextStyle(name: {font_family:default}, size: {font_size:default}, weight: TextStyle.Weight({font_weight:default}), lineHeight: {line_height:default})"
+        - type: spacing
+          value: "public static let {variable_name:snake} = CGFloat({spacing:default})"
+        - type: borderWidth
+          value: "public static let {variable_name:snake} = CGFloat({border_width:default})"
+        - type: borderRadius
+          value: "public static let {variable_name:snake} = CGFloat({border_radius:default})"
+        - type: letterSpacing
+          value: "public static let {variable_name:camel} = CGFloat({spacing:default})"
+        - type: lineHeights
+          value: "public static let {variable_name:snake} = CGFloat({line_height:default})"
+        - type: fontSizes
+          value: "public static let {variable_name:snake} = CGFloat({font_size:default})"
+        - type: fontWeights
+          value: "public static let {variable_name:snake} = CGFloat({font_weight:default})"
+        - type: fontFamilies
+          value: "public static let {variable_name:snake} = CGFloat({font_family:default})"
+        - type: boxShadow
+          value: 
+            - "public static let {variable_name:snake} = Shadow(\"{color:hex:0}\")"
+            - "public static let {variable_name:snake} = Shadow(\"{color:hex:0}\", \"{color:hex:1}\")"
