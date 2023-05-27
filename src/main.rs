@@ -22,8 +22,6 @@ fn main() {
 
     env::set_var("RUST_BACKTRACE", "full");
 
-    // setup::get_type_with_values("{color:hex}");
-    // setup::get_type_with_values("{color:rgb_r_v1:0}");
     // Covert to usable code
     let matches: clap::ArgMatches = Command::new("Design Tokens")
         .version("1.0")

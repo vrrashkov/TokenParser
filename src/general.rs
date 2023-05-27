@@ -89,6 +89,7 @@ pub fn combine_tokens(token_data_list: &Vec<template::TokenData>, tokens_config:
 }
 
 pub fn get_json(path: &str) -> serde_json::Value {
+    println!("path: {}", path);
     let data = fs::read_to_string(path).expect("Unable to read file");
     let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
     return res
