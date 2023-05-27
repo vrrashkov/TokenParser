@@ -22,6 +22,7 @@ pub struct CustomTemplate { // the name of the struct can be anything
     pub font_weights_values: Option<Vec<String>>, 
     pub font_families_values: Option<Vec<String>>, 
     pub box_shadow_values: Option<Vec<String>>, 
+    pub composition_values: Option<Vec<String>>, 
 }
 impl<'a> CustomTemplate {
     pub fn update_font_values(&mut self, values: Option<Vec<String>>) {

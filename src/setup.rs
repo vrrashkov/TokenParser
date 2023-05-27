@@ -58,7 +58,9 @@ fn template_content_custom(
         font_weights_values: None, 
         font_families_values: None, 
         box_shadow_values: None, 
+        composition_values: None, 
     }; 
+   // dbg!(&file_data_list);
 
     for template in &custom_template.template_type {
         //dbg!(&custom_template.template_type);
@@ -108,6 +110,10 @@ fn template_content_custom(
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::boxShadow);
                 current_template.box_shadow_values = Some(template_list_replaced_values(value, &pure_values, &available_fields));
             },
+            deserializer::CustomConfigTempalteType::composition(value) => {
+                let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::composition);
+                current_template.composition_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+            },
             deserializer::CustomConfigTempalteType::none => todo!(),
         }
     }
@@ -141,8 +147,7 @@ fn template_replaced_values(template: &String, pure_values: &Vec<template::Token
 }
 fn template_pure_values(file_data_list: &Vec<template::TokenData>, template_type: deserializer::ConfigTemplateType) -> Vec<template::TokenValue>{
     if let Some(file_data) = file_data_list.into_iter().find(|f| f.t_type == template_type) {
-        let pure_values = template::values_from_type(&file_data);
-
+        //let pure_values = template::values_from_type(&file_data);
         return file_data.token_value.to_owned();
     }
 

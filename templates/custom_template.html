@@ -80,6 +80,13 @@
     {% endfor -%}
     {% when None -%}
     {% endmatch %}
+    {% match composition_values -%}
+    {% when Some with (composition_values_list) -%}
+    {% for composition in composition_values_list -%}
+    {{composition}}
+    {% endfor -%}
+    {% when None -%}
+    {% endmatch %}
 {% if let Some(c_sub_footer) = sub_footer %}{{c_sub_footer}}{% endif %}
 {% if let Some(c_class_exists) = class %}
 }

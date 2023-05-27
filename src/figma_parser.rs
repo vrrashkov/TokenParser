@@ -242,7 +242,7 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
             add_pure_value(&value.borderRadius, global::field_value_border_radius, pure_values, &p, &add_val_path);
             add_pure_value(&value.borderWidth, global::field_value_border_width, pure_values, &p, &add_val_path);
             add_pure_value(&value.borderRadiusBottomLeft, global::field_value_border_radius_bottom_left, pure_values, &p, &add_val_path);
-            add_pure_value(&value.borderRadiusBottomRight, global::field_value_border_radius_bototm_right, pure_values, &p, &add_val_path);
+            add_pure_value(&value.borderRadiusBottomRight, global::field_value_border_radius_bottom_right, pure_values, &p, &add_val_path);
             add_pure_value(&value.borderRadiusTopLeft, global::field_value_border_radius_top_left, pure_values, &p, &add_val_path);
             add_pure_value(&value.borderRadiusTopRight, global::field_value_border_radius_top_right, pure_values, &p, &add_val_path);
             add_pure_value(&value.blur, global::field_value_blur, pure_values, &p, &add_val_path);

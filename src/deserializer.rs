@@ -68,6 +68,7 @@ pub enum CustomConfigTempalteType {
     fontSizes(String),
     fontWeights(String),
     fontFamilies(String),
+    composition(String),
     boxShadow(Vec<String>),
     #[default]
     none
@@ -310,7 +311,7 @@ impl TemplateField {
             TemplateField::border_radius { value } => global::field_value_border_radius,
             TemplateField::border_width { value } => global::field_value_border_width,
             TemplateField::border_radius_bottom_left { value } => global::field_value_border_radius_bottom_left,
-            TemplateField::border_radius_bottom_right { value } => global::field_value_border_radius_bototm_right,
+            TemplateField::border_radius_bottom_right { value } => global::field_value_border_radius_bottom_right,
             TemplateField::border_radius_top_left { value } => global::field_value_border_radius_top_left,
             TemplateField::border_radius_top_right { value } => global::field_value_border_radius_top_right,
             TemplateField::blur { value } => global::field_value_blur,
@@ -365,6 +366,7 @@ impl ConfigTemplateType {
             global::type_borderWidth   => ConfigTemplateType::borderWidth,
             global::type_borderRadius  => ConfigTemplateType::borderRadius,
             global::type_letterSpacing => ConfigTemplateType::letterSpacing,
+            global::type_composition   => ConfigTemplateType::composition,
             global::type_lineHeights   => ConfigTemplateType::lineHeights,
             global::type_fontSizes     => ConfigTemplateType::fontSizes,
             global::type_fontWeights   => ConfigTemplateType::fontWeights,
@@ -434,7 +436,33 @@ impl CustomConfigTempalteType {
             },
             CustomConfigTempalteType::boxShadow(_) => AvailableFields {
                 name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_color.to_string()]
+                values: vec![global::field_variable_name.to_string(), 
+                global::field_color.to_string(), 
+                global::field_value_blur.to_string(), 
+                global::field_value_spread.to_string(), 
+                global::field_value_type.to_string(), 
+                global::field_value_x.to_string(), 
+                global::field_value_y.to_string()]
+            },
+            CustomConfigTempalteType::composition(_) => AvailableFields {
+                name: global::type_color.to_string(),
+                values: vec![global::field_variable_name.to_string(),
+                global::field_value_padding_bottom.to_string(),
+                global::field_value_padding_top.to_string(),
+                global::field_value_padding_left.to_string(),
+                global::field_value_padding_right.to_string(),
+                global::field_value_sizing.to_string(),
+                global::field_value_width.to_string(),
+                global::field_value_height.to_string(),
+                global::field_value_border_radius.to_string(),
+                global::field_value_border_width.to_string(),
+                global::field_value_border_radius_bottom_left.to_string(),
+                global::field_value_border_radius_bottom_right.to_string(),
+                global::field_value_border_radius_top_left.to_string(),
+                global::field_value_border_radius_top_right.to_string(),
+                global::field_value_vertical_padding.to_string(),
+                global::field_value_horizontal_padding.to_string(),
+                global::field_value_item_spacing.to_string()]
             },
             CustomConfigTempalteType::none => AvailableFields {
                 name: global::type_color.to_string(),
