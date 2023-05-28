@@ -62,9 +62,9 @@ templates:
       #class_name: "DSCore{style}"
       template_type:
         - type: color
-          value: "--{variable_name:kebab}: {color:hex};"
+          value: "--{{variable_name:kebab}}: {{color:hex}};"
         - type: typography
-          value: "--{variable_name:kebab}: {font_size:default}px/{line_height:default}px {font_family:default};"
+          value: "--{{variable_name:kebab}}: {{font_size:default}}px/{{line_height:default}}px {{font_family:default}};"
   - settings_general:
       generate_file_path: "generated_templates"
       file_name:
@@ -83,26 +83,26 @@ templates:
       class_name: "DSCore{style}"
       template_type:
         - type: color
-          value: "--{variable_name:snake}..base(\"{color:hex}\")"
+          value: "--{{variable_name:snake}}..base(\"{{color:hex}}\")"
         - type: typography
-          value: "public static let {variable_name:camel} = TextStyle(name: {font_family:default}, size: {font_size:default}, weight: TextStyle.Weight({font_weight:default}), lineHeight: {line_height:default})"
+          value: "public static let {{variable_name:camel}} = TextStyle(name: {{font_family:default}}, size: {{font_size:default}}, weight: TextStyle.Weight({{font_weight:default}}), lineHeight: {{line_height:default}})"
         - type: spacing
-          value: "public static let {variable_name:snake} = CGFloat({spacing:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({{spacing:default}})"
         - type: borderWidth
-          value: "public static let {variable_name:snake} = CGFloat({border_width:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({{border_width:default}})"
         - type: borderRadius
-          value: "public static let {variable_name:snake} = CGFloat({border_radius:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({border_radius:default})"
         - type: letterSpacing
-          value: "public static let {variable_name:camel} = CGFloat({spacing:default})"
+          value: "public static let {{variable_name:camel}} = CGFloat({{spacing:default}})"
         - type: lineHeights
-          value: "public static let {variable_name:snake} = CGFloat({line_height:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({{line_height:default}})"
         - type: fontSizes
-          value: "public static let {variable_name:snake} = CGFloat({font_size:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({{font_size:default}})"
         - type: fontWeights
-          value: "public static let {variable_name:snake} = CGFloat({font_weight:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({{font_weight:default}})"
         - type: fontFamilies
-          value: "public static let {variable_name:snake} = CGFloat({font_family:default})"
+          value: "public static let {{variable_name:snake}} = CGFloat({{font_family:default}})"
         - type: boxShadow
           value: 
-            - "public static let {variable_name:snake} = Shadow(\"{color:hex:0}\")"
-            - "public static let {variable_name:snake} = Shadow(\"{color:hex:0}\", \"{color:hex:1}\")"
+            - "public static let {{variable_name:snake}} = Shadow(\"{{color:hex:0}}\")"
+            - "public static let {{variable_name:snake}} = Shadow(\"{{color:hex:0}}\", \"{{color:hex:1}}\")"

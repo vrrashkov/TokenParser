@@ -366,7 +366,7 @@ pub fn template_set_values(data: &template::TokenValue, pure_template: &String, 
 pub fn template_as_values(template: &str) -> Vec<(String, deserializer::TemplateFieldData)> { 
     let mut template_fields: Vec<(String, deserializer::TemplateFieldData)> = Vec::new();
 
-    let pure_values = utils::between_all(Vec::new(), template, "{", "}");
+    let pure_values = utils::between_all(Vec::new(), template, "{{", "}}");
 
 
     for pure in pure_values {
@@ -396,7 +396,7 @@ pub fn template_as_values(template: &str) -> Vec<(String, deserializer::Template
         //dbg!(&data);
         let value_object: deserializer::TemplateFieldData = serde_json::from_str(&data.to_owned()).expect("Unable to read the json");
         //(&value_object);
-        template_fields.push((format!("{{{}}}",pure), value_object));
+        template_fields.push((format!("{{{{{}}}}}",pure), value_object));
     }
 
     return template_fields;
