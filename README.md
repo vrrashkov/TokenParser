@@ -88,9 +88,9 @@ templates:
       #class_name: "SomeNameCore{style}"
       template_type:
         - type: color
-          value: "--{variable_name:kebab}: {color:hex};"
+          value: "--{{variable_name:kebab}}: {{color:hex}};"
         - type: typography
-          value: "--{variable_name:kebab}: {font_size:default}px/{line_height:default}px {font_family:default};"
+          value: "--{{variable_name:kebab}}: {{font_size:default}}px/{{line_height:default}}px {{font_family:default}};"
 ```
 
 You can create as many templates as you want. Every template is fully customizable.
@@ -139,15 +139,15 @@ You can use the keywords in the following way: **{variable_name:default}** name 
 ```yaml
 # All the color related values from above
 # For every new line of the boxShadow value, a new index can be used. For example:
-# On line 1 you have only values with index 0 - "{variable_name:camel} = Shadow(\"{color:hex:0}\")"
-# On line 2 you have values with index 0 and 1 - "{variable_name:camel} = Shadow(\"{color:hex:0}\", \"{color:hex:1}\")"
+# On line 1 you have only values with index 0 - "{{variable_name:camel}} = Shadow(\"{{color:hex:0}}\")"
+# On line 2 you have values with index 0 and 1 - "{{variable_name:camel}} = Shadow(\"{{color:hex:0}}\", \"{{color:hex:1}}\")"
 # On line 3 you have values with index 0, 1 and 2 and etc.. 
 # All possible variants should be made with a template
 # If there is a missing one you will be notified with an error to add it
 - type: boxShadow
 value: 
-  - "public static let {variable_name:snake} = Shadow(\"{color:hex:0}\")"
-  - "public static let {variable_name:snake} = Shadow(\"{color:hex:0}\", \"{color:hex:1}\")"
+  - "public static let {{variable_name:snake}} = Shadow(\"{{color:hex:0}}\")"
+  - "public static let {{variable_name:snake}} = Shadow(\"{{color:hex:0}}\", \"{color:hex:1}\")"
 ```
 
 ##### More

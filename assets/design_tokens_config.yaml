@@ -25,8 +25,8 @@
 # boxShadow
 # All the color related values from above
 # For every new line of the boxShadow value, a new index can be used. For example:
-# On line 1 you have only values with index 0 - "{variable_name:camel} = Shadow(\"{color:hex:0}\")"
-# On line 2 you have values with index 0 and 1 - "{variable_name:camel} = Shadow(\"{color:hex:0}\", \"{color:hex:1}\")"
+# On line 1 you have only values with index 0 - "{{variable_name:camel}} = Shadow(\"{{color:hex:0}}\")"
+# On line 2 you have values with index 0 and 1 - "{{variable_name:camel}} = Shadow(\"{{color:hex:0}}\", \"{{color:hex:1}}\")"
 # On line 3 you have values with index 0, 1 and 2 and etc.. 
 # All possible variants should be made with a template
 # If there is a missing one you will be notified with an error to add it
