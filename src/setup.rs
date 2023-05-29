@@ -1,4 +1,5 @@
 use ::askama::Template;
+use liquid::ValueView;
 use serde::de::value::MapAccessDeserializer;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -124,15 +125,19 @@ fn template_content_custom(
 fn template_list_replaced_values(templates: &Vec<String>, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>{ 
     let mut values_content:Vec<String> = Vec::new();
     for template in templates {
-        let template_fields = template_as_values(template);
+        // let template_fields = template_as_values(template);
 
-        for content in pure_values { 
-            let current = template_set_values(content, &template, available_fields, &template_fields);
-            values_content.push(current);
-        }
+        // for content in pure_values { 
+        //     let current = template_set_values(content, &template, available_fields, &template_fields);
+        //     values_content.push(current);
+        // }
         
-            
+        let values = template_replaced_values(&template, &pure_values, &available_fields);    
+        for value in values {
+            values_content.push(value);
+        }   
     }
+    
     return values_content;
 }
 fn template_replaced_values(template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>{ 
@@ -140,11 +145,21 @@ fn template_replaced_values(template: &String, pure_values: &Vec<template::Token
 
     let mut values_content:Vec<String> = Vec::new();
     for content in pure_values { 
-        let current = template_set_values(content, &template, available_fields, &template_fields);
-        values_content.push(current);
+        let mut globals = liquid::object!({});
+        let current = template_set_values(content, &template, available_fields, &template_fields, &mut globals);
+        //print!("current: {}", &current);
+        let template_parsed = liquid::ParserBuilder::with_stdlib()
+        .build().unwrap()
+        .parse(&current).unwrap();
+
+        let output = template_parsed.render(&globals).unwrap();
+        dbg!(&globals);
+        values_content.push(output);
     }
     return values_content;
 }
+
+
 fn template_pure_values(file_data_list: &Vec<template::TokenData>, template_type: deserializer::ConfigTemplateType) -> Vec<template::TokenValue>{
     if let Some(file_data) = file_data_list.into_iter().find(|f| f.t_type == template_type) {
         //let pure_values = template::values_from_type(&file_data);
@@ -153,208 +168,229 @@ fn template_pure_values(file_data_list: &Vec<template::TokenData>, template_type
 
     return Vec::new();
 }
-pub fn template_set_values(data: &template::TokenValue, pure_template: &String, available_fields: &AvailableFields, fields: &Vec<(String, deserializer::TemplateFieldData)>) -> String{ 
+pub fn template_set_values(data: &template::TokenValue, pure_template: &String, available_fields: &AvailableFields, fields: &Vec<deserializer::TemplateFieldData>, globals: &mut liquid::Object) -> String { 
     let token_value = data;
     let mut template: String = format!("{}", pure_template);
-    for (field_template_pattern, field_data) in fields {
-        let field_name = field_data.name.as_str();
+    for field_data in fields {
+        let field_name = field_data.key_full.as_str();
 
-        if available_fields.values.contains(&field_name.to_string()) {
-            match &field_data.name {
-                deserializer::TemplateField::variable_name { value } => {
-                    template::variable_name(&mut template, &field_template_pattern, &value, &token_value);
-                },
-                deserializer::TemplateField::color { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::color { value } = &token_value.value {
-                        template::color(&mut template, &field_template_pattern, &variant_value, &value);
-                    }
-                    if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                        template::box_shadow_color(&mut template, &field_template_pattern, &variant_value, &value);
-                    }
-                },
-                deserializer::TemplateField::font_family { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                        let typography_value = value;
-                        template::font_family(&mut template, typography_value.fontFamily.to_owned(), &field_template_pattern, &variant_value);
-                    }
+        if available_fields.values.contains(&field_data.key_without_index.to_string()) {
+         match &field_data.special {
+            ConfigTemplateType::spacing => {
+                if let deserializer::TokenDataType::spacing { value } = &token_value.value {
+                    globals.insert(field_name.to_owned().into(), liquid::model::Value::scalar(value.to_string()));
+                    //template::format_template(&mut template, &field_name, &value.to_string());
+                }
+            },
+            _ => {}
+            // ConfigTemplateType::color => todo!(),
+            // ConfigTemplateType::typography => todo!(),
+            // ConfigTemplateType::borderWidth => todo!(),
+            // ConfigTemplateType::borderRadius => todo!(),
+            // ConfigTemplateType::letterSpacing => todo!(),
+            // ConfigTemplateType::lineHeights => todo!(),
+            // ConfigTemplateType::fontSizes => todo!(),
+            // ConfigTemplateType::fontWeights => {},
+            // ConfigTemplateType::fontFamilies => {}
+            // ConfigTemplateType::boxShadow =>{},
+            // ConfigTemplateType::composition => {},
+            // ConfigTemplateType::none => {},
+        }
+            // match &field_data.name {
+            //     deserializer::TemplateField::variable_name { value } => {
+            //         template::variable_name(&mut template, &field_template_pattern, &value, &token_value);
+            //     },
+            //     deserializer::TemplateField::color { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::color { value } = &token_value.value {
+            //             template::color(&mut template, &field_template_pattern, &variant_value, &value);
+            //         }
+            //         if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+            //             template::box_shadow_color(&mut template, &field_template_pattern, &variant_value, &value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::font_family { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::typography { value } = &token_value.value {
+            //             let typography_value = value;
+            //             template::font_family(&mut template, typography_value.fontFamily.to_owned(), &field_template_pattern, &variant_value);
+            //         }
 
-                    if let deserializer::TokenDataType::fontFamilies { value } = &token_value.value {
-                        let font_families_value = value;
-                        template::font_family(&mut template, font_families_value.to_owned(), &field_template_pattern, &variant_value);
-                    }
-                },
-                deserializer::TemplateField::font_size { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.fontSize.to_string());
-                    }
-                    if let deserializer::TokenDataType::fontSizes { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                },
-                deserializer::TemplateField::font_weight { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.fontWeight.to_string());
-                    }
-                    if let deserializer::TokenDataType::fontWeights { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                },
-                deserializer::TemplateField::spacing { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.letterSpacing.to_string());
-                    }
-                    if let deserializer::TokenDataType::letterSpacing { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                    if let deserializer::TokenDataType::spacing { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.itemSpacing);
-                    }
-                },
-                deserializer::TemplateField::line_height { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.lineHeight.to_string());
-                    }
-                    if let deserializer::TokenDataType::lineHeights { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                },
-                deserializer::TemplateField::horizontal_padding { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.horizontalPadding);
-                    }
-                },
-                deserializer::TemplateField::vertical_padding { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.verticalPadding);
-                    }
-                },
-                deserializer::TemplateField::padding_bottom { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingBottom);
-                    }
-                },
-                deserializer::TemplateField::padding_top { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingTop);
-                    }
-                },
-                deserializer::TemplateField::padding_left { value } =>  {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingLeft);
-                    }
-                },
-                deserializer::TemplateField::padding_right { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingRight);
-                    }
-                },
-                deserializer::TemplateField::sizing { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.sizing);
-                    }
-                },
-                deserializer::TemplateField::height { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.height);
-                    }
-                },
-                deserializer::TemplateField::width { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.width);
-                    }
-                },
-                deserializer::TemplateField::border_radius { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::borderRadius { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadius);
-                    }
-                },
-                deserializer::TemplateField::border_width { value } =>  {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::borderWidth { value } = &token_value.value {
-                        template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
-                    }
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderWidth);
-                    }
-                },
-                deserializer::TemplateField::border_radius_bottom_left { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusBottomLeft);
-                    }
-                },
-                deserializer::TemplateField::border_radius_bottom_right { value } =>  {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusBottomRight);
-                    }
-                },
-                deserializer::TemplateField::border_radius_top_left { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusTopLeft);
-                    }
-                },
-                deserializer::TemplateField::border_radius_top_right { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::composition { value } = &token_value.value {
-                        template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusTopRight);
-                    }
-                },
-                deserializer::TemplateField::blur { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                        template::box_shadow_blur(&mut template, &field_template_pattern, variant_value, &value);
-                    }
-                },
-                deserializer::TemplateField::spread { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                        template::box_shadow_spread(&mut template, &field_template_pattern, variant_value, &value);
-                    }
-                },
-                deserializer::TemplateField::t_type { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                        template::box_shadow_type(&mut template, &field_template_pattern, variant_value, &value);
-                    }
-                },
-                deserializer::TemplateField::x { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                        template::box_shadow_x(&mut template, &field_template_pattern, variant_value, &value);
-                    }
-                },
-                deserializer::TemplateField::y { value } => {
-                    let variant_value = value;
-                    if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                        template::box_shadow_y(&mut template, &field_template_pattern, variant_value, &value);
-                    }
-                },
-                deserializer::TemplateField::NONE => todo!(),
-            }
+            //         if let deserializer::TokenDataType::fontFamilies { value } = &token_value.value {
+            //             let font_families_value = value;
+            //             template::font_family(&mut template, font_families_value.to_owned(), &field_template_pattern, &variant_value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::font_size { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::typography { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.fontSize.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::fontSizes { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //     },
+            //     deserializer::TemplateField::font_weight { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::typography { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.fontWeight.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::fontWeights { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //     },
+            //     deserializer::TemplateField::spacing { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::typography { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.letterSpacing.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::letterSpacing { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::spacing { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.itemSpacing);
+            //         }
+            //     },
+            //     deserializer::TemplateField::line_height { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::typography { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.lineHeight.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::lineHeights { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //     },
+            //     deserializer::TemplateField::horizontal_padding { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.horizontalPadding);
+            //         }
+            //     },
+            //     deserializer::TemplateField::vertical_padding { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.verticalPadding);
+            //         }
+            //     },
+            //     deserializer::TemplateField::padding_bottom { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingBottom);
+            //         }
+            //     },
+            //     deserializer::TemplateField::padding_top { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingTop);
+            //         }
+            //     },
+            //     deserializer::TemplateField::padding_left { value } =>  {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingLeft);
+            //         }
+            //     },
+            //     deserializer::TemplateField::padding_right { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.paddingRight);
+            //         }
+            //     },
+            //     deserializer::TemplateField::sizing { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.sizing);
+            //         }
+            //     },
+            //     deserializer::TemplateField::height { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.height);
+            //         }
+            //     },
+            //     deserializer::TemplateField::width { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.width);
+            //         }
+            //     },
+            //     deserializer::TemplateField::border_radius { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::borderRadius { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadius);
+            //         }
+            //     },
+            //     deserializer::TemplateField::border_width { value } =>  {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::borderWidth { value } = &token_value.value {
+            //             template::default(&mut template, &field_template_pattern, variant_value, &value.to_string());
+            //         }
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderWidth);
+            //         }
+            //     },
+            //     deserializer::TemplateField::border_radius_bottom_left { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusBottomLeft);
+            //         }
+            //     },
+            //     deserializer::TemplateField::border_radius_bottom_right { value } =>  {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusBottomRight);
+            //         }
+            //     },
+            //     deserializer::TemplateField::border_radius_top_left { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusTopLeft);
+            //         }
+            //     },
+            //     deserializer::TemplateField::border_radius_top_right { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::composition { value } = &token_value.value {
+            //             template::default_option_number(&mut template, &field_template_pattern, variant_value, &value.borderRadiusTopRight);
+            //         }
+            //     },
+            //     deserializer::TemplateField::blur { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+            //             template::box_shadow_blur(&mut template, &field_template_pattern, variant_value, &value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::spread { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+            //             template::box_shadow_spread(&mut template, &field_template_pattern, variant_value, &value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::t_type { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+            //             template::box_shadow_type(&mut template, &field_template_pattern, variant_value, &value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::x { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+            //             template::box_shadow_x(&mut template, &field_template_pattern, variant_value, &value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::y { value } => {
+            //         let variant_value = value;
+            //         if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+            //             template::box_shadow_y(&mut template, &field_template_pattern, variant_value, &value);
+            //         }
+            //     },
+            //     deserializer::TemplateField::NONE => todo!(),
+            // }
         } else { 
             println!("The only available fields for the variant /{}/ are /{}/", available_fields.name, available_fields.values.join(", "));
         }
@@ -363,41 +399,65 @@ pub fn template_set_values(data: &template::TokenValue, pure_template: &String, 
     return template;
 }
 
-pub fn template_as_values(template: &str) -> Vec<(String, deserializer::TemplateFieldData)> { 
-    let mut template_fields: Vec<(String, deserializer::TemplateFieldData)> = Vec::new();
+pub fn template_as_values(template: &str) -> Vec<deserializer::TemplateFieldData> { 
+    let mut template_fields: Vec<deserializer::TemplateFieldData> = Vec::new();
 
     let pure_values = utils::between_all(Vec::new(), template, "{{", "}}");
 
-
     for pure in pure_values {
-        let segments = pure.split(":").collect::<Vec<&str>>();
-        
+        let values_split = pure.split("|");
+        let values_parts:Vec<&str> = values_split.collect();
+        let template_key_name = values_parts[0].trim();
+        let key_split:Vec<&str> = template_key_name.split("-").collect();
+
         let mut index: Option<usize> = None;
-        let mut name: String = format!("");
-        let mut variant: String = format!("");
-
-        if (segments.len() >= 3) {
-            name = segments[0].parse::<String>().unwrap();
-            variant = format!(r#","value": "{}""#, segments[1].parse::<String>().unwrap());
-            index = Some(segments[2].parse::<usize>().unwrap());
+        if key_split.len() == 2 {
+            index = Some(key_split[1].parse::<usize>().unwrap());
         }
+       
+        let template_field_data = deserializer::TemplateFieldData {
+            index: index,
+            full_template: pure.to_string(),
+            special: ConfigTemplateType::from_str(&key_split[0]),
+            key_full: template_key_name.to_string(),
+            key_without_index: key_split[0].to_string()
+        };
 
-        if (segments.len() >= 2) {
-            name = segments[0].parse::<String>().unwrap();
-            variant = format!(r#","value": "{}""#, segments[1].parse::<String>().unwrap());
-        }
-
-        let mut index_format = format!("");
-        if let Some(value) = index {
-            index_format = format!(r#","index": {}"#, value);
-        }
-        
-        let data =  format!(r#"{{"name": {{"type": "{}" {} }} {} }}"#, name, variant, index_format);
-        //dbg!(&data);
-        let value_object: deserializer::TemplateFieldData = serde_json::from_str(&data.to_owned()).expect("Unable to read the json");
-        //(&value_object);
-        template_fields.push((format!("{{{{{}}}}}",pure), value_object));
+        //dbg!(&template_field_data);
+        template_fields.push(template_field_data);
+        // let template_parse = liquid::ParserBuilder::with_stdlib()
+        // .build().unwrap()
+        // .parse("Liquid! {{num | minus: 2}}").unwrap();
     }
+    // for pure in pure_values {
+    //     let segments = pure.split(":").collect::<Vec<&str>>();
+        
+    //     let mut index: Option<usize> = None;
+    //     let mut name: String = format!("");
+    //     let mut variant: String = format!("");
+
+    //     if (segments.len() >= 3) {
+    //         name = segments[0].parse::<String>().unwrap();
+    //         variant = format!(r#","value": "{}""#, segments[1].parse::<String>().unwrap());
+    //         index = Some(segments[2].parse::<usize>().unwrap());
+    //     }
+
+    //     if (segments.len() >= 2) {
+    //         name = segments[0].parse::<String>().unwrap();
+    //         variant = format!(r#","value": "{}""#, segments[1].parse::<String>().unwrap());
+    //     }
+
+    //     let mut index_format = format!("");
+    //     if let Some(value) = index {
+    //         index_format = format!(r#","index": {}"#, value);
+    //     }
+        
+    //     let data =  format!(r#"{{"name": {{"type": "{}" {} }} {} }}"#, name, variant, index_format);
+    //     //dbg!(&data);
+    //     let value_object: deserializer::TemplateFieldData = serde_json::from_str(&data.to_owned()).expect("Unable to read the json");
+    //     //(&value_object);
+    //     template_fields.push((format!("{{{{{}}}}}",pure), value_object));
+    // }
 
     return template_fields;
     // let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");

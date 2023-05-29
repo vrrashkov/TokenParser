@@ -157,6 +157,10 @@ pub fn box_shadow_color(template: &mut String, key: &String, variant_value: &des
         color(template, &key, &variant_value,&value.color.to_string());
     }
 }
+
+pub fn format_template(template: &mut String, key: &str, value: &str) { 
+    *template = template.replacen(key, value, 1);
+}
 pub fn update_template(template: &mut String, value: &String, key: &String) { 
     //println!("template: {}, key: {}, value: {}", &template, &key, &value);
     *template = template.replacen(key.as_str(), value.as_str(), 1);

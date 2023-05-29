@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'tokens_parser'",
+            "name": "Debug executable 'token_parser'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=tokens_parser",
-                    "--package=tokens_parser"
+                    "--bin=token_parser",
+                    "--package=token_parser"
                 ],
                 "filter": {
-                    "name": "tokens_parser",
+                    "name": "token_parser",
                     "kind": "bin"
                 }
             },

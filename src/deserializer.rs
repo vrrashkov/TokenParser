@@ -249,80 +249,82 @@ impl TokensConfig {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TemplateFieldData { 
     pub index: Option<usize>,
-    pub name: TemplateField
+    // pub name: TemplateField,
+    pub key_full: String,
+    pub key_without_index: String,
+    pub special: ConfigTemplateType,
+    pub full_template: String
 }
 
-#[derive(Eq, Clone, PartialEq, Default, Serialize, Deserialize, Debug)]
-#[serde(tag = "type")]
+#[derive(Eq, Clone, PartialEq, Default, Debug)]
 pub enum TemplateField {
-    variable_name { value: TemplateFieldVariantVariableName },
-    color { value: TemplateFieldVariantColor },
-    font_family { value: TemplateFieldVariantFontFamily },
-    font_size { value: TemplateFieldDefault },
-    font_weight { value: TemplateFieldDefault },
-    line_height { value: TemplateFieldDefault },
-    horizontal_padding { value: TemplateFieldDefault },
-    vertical_padding { value: TemplateFieldDefault },
-    spacing { value: TemplateFieldDefault },
-    padding_bottom { value: TemplateFieldDefault },
-    padding_top { value: TemplateFieldDefault },
-    padding_left { value: TemplateFieldDefault },
-    padding_right { value: TemplateFieldDefault },
-    sizing { value: TemplateFieldDefault },
-    height { value: TemplateFieldDefault },
-    width { value: TemplateFieldDefault },
-    border_radius { value: TemplateFieldDefault },
-    border_width { value: TemplateFieldDefault },
-    border_radius_bottom_left { value: TemplateFieldDefault },
-    border_radius_bottom_right { value: TemplateFieldDefault },
-    border_radius_top_left { value: TemplateFieldDefault },
-    border_radius_top_right { value: TemplateFieldDefault },
-    blur { value: TemplateFieldDefault },
-    spread { value: TemplateFieldDefault },
-    #[serde(alias = "type")]
-    t_type { value: TemplateFieldDefault },
-    x { value: TemplateFieldDefault },
-    y { value: TemplateFieldDefault },
+    variable_name,
+    color,
+    font_family,
+    font_size,
+    font_weight,
+    line_height,
+    horizontal_padding,
+    vertical_padding,
+    spacing,
+    padding_bottom,
+    padding_top,
+    padding_left,
+    padding_right,
+    sizing,
+    height,
+    width,
+    border_radius,
+    border_width,
+    border_radius_bottom_left,
+    border_radius_bottom_right,
+    border_radius_top_left,
+    border_radius_top_right,
+    blur,
+    spread,
+    t_type,
+    x,
+    y,
     #[default]
     NONE
 }
 
-impl TemplateField {
-    pub fn as_str(&self) -> &str { 
-        match &self {
-            TemplateField::variable_name { value } => global::field_variable_name,
-            TemplateField::color { value } => global::field_color,
-            TemplateField::font_family { value } => global::field_value_font_family,
-            TemplateField::font_size { value } => global::field_value_font_size,
-            TemplateField::font_weight { value } => global::field_value_font_weight,
-            TemplateField::spacing { value } => global::field_value_spacing,
-            //TemplateField::letter_spacing { value } => global::fiel,
-            TemplateField::line_height { value } => global::field_value_line_height,
-            TemplateField::horizontal_padding { value } => global::field_value_horizontal_padding,
-            TemplateField::vertical_padding { value } => global::field_value_vertical_padding,
-            //TemplateField::item_spacing { value } => global::field_value_item_spacing,
-            TemplateField::padding_bottom { value } => global::field_value_padding_bottom,
-            TemplateField::padding_top { value } => global::field_value_padding_top,
-            TemplateField::padding_left { value } => global::field_value_padding_left,
-            TemplateField::padding_right { value } => global::field_value_padding_right,
-            TemplateField::sizing { value } => global::field_value_sizing,
-            TemplateField::height { value } => global::field_value_height,
-            TemplateField::width { value } => global::field_value_width,
-            TemplateField::border_radius { value } => global::field_value_border_radius,
-            TemplateField::border_width { value } => global::field_value_border_width,
-            TemplateField::border_radius_bottom_left { value } => global::field_value_border_radius_bottom_left,
-            TemplateField::border_radius_bottom_right { value } => global::field_value_border_radius_bottom_right,
-            TemplateField::border_radius_top_left { value } => global::field_value_border_radius_top_left,
-            TemplateField::border_radius_top_right { value } => global::field_value_border_radius_top_right,
-            TemplateField::blur { value } => global::field_value_blur,
-            TemplateField::spread { value } => global::field_value_spread,
-            TemplateField::t_type { value } => global::field_value_type,
-            TemplateField::x { value } => global::field_value_x,
-            TemplateField::y { value } => global::field_value_y,
-            TemplateField::NONE => todo!(),
-        }
-    }
-}
+// impl TemplateField {
+//     pub fn as_str(&self) -> &str { 
+//         match &self {
+//             TemplateField::variable_name { value } => global::field_variable_name,
+//             TemplateField::color { value } => global::field_color,
+//             TemplateField::font_family { value } => global::field_value_font_family,
+//             TemplateField::font_size { value } => global::field_value_font_size,
+//             TemplateField::font_weight { value } => global::field_value_font_weight,
+//             TemplateField::spacing { value } => global::field_value_spacing,
+//             //TemplateField::letter_spacing { value } => global::fiel,
+//             TemplateField::line_height { value } => global::field_value_line_height,
+//             TemplateField::horizontal_padding { value } => global::field_value_horizontal_padding,
+//             TemplateField::vertical_padding { value } => global::field_value_vertical_padding,
+//             //TemplateField::item_spacing { value } => global::field_value_item_spacing,
+//             TemplateField::padding_bottom { value } => global::field_value_padding_bottom,
+//             TemplateField::padding_top { value } => global::field_value_padding_top,
+//             TemplateField::padding_left { value } => global::field_value_padding_left,
+//             TemplateField::padding_right { value } => global::field_value_padding_right,
+//             TemplateField::sizing { value } => global::field_value_sizing,
+//             TemplateField::height { value } => global::field_value_height,
+//             TemplateField::width { value } => global::field_value_width,
+//             TemplateField::border_radius { value } => global::field_value_border_radius,
+//             TemplateField::border_width { value } => global::field_value_border_width,
+//             TemplateField::border_radius_bottom_left { value } => global::field_value_border_radius_bottom_left,
+//             TemplateField::border_radius_bottom_right { value } => global::field_value_border_radius_bottom_right,
+//             TemplateField::border_radius_top_left { value } => global::field_value_border_radius_top_left,
+//             TemplateField::border_radius_top_right { value } => global::field_value_border_radius_top_right,
+//             TemplateField::blur { value } => global::field_value_blur,
+//             TemplateField::spread { value } => global::field_value_spread,
+//             TemplateField::t_type { value } => global::field_value_type,
+//             TemplateField::x { value } => global::field_value_x,
+//             TemplateField::y { value } => global::field_value_y,
+//             TemplateField::NONE => todo!(),
+//         }
+//     }
+// }
 
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
@@ -358,7 +360,7 @@ pub enum TemplateFieldVariantVariableName {
 
 impl ConfigTemplateType {
     pub fn from_str(input: &str) -> ConfigTemplateType {
-        
+      
         let value = match input {
             global::type_color         => ConfigTemplateType::color,
             global::type_typography    => ConfigTemplateType::typography,
