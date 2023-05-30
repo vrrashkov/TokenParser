@@ -99,11 +99,10 @@ fn template_content_custom(
                 template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontWeights, &value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::fontFamilies(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::boxShadow, &value, &available_fields);
+                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontFamilies, &value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::boxShadow(value) => {
-                let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::boxShadow);
-                current_template.box_shadow_values = Some(template_list_replaced_values(value, &pure_values, &available_fields));
+                template_list_replaced_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::boxShadow,value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::composition(value) => {
                 template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::composition, &value, &available_fields);
@@ -121,18 +120,13 @@ fn template_update_list_values(file_data_list: &Vec<template::TokenData>, curren
     let mut current = template_replaced_values_single(value, &pure_values, &available_fields);
     current_template.update_template_values(config_type, current);
 }
-
-fn template_list_replaced_values(templates: &Vec<String>, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>{ 
+fn template_list_replaced_values(file_data_list: &Vec<template::TokenData>, current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, templates: &Vec<String>, available_fields: &AvailableFields) { 
     let mut values_content:Vec<String> = Vec::new();
-    
+    let pure_values = template_pure_values(file_data_list, config_type.to_owned());
     for (index, template) in templates.iter().enumerate() { 
-        let values = template_replaced_values(index, &template, &pure_values, &available_fields);    
-        for value in values {
-            values_content.push(value);
-        } 
+        let current = template_replaced_values(index, &template, &pure_values, &available_fields);    
+        current_template.update_template_values(config_type.to_owned(), current);
     }
-          
-    return values_content;
 }
 fn template_replaced_values_single(template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>  { 
     return template_replaced_values(0, &template, &pure_values, &available_fields);

@@ -65,10 +65,14 @@ templates:
           value: "{% if verticalPadding != '' %} test {{verticalPadding | optional: 'border radius top left: %value'}} {% endif %}"
         - type: composition
           value: "{% if verticalPadding != '' %} test {{verticalPadding | optional: 'ffffffffffff left: %value'}} {% endif %}"
-      # - type: boxShadow
-      #   value: 
-      #     - "public static let {{variable_name}} {{color-0 | color: 'hex'}}"
-      #     - "public static let {{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}"
+        - type: boxShadow
+          value: 
+            - "public static let {{variable_name}} {{color-0 | color: 'hex'}}"
+            - "public static let {{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}"
+        - type: boxShadow
+          value: 
+            - "public 22222 {{variable_name}} {{color-0 | color: 'hex'}}"
+            - "public 3333333333 {{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}"
   # - type: color
   #   value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}};"
   # # - type: typography
