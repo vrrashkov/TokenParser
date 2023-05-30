@@ -9,10 +9,13 @@ use convert_case::{Case, Casing};
 use crate::deserializer;
 use crate::deserializer::AvailableFields;
 use crate::deserializer::ConfigTemplateType;
+use crate::deserializer::TemplateField;
 use crate::general;
 use crate::askama;
 use crate::template;
 use crate::utils;
+
+use crate::filters;
 
 pub fn init(token_config: &deserializer::TokensConfig) { 
 
@@ -69,43 +72,43 @@ fn template_content_custom(
         match &template {
             deserializer::CustomConfigTempalteType::color(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::color);
-                current_template.color_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.color_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::typography(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::typography);
-                current_template.font_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.font_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::spacing(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::spacing);
-                current_template.spacing_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.spacing_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::borderWidth(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::borderWidth);
-                current_template.border_width_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.border_width_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::borderRadius(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::borderRadius);
-                current_template.border_radius_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.border_radius_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::letterSpacing(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::letterSpacing);
-                current_template.letter_spacing_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.letter_spacing_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::lineHeights(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::lineHeights);
-                current_template.line_height_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.line_height_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::fontSizes(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::fontSizes);
-                current_template.font_sizes_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.font_sizes_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::fontWeights(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::fontWeights);
-                current_template.font_weights_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.font_weights_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::fontFamilies(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::fontFamilies);
-                current_template.font_families_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.font_families_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::boxShadow(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::boxShadow);
@@ -113,7 +116,7 @@ fn template_content_custom(
             },
             deserializer::CustomConfigTempalteType::composition(value) => {
                 let pure_values = template_pure_values(file_data_list, deserializer::ConfigTemplateType::composition);
-                current_template.composition_values = Some(template_replaced_values(value, &pure_values, &available_fields));
+                current_template.composition_values = Some(template_replaced_values_single(value, &pure_values, &available_fields));
             },
             deserializer::CustomConfigTempalteType::none => todo!(),
         }
@@ -124,37 +127,42 @@ fn template_content_custom(
 }
 fn template_list_replaced_values(templates: &Vec<String>, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>{ 
     let mut values_content:Vec<String> = Vec::new();
-    for template in templates {
-        // let template_fields = template_as_values(template);
-
-        // for content in pure_values { 
-        //     let current = template_set_values(content, &template, available_fields, &template_fields);
-        //     values_content.push(current);
-        // }
-        
-        let values = template_replaced_values(&template, &pure_values, &available_fields);    
+    
+    for (index, template) in templates.iter().enumerate() { 
+        let values = template_replaced_values(index, &template, &pure_values, &available_fields);    
         for value in values {
             values_content.push(value);
-        }   
+        } 
     }
-    
+
     return values_content;
 }
-fn template_replaced_values(template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>{ 
-    let template_fields = template_as_values(template);
+fn template_replaced_values_single(template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>  { 
+    return template_replaced_values(0, &template, &pure_values, &available_fields);
+}
+fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String> { 
+    let template_fields= template_as_values(template);
 
     let mut values_content:Vec<String> = Vec::new();
     for content in pure_values { 
         let mut globals = liquid::object!({});
-        let current = template_set_values(content, &template, available_fields, &template_fields, &mut globals);
-        //print!("current: {}", &current);
-        let template_parsed = liquid::ParserBuilder::with_stdlib()
-        .build().unwrap()
-        .parse(&current).unwrap();
+        let current_optional = template_set_values(index, content, &template, available_fields, &template_fields, &mut globals);
 
-        let output = template_parsed.render(&globals).unwrap();
-        dbg!(&globals);
-        values_content.push(output);
+        if let Some(current) = current_optional {
+            //print!("current: {}", &current);
+            let template_parsed = liquid::ParserBuilder::with_stdlib()
+            .filter(filters::remove_space::RemoveSpace)
+            .filter(filters::color::Color)
+            .filter(filters::case::CamelCase)
+            .filter(filters::case::PascalCase)
+            .filter(filters::case::KebabCase)
+            .build().unwrap()
+            .parse(&current).unwrap();
+
+            let output = template_parsed.render(&globals).unwrap();
+            //dbg!(&globals);
+            values_content.push(output);
+        }
     }
     return values_content;
 }
@@ -168,18 +176,46 @@ fn template_pure_values(file_data_list: &Vec<template::TokenData>, template_type
 
     return Vec::new();
 }
-pub fn template_set_values(data: &template::TokenValue, pure_template: &String, available_fields: &AvailableFields, fields: &Vec<deserializer::TemplateFieldData>, globals: &mut liquid::Object) -> String { 
+pub fn template_set_values(index: usize, data: &template::TokenValue, pure_template: &String, available_fields: &AvailableFields, fields: &Vec<deserializer::TemplateFieldData>, globals: &mut liquid::Object) -> Option<String> { 
     let token_value = data;
-    let mut template: String = format!("{}", pure_template);
+    let mut template: Option<String> = Some(format!("{}", pure_template));
     for field_data in fields {
         let field_name = field_data.key_full.as_str();
 
         if available_fields.values.contains(&field_data.key_without_index.to_string()) {
          match &field_data.special {
-            ConfigTemplateType::spacing => {
+            TemplateField::variable_name => {
+                globals.insert(field_name.to_owned().into(), liquid::model::Value::scalar(token_value.variable_name()));
+            },
+            TemplateField::spacing => {
                 if let deserializer::TokenDataType::spacing { value } = &token_value.value {
                     globals.insert(field_name.to_owned().into(), liquid::model::Value::scalar(value.to_string()));
-                    //template::format_template(&mut template, &field_name, &value.to_string());
+                }
+            },
+            TemplateField::font_family => {
+                if let deserializer::TokenDataType::fontFamilies { value } = &token_value.value {
+                    globals.insert(field_name.to_owned().into(), liquid::model::Value::scalar(value.to_string()));
+                }
+            },
+            TemplateField::color => {
+                if let deserializer::TokenDataType::color { value } = &token_value.value {
+                    globals.insert(field_name.to_owned().into(), liquid::model::Value::scalar(value.to_string()));
+                }
+                if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
+                    let mut box_shadow_values: Vec<deserializer::TokenDataTypeBoxShadowValue> = Vec::new();
+                    template::box_shadow_to_list(&value, &mut box_shadow_values);
+                    println!("index: {}, box_shadow_values.len(): {}", index+1, box_shadow_values.len());
+                    if index+1 == box_shadow_values.len() {
+                        for (index, value) in box_shadow_values.iter().enumerate() { 
+                            globals.insert(format!("{}-{}",field_data.key_without_index, index).into(), liquid::model::Value::scalar(value.color.to_string()));
+                        }
+                            
+                    } else { 
+                        template = None;
+                    }
+                    dbg!(&globals);
+                    // globals.insert(field_name.to_owned().into(), liquid::model::Value::scalar(value.to_string()));
+                    // template::box_shadow_color(&mut template, &field_template_pattern, &variant_value, &value);
                 }
             },
             _ => {}
@@ -392,18 +428,18 @@ pub fn template_set_values(data: &template::TokenValue, pure_template: &String, 
             //     deserializer::TemplateField::NONE => todo!(),
             // }
         } else { 
-            println!("The only available fields for the variant /{}/ are /{}/", available_fields.name, available_fields.values.join(", "));
+            println!("The field /{}/ is not available for this type, the available fields are /{}/", field_data.key_without_index, available_fields.values.join(", "));
         }
     }
 
     return template;
 }
 
-pub fn template_as_values(template: &str) -> Vec<deserializer::TemplateFieldData> { 
+pub fn template_as_values(template: &str) ->  Vec<deserializer::TemplateFieldData> { 
     let mut template_fields: Vec<deserializer::TemplateFieldData> = Vec::new();
 
     let pure_values = utils::between_all(Vec::new(), template, "{{", "}}");
-
+   
     for pure in pure_values {
         let values_split = pure.split("|");
         let values_parts:Vec<&str> = values_split.collect();
@@ -418,11 +454,11 @@ pub fn template_as_values(template: &str) -> Vec<deserializer::TemplateFieldData
         let template_field_data = deserializer::TemplateFieldData {
             index: index,
             full_template: pure.to_string(),
-            special: ConfigTemplateType::from_str(&key_split[0]),
+            special: deserializer::TemplateField::from_str(&key_split[0]),
             key_full: template_key_name.to_string(),
             key_without_index: key_split[0].to_string()
         };
-
+  
         //dbg!(&template_field_data);
         template_fields.push(template_field_data);
         // let template_parse = liquid::ParserBuilder::with_stdlib()
@@ -459,6 +495,7 @@ pub fn template_as_values(template: &str) -> Vec<deserializer::TemplateFieldData
     //     template_fields.push((format!("{{{{{}}}}}",pure), value_object));
     // }
 
+    //dbg!(&result);
     return template_fields;
     // let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
     // dbg!(res);

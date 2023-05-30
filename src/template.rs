@@ -36,8 +36,11 @@ pub struct TokenValueType {
 }
 
 impl TokenValue { 
-    pub fn variable_name(&self, case: Case) -> String { 
-        return format!("{}_{}",self.path.join("_"),self.name).to_case(case);
+    // pub fn variable_name(&self, case: Case) -> String { 
+    //     return format!("{}_{}",self.path.join("_"),self.name).to_case(case);
+    // }
+    pub fn variable_name(&self) -> String { 
+        return format!("{}_{}",self.path.join("_"),self.name);
     }
 }
 #[derive(Clone, Debug, Default)]
@@ -76,44 +79,24 @@ pub fn values_from_type(file_data: &TokenData) -> Vec<askama::TemplateValue> {
     return values;
 }
 
-pub fn variable_name(template: &mut String, key: &String, variant_value: &deserializer::TemplateFieldVariantVariableName, pure_value: &TokenValue) { 
-    match &variant_value {
-        deserializer::TemplateFieldVariantVariableName::upper => {
-            update_template(template, &pure_value.variable_name(Case::Upper), &key);
-        },
-        deserializer::TemplateFieldVariantVariableName::lower => {
-            update_template(template, &pure_value.variable_name(Case::Lower), &key);
-        },
-        deserializer::TemplateFieldVariantVariableName::camel => {
-            update_template(template, &pure_value.variable_name(Case::Camel), &key);
-        },
-        deserializer::TemplateFieldVariantVariableName::snake => {
-            update_template(template, &pure_value.variable_name(Case::Snake), &key);
-        },
-        deserializer::TemplateFieldVariantVariableName::kebab => {
-            update_template(template, &pure_value.variable_name(Case::Kebab), &key);
-        },
-    }
-}
-
-pub fn box_shadow_to_list(pure_value: &BoxShadowData, box_shadow_valeus: &mut Vec<deserializer::TokenDataTypeBoxShadowValue>) {
+pub fn box_shadow_to_list(pure_value: &BoxShadowData, box_shadow_values: &mut Vec<deserializer::TokenDataTypeBoxShadowValue>) {
 
     if let deserializer::BoxShadowData::Shadow(value) = &pure_value { 
-        &box_shadow_valeus.push(value.clone());
+        &box_shadow_values.push(value.clone());
     }
     
     if let deserializer::BoxShadowData::Shadows(values) = &pure_value { 
         for value in values { 
-            &box_shadow_valeus.push(value.clone());
+            &box_shadow_values.push(value.clone());
         }
     }
 
 }
 pub fn box_shadow_blur(template: &mut String, key: &String, variant_value: &deserializer::TemplateFieldDefault, pure_value: &BoxShadowData) {
-    let mut box_shadow_valeus: Vec<deserializer::TokenDataTypeBoxShadowValue> = Vec::new();
-    box_shadow_to_list(&pure_value, &mut box_shadow_valeus);
+    let mut box_shadow_values: Vec<deserializer::TokenDataTypeBoxShadowValue> = Vec::new();
+    box_shadow_to_list(&pure_value, &mut box_shadow_values);
     
-    for value in &box_shadow_valeus { 
+    for value in &box_shadow_values { 
         update_template(template, &value.blur.to_string(), &key);
     }
 }

@@ -61,12 +61,18 @@ templates:
       #class: "public class"
       #class_name: "DSCore{style}"
       template_type:
-        # - type: color
-        #   value: "--{{variable_name:kebab}}: {{color:hex}};"
-        # - type: typography
-        #   value: "--{{variable_name:kebab}}: {{font_size:default}}px/{{line_height:default}}px {{font_family:default}};"
-        - type: spacing
-          value: "{% if spacing-0 == '4' %} daaaaaaaa {% endif %} public static let  = CGFloat({{spacing-0 | minus: 1}})"
+      - type: boxShadow
+        value: 
+          - "public static let {{variable_name}} {{color-0 | color: 'hex'}}"
+          - "public static let {{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}"
+  # - type: color
+  #   value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}};"
+  # # - type: typography
+  # #   value: "--{{variable_name:kebab}}: {{font_size:default}}px/{{line_height:default}}px {{font_family:default}};"
+  # - type: spacing
+  #   value: "{% if spacing-0 == '4' %} daaaaaaaa {% endif %} public static let  = CGFloat({{spacing-0 | minus: 1}})"
+  # - type: fontFamilies
+  #   value: "NoSpace({{fontFamily | remove_space}}) Space({{fontFamily}})"
   # - settings_general:
   #     generate_file_path: "generated_templates"
   #     file_name:

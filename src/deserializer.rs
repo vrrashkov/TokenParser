@@ -1,3 +1,4 @@
+use askama::Template;
 use serde::{Serialize, Deserialize, Deserializer};
 use serde_json::Number;
 use std::str::FromStr;
@@ -246,13 +247,13 @@ impl TokensConfig {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct TemplateFieldData { 
     pub index: Option<usize>,
     // pub name: TemplateField,
     pub key_full: String,
     pub key_without_index: String,
-    pub special: ConfigTemplateType,
+    pub special: TemplateField,
     pub full_template: String
 }
 
@@ -289,42 +290,43 @@ pub enum TemplateField {
     NONE
 }
 
-// impl TemplateField {
-//     pub fn as_str(&self) -> &str { 
-//         match &self {
-//             TemplateField::variable_name { value } => global::field_variable_name,
-//             TemplateField::color { value } => global::field_color,
-//             TemplateField::font_family { value } => global::field_value_font_family,
-//             TemplateField::font_size { value } => global::field_value_font_size,
-//             TemplateField::font_weight { value } => global::field_value_font_weight,
-//             TemplateField::spacing { value } => global::field_value_spacing,
-//             //TemplateField::letter_spacing { value } => global::fiel,
-//             TemplateField::line_height { value } => global::field_value_line_height,
-//             TemplateField::horizontal_padding { value } => global::field_value_horizontal_padding,
-//             TemplateField::vertical_padding { value } => global::field_value_vertical_padding,
-//             //TemplateField::item_spacing { value } => global::field_value_item_spacing,
-//             TemplateField::padding_bottom { value } => global::field_value_padding_bottom,
-//             TemplateField::padding_top { value } => global::field_value_padding_top,
-//             TemplateField::padding_left { value } => global::field_value_padding_left,
-//             TemplateField::padding_right { value } => global::field_value_padding_right,
-//             TemplateField::sizing { value } => global::field_value_sizing,
-//             TemplateField::height { value } => global::field_value_height,
-//             TemplateField::width { value } => global::field_value_width,
-//             TemplateField::border_radius { value } => global::field_value_border_radius,
-//             TemplateField::border_width { value } => global::field_value_border_width,
-//             TemplateField::border_radius_bottom_left { value } => global::field_value_border_radius_bottom_left,
-//             TemplateField::border_radius_bottom_right { value } => global::field_value_border_radius_bottom_right,
-//             TemplateField::border_radius_top_left { value } => global::field_value_border_radius_top_left,
-//             TemplateField::border_radius_top_right { value } => global::field_value_border_radius_top_right,
-//             TemplateField::blur { value } => global::field_value_blur,
-//             TemplateField::spread { value } => global::field_value_spread,
-//             TemplateField::t_type { value } => global::field_value_type,
-//             TemplateField::x { value } => global::field_value_x,
-//             TemplateField::y { value } => global::field_value_y,
-//             TemplateField::NONE => todo!(),
-//         }
-//     }
-// }
+impl TemplateField {
+    pub fn from_str(input: &str) -> TemplateField {
+      
+        let value = match input {
+            global::field_variable_name => TemplateField::variable_name,
+            global::field_color => TemplateField::color,
+            global::field_value_font_family => TemplateField::font_family,
+            global::field_value_font_size => TemplateField::font_size,
+            global::field_value_font_weight => TemplateField::font_weight,
+            global::field_value_spacing => TemplateField::spacing,
+            global::field_value_line_height => TemplateField::line_height,
+            global::field_value_horizontal_padding => TemplateField::horizontal_padding,
+            global::field_value_vertical_padding => TemplateField::vertical_padding,
+            global::field_value_padding_bottom => TemplateField::padding_bottom,
+            global::field_value_padding_top => TemplateField::padding_top,
+            global::field_value_padding_left => TemplateField::padding_left,
+            global::field_value_padding_right => TemplateField::padding_right,
+            global::field_value_sizing => TemplateField::sizing,
+            global::field_value_height => TemplateField::height,
+            global::field_value_width => TemplateField::width,
+            global::field_value_border_radius => TemplateField::border_radius,
+            global::field_value_border_width => TemplateField::border_width,
+            global::field_value_border_radius_bottom_left => TemplateField::border_radius_bottom_left,
+            global::field_value_border_radius_bottom_right => TemplateField::border_radius_bottom_right,
+            global::field_value_border_radius_top_left => TemplateField::border_radius_top_left,
+            global::field_value_border_radius_top_right => TemplateField::border_radius_top_right,
+            global::field_value_blur => TemplateField::blur,
+            global::field_value_spread => TemplateField::spread,
+            global::field_value_type => TemplateField::t_type,
+            global::field_value_x => TemplateField::x,
+            global::field_value_y => TemplateField::y,
+            _ => TemplateField::NONE
+        };
+
+        return value;
+    }
+}
 
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
@@ -348,6 +350,23 @@ pub enum TemplateFieldVariantColor {
     rgb_a_v2,
     hex,
 }
+impl TemplateFieldVariantColor {
+    pub fn to_str(&self) -> &str {
+      
+        return match self {
+            TemplateFieldVariantColor::rgb_r_v1 => global::color_rgb_r_v1,
+            TemplateFieldVariantColor::rgb_g_v1 => global::color_rgb_g_v1,
+            TemplateFieldVariantColor::rgb_b_v1 => global::color_rgb_b_v1,
+            TemplateFieldVariantColor::rgb_a_v1 => global::color_rgb_a_v1,
+            TemplateFieldVariantColor::rgb_r_v2 => global::color_rgb_r_v2,
+            TemplateFieldVariantColor::rgb_g_v2 => global::color_rgb_g_v2,
+            TemplateFieldVariantColor::rgb_b_v2 => global::color_rgb_b_v2,
+            TemplateFieldVariantColor::rgb_a_v2 => global::color_rgb_a_v2,
+            TemplateFieldVariantColor::hex => global::color_hex,
+        };
+        
+    }
+} 
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum TemplateFieldVariantVariableName {
@@ -357,7 +376,6 @@ pub enum TemplateFieldVariantVariableName {
     snake,
     kebab
 }
-
 impl ConfigTemplateType {
     pub fn from_str(input: &str) -> ConfigTemplateType {
       

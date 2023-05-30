@@ -15,6 +15,11 @@ mod template;
 mod figma_parser;
 mod utils;
 mod global;
+mod filters {
+    pub mod remove_space;
+    pub mod color;
+    pub mod case;
+}
 ////////////
 /// 
 // cargo run --release  --  --generate --config "assets/design_tokens_config.yaml"
