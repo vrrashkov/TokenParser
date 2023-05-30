@@ -52,3 +52,6 @@ pub const color_rgb_g_v2: &str = "rgb_g_v2";
 pub const color_rgb_b_v2: &str = "rgb_b_v2";
 pub const color_rgb_a_v2: &str = "rgb_a_v2";
 pub const color_hex: &str = "hex";
+
+pub const optional_key: &str = "optional";
+pub const optional_value: &str = "%value";

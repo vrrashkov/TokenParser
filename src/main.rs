@@ -19,6 +19,7 @@ mod filters {
     pub mod remove_space;
     pub mod color;
     pub mod case;
+    pub mod optional;
 }
 ////////////
 /// 
