@@ -36,7 +36,7 @@ If you have already generated the usable json files you can just run the end cod
 
 ```yaml
 global:
-  # Other files will be merged togehter
+  # Other path values will be merged togehter
   other_path: 
     - value: 
       - "assets/figma/core.json"
@@ -103,7 +103,7 @@ templates:
 
 In the above scenario 2 files are going to be generated **cds-dark** and **cds-light** they will both be containing tokens which we set through **template_type** in this case **composition**, **boxShadow** and **color**.  <u>Every different type contains specific keys you can use to create the template that you want</u>. See below the list of special keywords you can use.
 
-You can use every time multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something. 
+You can use every type multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something. 
 
 Optional values can be added with the **optional** filter. Instead of using if statements sometimes it's easier to just use the **optional** filter and display the value only if it exists.
 
@@ -131,7 +131,7 @@ You can use the keywords in the following way: **{variable_name | kebab }** name
 | type            | variant                                                                                                                                                                                                                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | added to GLOBAL | no_space, pascal, kebab, camel                                                                                                                                                                                                                   |
-| color           | rgb_r_v1, rgb_g_v1, rgb_b_v1, rgb_a_v1<br/>rgb_r_v2, rgb_g_v2, rgb_b_v2, rgb_a_v2<br/>hex<br/><br/>v1 - values from 0 to 255<br/>v2 - values from 0 to 1                                                                                      \| |
+| color           | rgb_r_v1, rgb_g_v1, rgb_b_v1, rgb_a_v1<br/>rgb_r_v2, rgb_g_v2, rgb_b_v2, rgb_a_v2<br/>hex<br/><br/>v1 - values from 0 to 255<br/>v2 - values from 0 to 1                                                                                       |
 
 > You can get example of full configuration from the assets folder
 
