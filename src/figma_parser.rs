@@ -18,11 +18,13 @@ use crate::global;
 
 pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
 
-    let mut core_files:Vec<String> = token_config.global.core_path.to_owned();
     let mut style_files:Vec<String> = token_config.global.style_path.to_owned();
     let mut json_files:Vec<String> = Vec::new();
 
-    json_files.append(&mut core_files.to_owned());
+    for path in &token_config.global.other_path {
+        let mut other_files:Vec<String> = path.value.to_owned();
+        json_files.append(&mut other_files.to_owned());
+    }
     json_files.append(&mut style_files.to_owned());
 
     let mut pure_values: HashMap<String, String> = HashMap::new();
@@ -71,60 +73,66 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     }
     
 
-    let mut output_json = style_files.to_owned();
-    output_json.push(core_files[0].to_string());
 
     let create_styles_directory = "assets/generated_styles/";
     // merging files and updating the values
     // the merged files are dependant on the config
-    for style in &output_json {
+    
+    for path in &token_config.global.other_path {
 
-        let mut data_object: serde_json::Value = general::get_json(&style);
-        let style_file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
-        
-        for merge_with in &json_files { 
-            let merge_with_file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
-            // make sure we don't merge the same files
-            if (!&style_files.contains(*&style) && !&style_files.contains(*&merge_with)) {
-                let data_object_second: serde_json::Value = general::get_json(&merge_with);
-                data_object.merge(data_object_second);
-            }
-        }
+    let mut output_json = style_files.to_owned();
+    output_json.push(path.value[0].to_string());
+        for style in &output_json {
 
-        for (key_path, key_value) in &calculated_values {
-            let path_list = &key_path.split(".").collect::<Vec<&str>>();
-
-            let path_list_count = path_list.len();
+            let mut data_object: serde_json::Value = general::get_json(&style);
+            let style_file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
             
-            let pointer_value = format!("/{}", path_list.join("/"));
-           
-            // replace the values from json
-            &data_object.pointer_mut(pointer_value.as_str()).map(|v| {
-                match key_value {
-                    Value::String(val) => {
-                        *v = json!(val)
-                    },
-                    Value::Float(val) => {
-                        *v = json!(val)
-                    },
-                    Value::Int(val) => {
-                        *v = json!(val)
-                    },
-                    Value::Boolean(val) => {
-                        *v = json!(val)
-                    },
-                    Value::Tuple(val) => {},
-                    Value::Empty => {},
+            for merge_with in &json_files { 
+                let merge_with_file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
+                // make sure we don't merge the same files
+                if (!&style_files.contains(*&style) && !&style_files.contains(*&merge_with)) {
+                    if path.value.contains(*&merge_with) {
+                        let data_object_second: serde_json::Value = general::get_json(&merge_with);
+                        data_object.merge(data_object_second);
+                    }
                 }
+            }
+
+            for (key_path, key_value) in &calculated_values {
+                let path_list = &key_path.split(".").collect::<Vec<&str>>();
+
+                let path_list_count = path_list.len();
                 
-            });
+                let pointer_value = format!("/{}", path_list.join("/"));
+            
+                // replace the values from json
+                &data_object.pointer_mut(pointer_value.as_str()).map(|v| {
+                    match key_value {
+                        Value::String(val) => {
+                            *v = json!(val)
+                        },
+                        Value::Float(val) => {
+                            *v = json!(val)
+                        },
+                        Value::Int(val) => {
+                            *v = json!(val)
+                        },
+                        Value::Boolean(val) => {
+                            *v = json!(val)
+                        },
+                        Value::Tuple(val) => {},
+                        Value::Empty => {},
+                    }
+                    
+                });
+            }
+            
+            let file = format!("{}{}.json",&create_styles_directory, &style_file_name);
+            std::fs::write(
+                &file,
+                serde_json::to_string_pretty(&data_object).unwrap(),
+            );
         }
-          
-        let file = format!("{}{}.json",&create_styles_directory, &style_file_name);
-        std::fs::write(
-            &file,
-            serde_json::to_string_pretty(&data_object).unwrap(),
-        );
     }
 }
 

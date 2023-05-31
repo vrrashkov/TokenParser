@@ -41,12 +41,16 @@ pub struct ConfigTemplateSettingsCustom {
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
-    #[serde(alias = "core_path")]
-    pub core_path: Vec<String>,
+    #[serde(alias = "other_path")]
+    pub other_path: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "style_path")]
     pub style_path: Vec<String>,
     #[serde(alias = "style_output_path")]
     pub style_output_path: String
+}
+#[derive(Default, Deserialize, Debug)]
+pub struct ConfigTokensGlobalOtherPath {
+    pub value: Vec<String>
 }
 
 #[derive(Default, Serialize, Deserialize, Debug)]
@@ -212,6 +216,18 @@ pub struct TokenDataTypeBoxShadowValue {
     pub x: Number,
     pub y: Number,
 }
+
+
+#[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
+pub enum BoxShadowType {
+    blur,
+    color,
+    spread,
+    t_type,
+    x,
+    y
+}
+
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataBoxShadowValue { 
     pub blur: Number,

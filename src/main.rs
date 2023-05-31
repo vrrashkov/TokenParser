@@ -53,6 +53,6 @@ fn main() {
             figma_parser::filter_properties(&token_config);
         }
     }
-    setup::init(&token_config);
+     setup::init(&token_config);
 
 }

@@ -36,12 +36,14 @@ If you have already generated the usable json files you can just run the end cod
 
 ```yaml
 global:
-  # Core files will be merged togehter
-  core_path: 
-    - "assets/figma/core.json"
-    - "assets/figma/typography.json"
-    - "assets/figma/global.json"
-    - "assets/figma/mobile.json"
+  # Other files will be merged togehter
+  other_path: 
+    - value: 
+      - "assets/figma/core.json"
+      - "assets/figma/typography.json"
+      - "assets/figma/global.json"
+    - value: 
+      - "assets/figma/mobile.json"
   # Styles will be kept separate
   style_path:
     - "assets/figma/dark.json"
@@ -50,11 +52,11 @@ global:
   style_output_path: "assets/generated_styles"
 ```
 
-The configuration above will end up generating 3 **json** files with usable tokens inside **assets/generated_styles**. 
+The configuration above will end up generating 4 **json** files with usable tokens inside **assets/generated_styles**. 
 
-- core.json
+- mobile.json/core.json
   
-  - Contains all the data from the files you have provided in **core_path**. This should be used for everything other than the different styles.
+  - You can provide all the other files **other_path**. Every separate **value** array will merge into a single file with the first **value** of the array as it's name
 
 - dark.json
   
@@ -88,16 +90,22 @@ templates:
       #class_name: "SomeNameCore{style}"
       template_type:
         - type: color
-          value: "--{{variable_name:kebab}}: {{color:hex}};"
-        - type: typography
-          value: "--{{variable_name:kebab}}: {{font_size:default}}px/{{line_height:default}}px {{font_family:default}};"
+          value: "{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}}"
+        - type: composition
+          value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
+        - type: composition
+          value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
+        - type: boxShadow
+          value: 
+            - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
+            - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
 
-You can create as many templates as you want. Every template is fully customizable.
+In the above scenario 2 files are going to be generated **cds-dark** and **cds-light** they will both be containing tokens which we set through **template_type** in this case **composition**, **boxShadow** and **color**.  <u>Every different type contains specific keys you can use to create the template that you want</u>. See below the list of special keywords you can use.
 
-**header/footer/sub_header/sub_footer** are just fields that can help you place the desired information in a specific place in the generated file.
+You can use every time multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something. 
 
-In the above scenario 2 files are going to be generated **cds-dark** and **cds-light** they will both be containing tokens which we set through **template_type** in this case **color** and **typography**.  <u>Every different type contains specific keys you can use to create the template tha tyou want</u>. See below the list of special keywords you can use.
+Optional values can be added with the **optional** filter. Instead of using if statements sometimes it's easier to just use the **optional** filter and display the value only if it exists.
 
 ##### Keywords
 
@@ -116,44 +124,33 @@ In the above scenario 2 files are going to be generated **cds-dark** and **cds-
 | boxShadow     | variable_name<br/>color<br/>blur<br/>spread<br/>type<br/>x<br/>y                                                                                                                                                                                                                                                                    |
 | composition   | variable_name<br/>padding_bottom<br/>padding_top<br/>padding_left<br/>padding_right<br/>sizing<br/>height<br/>width<br/>border_radius<br/>border_width<br/>border_radius_bottom_left<br/>border_radius_bottom_right<br/>border_radius_top__left<br/>border_radius_top_right<br/>spacing<br/>vertical_padding<br/>horizontal_padding |
 
-> Note: **<u>composition</u>** is not yet ready for use, even though it's in the project it is still in development. It might work for your case but it's not recommended to use.
-
-
-
-You can use the keywords in the following way: **{variable_name:default}** name of the keyword and next to it should be a variant of how you want to present that value. Every special keyword has the variant **default**. You must specify a variant, so even if you want the default one, you must specify it like shown.
+You can use the keywords in the following way: **{variable_name | kebab }** name of the keyword and next to it you can add a filter, or multiple filters by separating them with **|** lie this **{variable_name | kebab | no_space }**.
 
 ##### Variants
 
-| type          | variant                                                                                                                                                  |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| variable_name | upper, lower, camel, snake, kebab                                                                                                                        |
-| color         | rgb_r_v1, rgb_g_v1, rgb_b_v1, rgb_a_v1<br/>rgb_r_v2, rgb_g_v2, rgb_b_v2, rgb_a_v2<br/>hex<br/><br/>v1 - values from 0 to 255<br/>v2 - values from 0 to 1 |
-| font_family   | no_space                                                                                                                                                 |
+| type            | variant                                                                                                                                                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| added to GLOBAL | no_space, pascal, kebab, camel                                                                                                                                                                                                                   |
+| color           | rgb_r_v1, rgb_g_v1, rgb_b_v1, rgb_a_v1<br/>rgb_r_v2, rgb_g_v2, rgb_b_v2, rgb_a_v2<br/>hex<br/><br/>v1 - values from 0 to 255<br/>v2 - values from 0 to 1                                                                                      \| |
 
 > You can get example of full configuration from the assets folder
-
-
 
 **boxShadow** has a bit different take on how you shuld template it. Because we can expect array values with uknown length here is how you can handle them.
 
 ```yaml
 # All the color related values from above
 # For every new line of the boxShadow value, a new index can be used. For example:
-# On line 1 you have only values with index 0 - "{{variable_name:camel}} = Shadow(\"{{color:hex:0}}\")"
-# On line 2 you have values with index 0 and 1 - "{{variable_name:camel}} = Shadow(\"{{color:hex:0}}\", \"{{color:hex:1}}\")"
+# On line 1 you have only values with index 0 
+# On line 2 you have values with index 0 and 1
 # On line 3 you have values with index 0, 1 and 2 and etc.. 
 # All possible variants should be made with a template
 # If there is a missing one you will be notified with an error to add it
 - type: boxShadow
-value: 
-  - "public static let {{variable_name:snake}} = Shadow(\"{{color:hex:0}}\")"
-  - "public static let {{variable_name:snake}} = Shadow(\"{{color:hex:0}}\", \"{color:hex:1}\")"
+  value: 
+    - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
+    - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
 
 ##### More
 
-Couple of things you can expect for the future
-
-- Support for composition
-
-- Handling optional values in the templates
+For any ideas or issues please don't hasitate to ask/report. 
