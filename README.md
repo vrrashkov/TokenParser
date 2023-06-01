@@ -77,20 +77,6 @@ global:
   style_output_path: "assets/generated_styles"
 ```
 
-The configuration above will end up generating 4 **json** files with usable tokens inside **assets/generated_styles**. 
-
-- mobile.json/core.json
-  
-  - You can provide all the other files **other_path**. Every separate **value** array will merge into a single file with the first **value** of the array as it's name
-
-- dark.json
-  
-  - Only the specific tokens for the **dark style**
-
-- light.json
-  
-  - Only the specific tokens for the **light style**
-
 ##### Template config
 
 ```yaml
