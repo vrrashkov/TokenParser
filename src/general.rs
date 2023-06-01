@@ -30,25 +30,23 @@ pub fn get_config(config_file: &str) -> deserializer::TokensConfig {
 pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<template::TokenDataWrapper> { 
     let mut token_data_wrapper_list = Vec::new();
 
-    let style_files = &tokens_config.global.style_path;
-    for style in style_files {
-        let file_path = &style;
-        let file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
-        let style_output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
+    //let style_files = &tokens_config.global.style_path;
+    for group in &tokens_config.global.output_paths {
+        let mut data_object: serde_json::Value;
+        let mut file_name = String::from("");
+        let mut res: Value = Value::Null;
+        for (index, combine) in group.combine.iter().enumerate() {
+            let current_file_name = Path::new(combine).file_stem().unwrap().to_str().unwrap().to_owned();
+            if index == 0 {
+                file_name = current_file_name.to_string();
+            }
+            
+            let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &current_file_name);
+            let output_json = get_json(&output_path);
 
-        println!("style_output_path {}", &style_output_path);
-        let style_json = get_json(&style_output_path);
-        
-        let mut res: Value = style_json;
-        
-        for path in &tokens_config.global.other_path {
-            let other_file_name = Path::new(&path.value[0]).file_stem().unwrap().to_str().unwrap();
-            let other_output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &other_file_name);
-            let other_json = get_json(&other_output_path);
-
-            println!("other_output_path: {}", &other_output_path);
-            res.merge(other_json);
+            res.merge(output_json);
         }
+        
         let token_data_list = filter_properties(&res);
     
         let token_data_list_combined = combine_tokens(&token_data_list, &tokens_config);

@@ -1,6 +1,7 @@
 use askama::Template;
-use serde::{Serialize, Deserialize, Deserializer};
+use serde::{de, Serialize, Deserialize, Deserializer};
 use serde_json::Number;
+use std::fmt::Display;
 use std::str::FromStr;
 use convert_case::{Case, Casing};
 use serde_this_or_that::{as_string};
@@ -41,16 +42,19 @@ pub struct ConfigTemplateSettingsCustom {
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
-    #[serde(alias = "other_path")]
-    pub other_path: Vec<ConfigTokensGlobalOtherPath>,
-    #[serde(alias = "style_path")]
-    pub style_path: Vec<String>,
+    #[serde(alias = "figma_source_paths")]
+    pub figma_source_paths: Vec<String>,
+    #[serde(alias = "figma_output_paths")]
+    pub figma_output_paths: Vec<ConfigTokensGlobalOtherPath>,
+    #[serde(alias = "output_paths")]
+    pub output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "style_output_path")]
     pub style_output_path: String
 }
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPath {
-    pub value: Vec<String>
+    #[serde(alias = "combine")]
+    pub combine: Vec<String>
 }
 
 #[derive(Default, Serialize, Deserialize, Debug)]
@@ -130,18 +134,42 @@ pub struct ConfigTemplateSettingsSwiftUI {
 pub enum TokenDataType {
     color { value: String },
     typography { value: TokenDataTypeTypographyValue },
-    borderWidth { value: Number },
+    borderWidth { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
     sizing { value: String },
-    spacing { value: Number },
-    borderRadius { value: Number },
+    spacing { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
+    borderRadius { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
     boxShadow { value: BoxShadowData},
     opacity { value: String },
     fontFamilies { value: String },
-    fontWeights { value: Number },
-    fontSizes { value: Number },
-    lineHeights { value: Number },
-    letterSpacing { value: Number },
-    paragraphSpacing { value: Number },
+    fontWeights { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
+    fontSizes { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
+    lineHeights { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
+    letterSpacing { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
+    paragraphSpacing { 
+        #[serde(deserialize_with = "maybe_number")]
+        value: Number 
+    },
     textCase { value: String },
     textDecoration { value: String },
     asset { value: String },
@@ -151,24 +179,41 @@ pub enum TokenDataType {
     #[default]
     NONE
 }
+
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataTypeCompositionValue { 
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub horizontalPadding: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub verticalPadding: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub itemSpacing: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub paddingBottom: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub paddingTop: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub paddingLeft: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub paddingRight: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub borderRadius: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub borderWidth: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub borderRadiusBottomLeft: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub borderRadiusBottomRight: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub borderRadiusTopLeft: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub borderRadiusTopRight: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub sizing: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
     pub height: Option<Number>,
-    pub width: Option<Number>,
+    #[serde(default, deserialize_with = "maybe_number_opt")]
+    pub width: Option<Number>
 }
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 #[serde(untagged)]
@@ -182,8 +227,11 @@ pub struct TokenDataTypeTypographyValue {
     pub fontFamily: String,
     #[serde(deserialize_with = "as_string")]
     pub fontWeight: String,
+    #[serde(deserialize_with = "maybe_number")]
     pub lineHeight: Number,
+    #[serde(deserialize_with = "maybe_number")]
     pub fontSize: Number,
+    #[serde(deserialize_with = "maybe_number")]
     pub letterSpacing: Number,
 }
 
@@ -208,12 +256,16 @@ pub struct TokenDataColorValue {
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataTypeBoxShadowValue { 
+    #[serde(deserialize_with = "maybe_number")]
     pub blur: Number,
     pub color: String,
+    #[serde(deserialize_with = "maybe_number")]
     pub spread: Number,
     #[serde(alias = "type")]
     pub t_type: String,
+    #[serde(deserialize_with = "maybe_number")]
     pub x: Number,
+    #[serde(deserialize_with = "maybe_number")]
     pub y: Number,
 }
 
@@ -344,6 +396,64 @@ impl TemplateField {
     }
 }
 
+
+pub fn maybe_number_opt<'de, T, D>(deserializer: D) -> Result<Option<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: FromStr + serde::Deserialize<'de>,
+    <T as FromStr>::Err: Display,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumericOrNull<'a, T> {
+        FromStr(T),
+        Str(&'a str),
+        String(String),
+        Null,
+    }
+
+    let des = NumericOrNull::<T>::deserialize(deserializer)?;
+  
+    match des {
+        NumericOrNull::FromStr(i) => match i {
+            _ => Ok(Some(i)),
+        },
+        NumericOrNull::Str(s) => match s {
+            "" => Ok(None),
+            _ => T::from_str(s).map(Some).map_err(serde::de::Error::custom),
+        },
+        NumericOrNull::String(s) => match s.as_str() {
+            "" => Ok(None),
+            _ => T::from_str(&s).map(Some).map_err(serde::de::Error::custom),
+        },
+        NumericOrNull::Null => {
+            
+            
+            Ok(None)
+        },
+    }
+}
+
+pub fn maybe_number<'de, T, D>(deserializer: D) -> Result<T, D::Error>
+where
+    D: Deserializer<'de>,
+    T: FromStr + serde::Deserialize<'de>,
+    <T as FromStr>::Err: Display,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum MaybeNumber<'a, T> {
+        FromStr(T),
+        Str(&'a str),
+        String(String),
+    }
+
+    match MaybeNumber::<T>::deserialize(deserializer)? {
+        MaybeNumber::String(s) => T::from_str(&s).map_err(serde::de::Error::custom),
+        MaybeNumber::Str(s) => T::from_str(s).map_err(serde::de::Error::custom),
+        MaybeNumber::FromStr(i) => Ok(i),
+    }
+}
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum TemplateFieldDefault {

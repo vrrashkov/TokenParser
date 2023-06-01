@@ -1,16 +1,41 @@
 global:
-  # Other files will be merged togehter
-  other_path: 
-    - value: 
+  # Figma source paths
+  figma_source_paths: 
+    - "assets/figma/core.json"
+    - "assets/figma/typography.json"
+    - "assets/figma/global.json"
+    - "assets/figma/mobile.json"
+    - "assets/figma/dark.json"
+    - "assets/figma/light.json"
+  # Figma output calculated files, 
+  # This will output the files
+  # dark.json
+  # light.json
+  # core.json - (merged with typography, global)
+  # mobile.json
+  figma_output_paths:
+    - combine:
+      - "assets/figma/dark.json"
+    - combine:
+      - "assets/figma/light.json"
+    - combine: 
       - "assets/figma/core.json"
       - "assets/figma/typography.json"
       - "assets/figma/global.json"
-    - value: 
+    - combine: 
       - "assets/figma/mobile.json"
-  # Styles will be kept separate
-  style_path:
-    - "assets/figma/dark.json"
-    - "assets/figma/light.json"
+  # Different themes path
+  # The available paths are the ones created from figma_output_paths
+  # In this case we can only access dark.json, light.json, core.json, mobile.json 
+  output_paths:
+    - combine:
+      - "dark.json"
+      - "core.json"
+      - "mobile.json"
+    - combine:
+      - "light.json"
+      - "core.json"
+      - "mobile.json"
   # Output path 
   style_output_path: "assets/generated_styles"
 templates:

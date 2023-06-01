@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, self};
 use std::{collections::HashMap, fs};
 use askama::filters::format;
 use serde::{Serialize, Deserialize, Deserializer};
@@ -18,15 +18,7 @@ use crate::global;
 
 pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
 
-    let mut style_files:Vec<String> = token_config.global.style_path.to_owned();
-    let mut json_files:Vec<String> = Vec::new();
-
-    for path in &token_config.global.other_path {
-        let mut other_files:Vec<String> = path.value.to_owned();
-        json_files.append(&mut other_files.to_owned());
-    }
-    json_files.append(&mut style_files.to_owned());
-
+    let mut json_files:Vec<String> = token_config.global.figma_source_paths.to_owned();
     let mut pure_values: HashMap<String, String> = HashMap::new();
 
     // get all keys with their values
@@ -38,8 +30,8 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         for (key, val) in data_object.as_object().iter().flat_map(|d| d.iter()) {
 
             if (val.is_object()) {
-                
-                filter_sub_properties(key.to_owned(), key.to_owned(), val, &mut pure_values, vec![]);
+                let mut file_name = Path::new(file).file_stem().unwrap().to_str().unwrap().to_owned();
+                filter_sub_properties(key.to_owned(), vec![key.to_owned()], val, &mut pure_values, vec![]);
             }
         }
     }
@@ -49,6 +41,11 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     // which we are converting to usable value by eval() the math equation
     let mut calculated_values: HashMap<String, evalexpr::Value> = HashMap::new();
     for (key, val) in &pure_values {
+        if !val.contains("{") && !val.contains("}") {
+            //println!("don't calculate this val: {}", val);
+            continue;
+        }
+
         let mut template_values_list:Vec<String> = Vec::new();
 
         let (template_values, template_list) = find_all_between(val.to_owned(), &mut template_values_list, &pure_values);
@@ -78,61 +75,52 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     // merging files and updating the values
     // the merged files are dependant on the config
     
-    for path in &token_config.global.other_path {
-
-    let mut output_json = style_files.to_owned();
-    output_json.push(path.value[0].to_string());
-        for style in &output_json {
-
-            let mut data_object: serde_json::Value = general::get_json(&style);
-            let style_file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
-            
-            for merge_with in &json_files { 
-                let merge_with_file_name = Path::new(&style).file_stem().unwrap().to_str().unwrap();
-                // make sure we don't merge the same files
-                if (!&style_files.contains(*&style) && !&style_files.contains(*&merge_with)) {
-                    if path.value.contains(*&merge_with) {
-                        let data_object_second: serde_json::Value = general::get_json(&merge_with);
-                        data_object.merge(data_object_second);
-                    }
-                }
+    for group in &token_config.global.figma_output_paths {
+        
+        let mut data_object: serde_json::Value = serde_json::Value::Null;
+        let mut file_name = String::from("");
+        for (index, path) in group.combine.iter().enumerate() {
+            if index == 0 {
+                file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
             }
 
-            for (key_path, key_value) in &calculated_values {
-                let path_list = &key_path.split(".").collect::<Vec<&str>>();
-
-                let path_list_count = path_list.len();
-                
-                let pointer_value = format!("/{}", path_list.join("/"));
-            
-                // replace the values from json
-                &data_object.pointer_mut(pointer_value.as_str()).map(|v| {
-                    match key_value {
-                        Value::String(val) => {
-                            *v = json!(val)
-                        },
-                        Value::Float(val) => {
-                            *v = json!(val)
-                        },
-                        Value::Int(val) => {
-                            *v = json!(val)
-                        },
-                        Value::Boolean(val) => {
-                            *v = json!(val)
-                        },
-                        Value::Tuple(val) => {},
-                        Value::Empty => {},
-                    }
-                    
-                });
-            }
-            
-            let file = format!("{}{}.json",&create_styles_directory, &style_file_name);
-            std::fs::write(
-                &file,
-                serde_json::to_string_pretty(&data_object).unwrap(),
-            );
+            let data_to_merge_with: serde_json::Value = general::get_json(&path);
+            data_object.merge(data_to_merge_with);
         }
+
+        for (key_path, key_value) in &calculated_values {
+            let mut path_list = &key_path.split(".").collect::<Vec<&str>>();
+            let path_list_count = path_list.len();
+            
+            let pointer_value = format!("/{}", path_list.join("/"));
+        
+            // replace the values from json
+            &data_object.pointer_mut(pointer_value.as_str()).map(|v| {
+                match key_value {
+                    Value::String(val) => {
+                        *v = json!(val)
+                    },
+                    Value::Float(val) => {
+                        *v = json!(val)
+                    },
+                    Value::Int(val) => {
+                        *v = json!(val)
+                    },
+                    Value::Boolean(val) => {
+                        *v = json!(val)
+                    },
+                    Value::Tuple(val) => {},
+                    Value::Empty => {},
+                }
+                
+            });
+        }
+        
+        let file = format!("{}{}.json",&create_styles_directory, &file_name);
+        std::fs::write(
+            &file,
+            serde_json::to_string_pretty(&data_object).unwrap(),
+        );
     }
 }
 
@@ -169,13 +157,13 @@ fn find_all_between(search_inside: String, list: &mut Vec<String>, pure_values: 
 }
 
 
-pub fn filter_sub_properties(key: String, start_key: String, val: &serde_json::Value, pure_values: &mut HashMap<String, String>, path: Vec<String>) { 
+pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_json::Value, pure_values: &mut HashMap<String, String>, path: Vec<String>) { 
     for (ikey, ival) in val.as_object().iter().flat_map(|f| f.iter()) {
         let template_type = ival["type"].as_str();
     
         let mut p: Vec<String> = path.clone();
         if (p.len() == 0) {
-            p.push(start_key.to_owned());
+            p.push(start_key.join(".").to_owned());
         }
         p.push(ikey.to_string());
         if (ival.is_object() && template_type.is_some()) {
