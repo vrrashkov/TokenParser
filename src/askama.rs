@@ -1,9 +1,7 @@
-use askama::Template;
-
 use crate::{deserializer, template}; // bring trait in scope
 
-#[derive(Template, Debug)] // this will generate the code...
-#[template(path = "custom_template.html", escape = "none")] // using the template in this path, relative
+//#[derive(Template, Debug)] // this will generate the code...
+//#[template(path = "custom_template.html", escape = "none")] // using the template in this path, relative
 pub struct CustomTemplate { // the name of the struct can be anything
     pub header: Option<String>,
     pub class: Option<String>,
@@ -118,7 +116,7 @@ impl CustomTemplate {
     }
 
 }
-impl<'a> CustomTemplate {
+impl CustomTemplate {
     pub fn update_font_values(&mut self, values: Option<Vec<String>>) {
         self.font_values = values;
     }

@@ -17,14 +17,14 @@ pub fn get_config(config_file: &str) -> deserializer::TokensConfig {
     
     let design_tokens_config = &config_file;
  
-    let data = fs::read_to_string(&design_tokens_config).expect("Unable to read file");
+    let data = fs::read_to_string(design_tokens_config).expect("Unable to read file");
     
     let data_strip_comments = StripComments::new(data.as_bytes());
     let token_config: deserializer::TokensConfig = serde_yaml::from_reader(data_strip_comments).expect("Unable to read the json");
 
     //println!("deserialized token_config = {:?}", token_config);
 
-    return token_config;
+    token_config
 }
 
 pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<template::TokenDataWrapper> { 
@@ -49,20 +49,20 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         
         let token_data_list = filter_properties(&res);
     
-        let token_data_list_combined = combine_tokens(&token_data_list, &tokens_config);
+        let token_data_list_combined = combine_tokens(&token_data_list, tokens_config);
 
         let token_data_wrapper: template::TokenDataWrapper = template::TokenDataWrapper { 
             style_name : file_name.to_string(),
             token_data : token_data_list_combined
         };
         
-        &token_data_wrapper_list.push(token_data_wrapper);
+        token_data_wrapper_list.push(token_data_wrapper);
     }
    
-    return token_data_wrapper_list;
+    token_data_wrapper_list
 }
 
-pub fn combine_tokens(token_data_list: &Vec<template::TokenData>, tokens_config: &deserializer::TokensConfig) -> Vec<template::TokenData> { 
+pub fn combine_tokens(token_data_list: &[template::TokenData], tokens_config: &deserializer::TokensConfig) -> Vec<template::TokenData> { 
 
     let mut updated_token_data_list: Vec<template::TokenData> = Vec::new();
   
@@ -85,18 +85,18 @@ pub fn combine_tokens(token_data_list: &Vec<template::TokenData>, tokens_config:
             }
         }
 
-        if (token_data_combined.token_value.len() > 0) {
+        if !token_data_combined.token_value.is_empty() {
             updated_token_data_list.push(token_data_combined);
         }
     }
-    return updated_token_data_list;
+    updated_token_data_list
 }
 
 pub fn get_json(path: &str) -> serde_json::Value {
     println!("path: {}", path);
     let data = fs::read_to_string(path).expect("Unable to read file");
     let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
-    return res
+    res
 }
 
 pub fn create_template(template_config: &deserializer::ConfigTokensTemplates, style_name: &str,type_name: &str, current_template: &Option<String>) { 
@@ -106,7 +106,7 @@ pub fn create_template(template_config: &deserializer::ConfigTokensTemplates, st
         let file_name_config = &template_config.settings_general.file_name;
         
         if let Some(file_name_format) = &file_name_config.format {
-            deserializer::TokensConfig::format_class_name_templated(&mut file_name_formatted, &file_name_format, &type_name, &style_name, &template_config.settings_general);
+            deserializer::TokensConfig::format_class_name_templated(&mut file_name_formatted, file_name_format, type_name, style_name, &template_config.settings_general);
         }
 
         if let Some(file_name_case) = &file_name_config.case {
@@ -117,7 +117,7 @@ pub fn create_template(template_config: &deserializer::ConfigTokensTemplates, st
         file_name_formatted = format!("{}.{}", file_name_formatted, &template_config.settings_general.file_name.extension);
         
 
-        create_template_file(&template_config, file_name_formatted.as_str(), template_content_value);
+        create_template_file(template_config, file_name_formatted.as_str(), template_content_value);
     }
 }
 
@@ -148,13 +148,13 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
 
     }
      
-    return token_data_list;
+    token_data_list
 }
 
 pub fn deserialize_token_data_value(data: &Value) -> deserializer::TokenDataType { 
     let value_object: deserializer::TokenDataType = serde_json::from_value(data.to_owned()).expect("Unable to read the json");
 
-    return value_object;
+    value_object
 }
 pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_list: &mut Vec<template::TokenData>, path: Vec<String>) { 
 
@@ -178,7 +178,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
                     text: token_value_type.to_owned(),
                     special: deserializer::ConfigTemplateType::from_str(&token_value_type)
                 },
-                value: deserialize_token_data_value(&value_object),
+                value: deserialize_token_data_value(value_object),
             };
 
             let mut token = template::TokenData { 
@@ -194,7 +194,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
                 token.t_type = deserializer::ConfigTemplateType::from_str(&token_value.token_type.text);
                 token.token_value.push(token_value);
 
-                &token_data_list.push(token.to_owned());
+                token_data_list.push(token.to_owned());
             }
 
 
@@ -207,7 +207,9 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
 }
 
 pub fn case_from_str(input: &str) -> Case {
-    let value = match input {
+    
+
+    match input {
         "camel"   => Case::Camel,
         "snake"   => Case::Snake,
         "upper"   => Case::Upper,
@@ -215,7 +217,5 @@ pub fn case_from_str(input: &str) -> Case {
         "kebab"   => Case::Kebab,
         "pascal"  => Case::Pascal,
         _         => Case::Camel
-    };
-
-    return value
+    }
 }

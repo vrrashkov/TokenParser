@@ -1,6 +1,5 @@
 use std::path::{Path, self};
 use std::{collections::HashMap, fs};
-use askama::filters::format;
 use serde::{Serialize, Deserialize, Deserializer};
 use serde_json::{Number, json};
 use std::str::FromStr;
@@ -25,7 +24,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     // key contains the full path of the tree
     // for example core.natural.fr.c1
     for file in &json_files {
-        let data_object: serde_json::Value = general::get_json(&file);
+        let data_object: serde_json::Value = general::get_json(file);
     
         for (key, val) in data_object.as_object().iter().flat_map(|d| d.iter()) {
 
@@ -41,7 +40,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     // which we are converting to usable value by eval() the math equation
     let mut calculated_values: HashMap<String, evalexpr::Value> = HashMap::new();
     for (key, val) in &pure_values {
-        if !val.contains("{") && !val.contains("}") {
+        if !val.contains('{') && !val.contains('}') {
             //println!("don't calculate this val: {}", val);
             continue;
         }
@@ -50,7 +49,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
 
         let (template_values, template_list) = find_all_between(val.to_owned(), &mut template_values_list, &pure_values);
 
-        if template_list.len() > 0 { 
+        if !template_list.is_empty() { 
             let mut math_eval = Value::from(template_values.to_owned());
 
             if let Ok(ev) = eval(template_values.to_owned().as_str()) {
@@ -84,18 +83,18 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                 file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
             }
 
-            let data_to_merge_with: serde_json::Value = general::get_json(&path);
+            let data_to_merge_with: serde_json::Value = general::get_json(path);
             data_object.merge(data_to_merge_with);
         }
 
         for (key_path, key_value) in &calculated_values {
-            let mut path_list = &key_path.split(".").collect::<Vec<&str>>();
+            let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
             let path_list_count = path_list.len();
             
             let pointer_value = format!("/{}", path_list.join("/"));
         
             // replace the values from json
-            &data_object.pointer_mut(pointer_value.as_str()).map(|v| {
+            data_object.pointer_mut(pointer_value.as_str()).map(|v| {
                 match key_value {
                     Value::String(val) => {
                         *v = json!(val)
@@ -129,7 +128,7 @@ fn find_all_between(search_inside: String, list: &mut Vec<String>, pure_values: 
 
     let found_template = utils::between(search_inside.as_str(), "{","}");
 
-    if found_template == "" {
+    if found_template.is_empty() {
         return (search_inside, list.to_owned());
     }
 
@@ -143,17 +142,17 @@ fn find_all_between(search_inside: String, list: &mut Vec<String>, pure_values: 
         list.push(found_template.to_string());
         let mut update_search = search_inside.replace(&full_template_value_v2, number_text);
         update_search = update_search.replace(&full_template_value, number_text);
-        return find_all_between(update_search, list, &pure_values);
+        return find_all_between(update_search, list, pure_values);
     }
     
     if let Some(number_text) = pure_value_v2 { 
         list.push(found_template.to_string());
         let mut update_search = search_inside.replace(&full_template_value_v2, number_text);
         update_search = update_search.replace(&full_template_value, number_text);
-        return find_all_between(update_search, list, &pure_values);
+        return find_all_between(update_search, list, pure_values);
     }
 
-    return (search_inside, list.to_owned());
+    (search_inside, list.to_owned())
 }
 
 
@@ -162,7 +161,7 @@ pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_js
         let template_type = ival["type"].as_str();
     
         let mut p: Vec<String> = path.clone();
-        if (p.len() == 0) {
+        if p.is_empty() {
             p.push(start_key.join(".").to_owned());
         }
         p.push(ikey.to_string());
@@ -177,31 +176,29 @@ pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_js
                         p_cloned.push(vi.to_string());
                         generate_figma_token_value(v.clone(), pure_values, p_cloned.to_owned(), false);
                     }
-                } else {
-                    if let Some(token_value) = ival["value"].as_str() {
-                        let mut p_cloned = p.clone();
-                        p_cloned.push("value".to_string());
-                        let pure_values_key = p_cloned.join(".");
+                } else if let Some(token_value) = ival["value"].as_str() {
+                    let mut p_cloned = p.clone();
+                    p_cloned.push("value".to_string());
+                    let pure_values_key = p_cloned.join(".");
 
-                        if ival["type"] == "color" {
-                             
-                        let mut hex: Hex;
-                        let v = token_value.to_owned();
-                        match v.as_str().try_into() {
-                            Ok(color_value) => {
-                                let mut rgba: RGBA = color_value;
-                                hex = rgba.to_hex();
-                            },
-                            Err(_) => {
-                                hex = v.as_str().try_into().unwrap();
-                            },
-                        }
-                            
-                            //pure_values.insert(pure_values_key, token_value.to_owned());
-                            pure_values.insert(pure_values_key, hex.to_string());
-                        } else {
-                            pure_values.insert(pure_values_key, token_value.to_owned());
-                        }
+                    if ival["type"] == "color" {
+                         
+                    let mut hex: Hex;
+                    let v = token_value.to_owned();
+                    match v.as_str().try_into() {
+                        Ok(color_value) => {
+                            let mut rgba: RGBA = color_value;
+                            hex = rgba.to_hex();
+                        },
+                        Err(_) => {
+                            hex = v.as_str().try_into().unwrap();
+                        },
+                    }
+                        
+                        //pure_values.insert(pure_values_key, token_value.to_owned());
+                        pure_values.insert(pure_values_key, hex.to_string());
+                    } else {
+                        pure_values.insert(pure_values_key, token_value.to_owned());
                     }
                 }
             } else {
@@ -268,21 +265,21 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
 
 }
 
-fn add_pure_value(value: &Option<String>, path: &str, pure_values: &mut HashMap<String, String>, p: &Vec<String>, add_val_path: &bool) { 
+fn add_pure_value(value: &Option<String>, path: &str, pure_values: &mut HashMap<String, String>, p: &[String], add_val_path: &bool) { 
     if let Some(v) = &value {
-        &pure_values.insert(add_path_value_get_full(&p, path,&add_val_path), v.to_string());
+        pure_values.insert(add_path_value_get_full(p, path,add_val_path), v.to_string());
     }
 }
 
-fn add_path_value_get_full(path: &Vec<String>, newPath: &str, add_value: &bool) -> String { 
-    let mut p = path.clone();
+fn add_path_value_get_full(path: &[String], newPath: &str, add_value: &bool) -> String { 
+    let mut p = path.to_vec();
     if *add_value {
         p.push("value".to_string());
     }
     p.push(newPath.to_string());
-    let pure_values_key = p.join(".");
+    
 
-    return pure_values_key;
+    p.join(".")
 }
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]

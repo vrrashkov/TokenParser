@@ -1,4 +1,3 @@
-use ::askama::Error;
 use easy_color::{ColorError, IntoRGBA};
 use easy_color::{Hex, IntoHex};
 use serde::de::value::MapAccessDeserializer;
@@ -40,7 +39,7 @@ impl TokenValue {
     //     return format!("{}_{}",self.path.join("_"),self.name).to_case(case);
     // }
     pub fn variable_name(&self) -> String { 
-        return format!("{}_{}",self.path.join("_"),self.name);
+        format!("{}_{}",self.path.join("_"),self.name)
     }
 }
 #[derive(Clone, Debug, Default)]
@@ -65,7 +64,7 @@ pub struct TokenDataWrapper {
 
 pub fn set_box_shadow_global(globals: &mut liquid_core::Object, index: usize, data: &BoxShadowData, data_type: deserializer::BoxShadowType,  field_data: &deserializer::TemplateFieldData, template: &mut Option<String>) { 
     let mut box_shadow_values: Vec<deserializer::TokenDataTypeBoxShadowValue> = Vec::new();
-    box_shadow_to_list(&data, &mut box_shadow_values);
+    box_shadow_to_list(data, &mut box_shadow_values);
     if index+1 == box_shadow_values.len() {
         for (index, value) in box_shadow_values.iter().enumerate() { 
             let key = format!("{}-{}",field_data.key_without_index, index);
@@ -99,12 +98,12 @@ pub fn set_box_shadow_global(globals: &mut liquid_core::Object, index: usize, da
 pub fn box_shadow_to_list(pure_value: &BoxShadowData, box_shadow_values: &mut Vec<deserializer::TokenDataTypeBoxShadowValue>) {
 
     if let deserializer::BoxShadowData::Shadow(value) = &pure_value { 
-        &box_shadow_values.push(value.clone());
+        box_shadow_values.push(value.clone());
     }
     
     if let deserializer::BoxShadowData::Shadows(values) = &pure_value { 
         for value in values { 
-            &box_shadow_values.push(value.clone());
+            box_shadow_values.push(value.clone());
         }
     }
 

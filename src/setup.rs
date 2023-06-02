@@ -1,4 +1,3 @@
-use ::askama::Template;
 use liquid::ValueView;
 use serde::de::value::MapAccessDeserializer;
 use std::cell::RefCell;
@@ -20,16 +19,16 @@ use crate::filters;
 
 pub fn init(token_config: &deserializer::TokensConfig) { 
 
-    let token_data_wrapper_list = general::generate_tokens(&token_config);
+    let token_data_wrapper_list = general::generate_tokens(token_config);
     // different styles light/dark
     for token_data_wrapper in token_data_wrapper_list.iter() {
         for template_config in token_config.templates.iter() {
         
             let file_data_name = "custom";
         
-            let template_content = template_content_custom(&template_config, &token_data_wrapper, &token_config, &file_data_name, &token_data_wrapper.token_data);
+            let template_content = template_content_custom(template_config, token_data_wrapper, token_config, file_data_name, &token_data_wrapper.token_data);
             
-            general::create_template(&template_config, &token_data_wrapper.style_name, file_data_name, &template_content);
+            general::create_template(template_config, &token_data_wrapper.style_name, file_data_name, &template_content);
             
         }
     }
@@ -40,7 +39,7 @@ fn template_content_custom(
     token_data_wrapper: &template::TokenDataWrapper, 
     token_config: &deserializer::TokensConfig,
     file_data_name: &str,
-    file_data_list: &Vec<template::TokenData>
+    file_data_list: &[template::TokenData]
 ) -> Option<String>{ 
     let mut template_content: Option<String> = Default::default();
 
@@ -51,7 +50,7 @@ fn template_content_custom(
         sub_header: custom_template.sub_header.to_owned(),
         sub_footer: custom_template.sub_footer.to_owned(),
         class: custom_template.class.to_owned(),
-        class_name: token_config.formatted_class_name(&token_data_wrapper.style_name, &template_config, file_data_name),
+        class_name: token_config.formatted_class_name(&token_data_wrapper.style_name, template_config, file_data_name),
         color_values: None,
         font_values: None,
         spacing_values: None,
@@ -71,66 +70,92 @@ fn template_content_custom(
         let available_fields = template.available_fields();
         match &template {
             deserializer::CustomConfigTempalteType::color(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::color, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::color, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::typography(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::typography, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::typography, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::spacing(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::spacing, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::spacing, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::borderWidth(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::borderWidth, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::borderWidth, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::borderRadius(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::borderRadius, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::borderRadius, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::letterSpacing(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::letterSpacing, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::letterSpacing, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::lineHeights(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::lineHeights, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::lineHeights, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::fontSizes(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontSizes, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontSizes, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::fontWeights(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontWeights, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontWeights, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::fontFamilies(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontFamilies, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::fontFamilies, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::boxShadow(value) => {
-                template_list_replaced_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::boxShadow,value, &available_fields);
+                template_list_replaced_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::boxShadow,value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::composition(value) => {
-                template_update_list_values(&file_data_list, &mut current_template, deserializer::ConfigTemplateType::composition, &value, &available_fields);
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::composition, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::none => todo!(),
         }
     }
+    let template = liquid::ParserBuilder::with_stdlib()
+    .build().unwrap()
+    .parse_file("templates/liquid_template.html").unwrap();
+
+    let mut globals = liquid::object!({
+        "header": current_template.header,
+        "footer": current_template.footer,
+        "sub_header": current_template.sub_header,
+        "sub_footer": current_template.sub_footer,
+        "class": current_template.class,
+        "class_name": current_template.class_name,
+        "color_values": current_template.color_values,
+        "font_values": current_template.font_values,
+        "spacing_values": current_template.spacing_values,
+        "border_width_values": current_template.border_width_values,
+        "border_radius_values": current_template.border_radius_values,
+        "letter_spacing_values": current_template.letter_spacing_values,
+        "line_height_values": current_template.line_height_values,
+        "font_sizes_values": current_template.font_sizes_values,
+        "font_weights_values": current_template.font_weights_values,
+        "font_families_values": current_template.font_families_values,
+        "box_shadow_values": current_template.box_shadow_values,
+        "composition_values": current_template.composition_values,
+    });
+ 
     
-    template_content = current_template.render().ok();
-    return template_content;
+
+    //template_content = current_template.render().ok();
+    Some(template.render(&globals).unwrap())
 }
 
-fn template_update_list_values(file_data_list: &Vec<template::TokenData>, current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, value: &String, available_fields: &AvailableFields) { 
+fn template_update_list_values(file_data_list: &[template::TokenData], current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, value: &String, available_fields: &AvailableFields) { 
     let pure_values = template_pure_values(file_data_list, config_type.to_owned());
-    let mut current = template_replaced_values_single(value, &pure_values, &available_fields);
+    let mut current = template_replaced_values_single(value, &pure_values, available_fields);
     current_template.update_template_values(config_type, current);
 }
 
-fn template_list_replaced_values(file_data_list: &Vec<template::TokenData>, current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, templates: &Vec<String>, available_fields: &AvailableFields) { 
+fn template_list_replaced_values(file_data_list: &[template::TokenData], current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, templates: &[String], available_fields: &AvailableFields) { 
     let mut values_content:Vec<String> = Vec::new();
     let pure_values = template_pure_values(file_data_list, config_type.to_owned());
     for (index, template) in templates.iter().enumerate() { 
-        let current = template_replaced_values(index, &template, &pure_values, &available_fields);    
+        let current = template_replaced_values(index, template, &pure_values, available_fields);    
         current_template.update_template_values(config_type.to_owned(), current);
     }
 }
 
 fn template_replaced_values_single(template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String>  { 
-    return template_replaced_values(0, &template, &pure_values, &available_fields);
+    template_replaced_values(0, template, pure_values, available_fields)
 }
 
 fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<template::TokenValue>, available_fields: &AvailableFields) -> Vec<String> { 
@@ -139,7 +164,7 @@ fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<t
     let mut values_content:Vec<String> = Vec::new();
     for content in pure_values { 
         let mut globals = liquid::object!({});
-        let current_optional = template_set_values(index, content, &template, available_fields, &template_fields, &mut globals);
+        let current_optional = template_set_values(index, content, template, available_fields, &template_fields, &mut globals);
 
         if let Some(current) = current_optional {
             //print!("current: {}", &current);
@@ -161,21 +186,21 @@ fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<t
             
         }
     }
-    return values_content;
+    values_content
 }
 
-fn template_pure_values(file_data_list: &Vec<template::TokenData>, template_type: deserializer::ConfigTemplateType) -> Vec<template::TokenValue>{
-    if let Some(file_data) = file_data_list.into_iter().find(|f| f.t_type == template_type) {
+fn template_pure_values(file_data_list: &[template::TokenData], template_type: deserializer::ConfigTemplateType) -> Vec<template::TokenValue>{
+    if let Some(file_data) = file_data_list.iter().find(|f| f.t_type == template_type) {
         //let pure_values = template::values_from_type(&file_data);
         return file_data.token_value.to_owned();
     }
 
-    return Vec::new();
+    Vec::new()
 }
 
 pub fn template_set_values(index: usize, data: &template::TokenValue, pure_template: &String, available_fields: &AvailableFields, fields: &Vec<deserializer::TemplateFieldData>, globals: &mut liquid::Object) -> Option<String> { 
     let token_value = data;
-    let mut template: Option<String> = Some(format!("{}", pure_template));
+    let mut template: Option<String> = Some(pure_template.to_string());
     for field_data in fields {
         let field_name = field_data.key_full.as_str();
 
@@ -192,7 +217,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                     template::set_global(globals, field_name, &value.letterSpacing);
                 }
                 if let deserializer::TokenDataType::letterSpacing { value } = &token_value.value {
-                    template::set_global(globals, field_name, &value);
+                    template::set_global(globals, field_name, value);
                 }
                 if let deserializer::TokenDataType::composition { value } = &token_value.value {
                     template::set_optional_global(globals, field_name, value.itemSpacing.to_owned(), "");
@@ -212,7 +237,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                     template::set_global(globals, field_name, value);
                 }
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::color, &field_data, &mut template);
+                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::color, field_data, &mut template);
                 }
             }
             TemplateField::font_size => {
@@ -322,27 +347,27 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             },
             TemplateField::blur => {
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::blur, &field_data, &mut template);
+                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::blur, field_data, &mut template);
                 }
             },
             TemplateField::spread => {
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::spread, &field_data, &mut template);
+                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::spread, field_data, &mut template);
                 }
             },
             TemplateField::t_type => {
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::t_type, &field_data, &mut template);
+                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::t_type, field_data, &mut template);
                 }
             },
             TemplateField::x => {
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::x, &field_data, &mut template);
+                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::x, field_data, &mut template);
                 }
             },
             TemplateField::y => {
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
-                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::y, &field_data, &mut template);
+                    template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::y, field_data, &mut template);
                 }
             },
             _ => {}
@@ -352,7 +377,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
         }
     }
 
-    return template;
+    template
 }
 
 pub fn template_as_values(template: &str) ->  Vec<deserializer::TemplateFieldData> { 
@@ -361,10 +386,10 @@ pub fn template_as_values(template: &str) ->  Vec<deserializer::TemplateFieldDat
     let pure_values = utils::between_all(Vec::new(), template, "{{", "}}");
    
     for pure in pure_values {
-        let values_split = pure.split("|");
+        let values_split = pure.split('|');
         let values_parts:Vec<&str> = values_split.collect();
         let template_key_name = values_parts[0].trim();
-        let key_split:Vec<&str> = template_key_name.split("-").collect();
+        let key_split:Vec<&str> = template_key_name.split('-').collect();
 
         let mut index: Option<usize> = None;
         if key_split.len() == 2 {
@@ -372,9 +397,9 @@ pub fn template_as_values(template: &str) ->  Vec<deserializer::TemplateFieldDat
         }
        
         let template_field_data = deserializer::TemplateFieldData {
-            index: index,
+            index,
             full_template: pure.to_string(),
-            special: deserializer::TemplateField::from_str(&key_split[0]),
+            special: deserializer::TemplateField::from_str(key_split[0]),
             key_full: template_key_name.to_string(),
             key_without_index: key_split[0].to_string()
         };
@@ -383,5 +408,5 @@ pub fn template_as_values(template: &str) ->  Vec<deserializer::TemplateFieldDat
 
     }
 
-    return template_fields;
+    template_fields
 }

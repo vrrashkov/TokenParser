@@ -45,7 +45,7 @@ fn main() {
     );
 
     // Deserialize the config file
-    let token_config: deserializer::TokensConfig = general::get_config(&config_file);
+    let token_config: deserializer::TokensConfig = general::get_config(config_file);
 
     if let Some(value) = matches.get_one::<bool>("generate") {
         if *value {

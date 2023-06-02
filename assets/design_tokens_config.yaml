@@ -61,6 +61,8 @@ templates:
         - type: composition
           value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
         - type: composition
+          value: "{% if height != '' %} height: {{height | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
+        - type: composition
           value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
         - type: boxShadow
           value: 

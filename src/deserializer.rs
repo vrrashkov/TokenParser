@@ -1,4 +1,3 @@
-use askama::Template;
 use serde::{de, Serialize, Deserialize, Deserializer};
 use serde_json::Number;
 use std::fmt::Display;
@@ -61,7 +60,7 @@ pub struct ConfigTokensGlobalOtherPath {
 #[serde(tag = "type", rename_all="lowercase")]
 pub enum ConfigGlobalType {
     #[default]
-    DEFAULT
+    Default
 }
 
 #[derive(Eq, Clone, PartialEq, Default, Serialize, Deserialize, Debug)]
@@ -177,7 +176,7 @@ pub enum TokenDataType {
     dimension { value: String },
     border { value: String },
     #[default]
-    NONE
+    None
 }
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
@@ -295,12 +294,12 @@ impl TokensConfig {
         if let Some(class_name) =  &settings_custom.class_name {
             let mut file_name_formatted = file_name.to_owned();
 
-            Self::format_class_name_templated(&mut file_name_formatted, &class_name.to_string(), &file_name, &style_name, &settings.settings_general);
+            Self::format_class_name_templated(&mut file_name_formatted, &class_name.to_string(), file_name, style_name, &settings.settings_general);
         
-            return Some(file_name_formatted.to_string());
+            Some(file_name_formatted.to_string())
         
         }  else {
-                return None;
+                None
         }  
     }
 
@@ -355,13 +354,15 @@ pub enum TemplateField {
     x,
     y,
     #[default]
-    NONE
+    None
 }
 
 impl TemplateField {
     pub fn from_str(input: &str) -> TemplateField {
       
-        let value = match input {
+        
+
+        match input {
             global::field_variable_name => TemplateField::variable_name,
             global::field_color => TemplateField::color,
             global::field_value_font_family => TemplateField::font_family,
@@ -389,10 +390,8 @@ impl TemplateField {
             global::field_value_type => TemplateField::t_type,
             global::field_value_x => TemplateField::x,
             global::field_value_y => TemplateField::y,
-            _ => TemplateField::NONE
-        };
-
-        return value;
+            _ => TemplateField::None
+        }
     }
 }
 
@@ -415,9 +414,7 @@ where
     let des = NumericOrNull::<T>::deserialize(deserializer)?;
   
     match des {
-        NumericOrNull::FromStr(i) => match i {
-            _ => Ok(Some(i)),
-        },
+        NumericOrNull::FromStr(i) => Ok(Some(i)),
         NumericOrNull::Str(s) => match s {
             "" => Ok(None),
             _ => T::from_str(s).map(Some).map_err(serde::de::Error::custom),
@@ -479,7 +476,7 @@ pub enum TemplateFieldVariantColor {
 impl TemplateFieldVariantColor {
     pub fn to_str(&self) -> &str {
       
-        return match self {
+        match self {
             TemplateFieldVariantColor::rgb_r_v1 => global::color_rgb_r_v1,
             TemplateFieldVariantColor::rgb_g_v1 => global::color_rgb_g_v1,
             TemplateFieldVariantColor::rgb_b_v1 => global::color_rgb_b_v1,
@@ -489,7 +486,7 @@ impl TemplateFieldVariantColor {
             TemplateFieldVariantColor::rgb_b_v2 => global::color_rgb_b_v2,
             TemplateFieldVariantColor::rgb_a_v2 => global::color_rgb_a_v2,
             TemplateFieldVariantColor::hex => global::color_hex,
-        };
+        }
         
     }
 } 
@@ -505,7 +502,9 @@ pub enum TemplateFieldVariantVariableName {
 impl ConfigTemplateType {
     pub fn from_str(input: &str) -> ConfigTemplateType {
       
-        let value = match input {
+        
+
+        match input {
             global::type_color         => ConfigTemplateType::color,
             global::type_typography    => ConfigTemplateType::typography,
             global::type_spacing       => ConfigTemplateType::spacing,
@@ -519,9 +518,7 @@ impl ConfigTemplateType {
             global::type_fontFamilies  => ConfigTemplateType::fontFamilies,
             global::type_boxShadow     => ConfigTemplateType::boxShadow,
             _                          => ConfigTemplateType::none,
-        };
-
-        return value
+        }
     }
 } 
 

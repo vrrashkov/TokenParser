@@ -1,0 +1,46 @@
+{% if header != empty %}{{header}}{% endif -%}
+{% if class != empty -%}
+{{ class }} {% if class_name != empty %}{{ class_name }}{% endif %} {
+{% endif %}
+{% if sub_header != empty %}{{sub_header}}{% endif %}
+{% for color in color_values -%}
+{{color}}
+{% endfor -%}
+{% for font in font_values -%}
+{{font}}
+{% endfor -%}
+{% for spacing in spacing_values -%}
+{{spacing}}
+{% endfor -%}
+{% for border_width in border_width_values -%}
+{{border_width}}
+{% endfor -%}
+{% for border_radius in border_radius_values -%}
+{{border_radius}}
+{% endfor -%}
+{% for letter_spacing in letter_spacing_values -%}
+{{letter_spacing}}
+{% endfor -%}
+{% for font_sizes in font_sizes_values -%}
+{{font_sizes}}
+{% endfor -%}
+{% for font_weights in font_weights_values -%}
+{{font_weights}}
+{% endfor -%}
+{% for font_families in font_families_values -%}
+{{font_families}}
+{% endfor -%}
+{% for line_height in line_height_values -%}
+{{line_height}}
+{% endfor -%}
+{% for box_shadow in box_shadow_values -%}
+{{box_shadow}}
+{% endfor -%}
+{% for composition in composition_values -%}
+{{composition}}
+{% endfor -%}
+{% if sub_footer != empty %}{{sub_footer}}{% endif %}
+{% if class != empty %}
+}
+{% endif -%}
+{% if footer != empty %}{{footer}}{% endif -%}
