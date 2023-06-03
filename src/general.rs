@@ -11,7 +11,6 @@ use serde_json::Value;
 
 use crate::{deserializer, template};
 use crate::template::TokenValueType;
-use crate::askama;
 
 pub fn get_config(config_file: &str) -> deserializer::TokensConfig { 
     

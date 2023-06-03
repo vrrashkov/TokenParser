@@ -9,7 +9,6 @@ use clap::{arg, command, Command, ArgAction, Arg};
 ///////////
 mod setup;
 mod deserializer;
-mod askama;
 mod general;
 mod template;
 mod figma_parser;

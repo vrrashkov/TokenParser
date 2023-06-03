@@ -10,8 +10,8 @@ use crate::deserializer::AvailableFields;
 use crate::deserializer::ConfigTemplateType;
 use crate::deserializer::TemplateField;
 use crate::general;
-use crate::askama;
 use crate::template;
+use crate::template::CustomTemplate;
 use crate::template::TokenValue;
 use crate::utils;
 
@@ -44,7 +44,7 @@ fn template_content_custom(
     let mut template_content: Option<String> = Default::default();
 
     let custom_template = &template_config.settings_custom;
-    let mut current_template: askama::CustomTemplate = askama::CustomTemplate { 
+    let mut current_template: CustomTemplate = CustomTemplate { 
         header: custom_template.header.to_owned(),
         footer: custom_template.footer.to_owned(),
         sub_header: custom_template.sub_header.to_owned(),
@@ -139,13 +139,13 @@ fn template_content_custom(
     Some(template.render(&globals).unwrap())
 }
 
-fn template_update_list_values(file_data_list: &[template::TokenData], current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, value: &String, available_fields: &AvailableFields) { 
+fn template_update_list_values(file_data_list: &[template::TokenData], current_template: &mut CustomTemplate, config_type: deserializer::ConfigTemplateType, value: &String, available_fields: &AvailableFields) { 
     let pure_values = template_pure_values(file_data_list, config_type.to_owned());
     let mut current = template_replaced_values_single(value, &pure_values, available_fields);
     current_template.update_template_values(config_type, current);
 }
 
-fn template_list_replaced_values(file_data_list: &[template::TokenData], current_template: &mut askama::CustomTemplate, config_type: deserializer::ConfigTemplateType, templates: &[String], available_fields: &AvailableFields) { 
+fn template_list_replaced_values(file_data_list: &[template::TokenData], current_template: &mut CustomTemplate, config_type: deserializer::ConfigTemplateType, templates: &[String], available_fields: &AvailableFields) { 
     let mut values_content:Vec<String> = Vec::new();
     let pure_values = template_pure_values(file_data_list, config_type.to_owned());
     for (index, template) in templates.iter().enumerate() { 
