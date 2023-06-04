@@ -1,3 +1,4 @@
+use easy_color::{RGBA, RGB, HSL, Hex, ColorMix, IntoHex};
 
 pub fn between<'a>(source: &'a str, start: &'a str, end: &'a str) -> &'a str {
 
@@ -26,4 +27,20 @@ pub fn between_all<'a>(mut values: Vec<String>, source: &'a str, start: &'a str,
 
 pub fn remove_white_spaces(value: &mut String) { 
     value.retain(|c| !c.is_whitespace());
+}
+// Convert any color to hex
+pub fn color_to_hex(color: &str) -> Hex { 
+    let mut hex: Hex;
+    match color.try_into() {
+        Ok(color_value) => {
+            let mut rgba: RGBA = color_value;
+            hex = rgba.to_hex();
+        },
+        Err(_) => {
+            hex = color.try_into().unwrap();
+        },
+    }
+
+    //println!("hex: {}", hex);
+    return hex;
 }

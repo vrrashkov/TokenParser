@@ -132,10 +132,7 @@ fn template_content_custom(
         "box_shadow_values": current_template.box_shadow_values,
         "composition_values": current_template.composition_values,
     });
- 
     
-
-    //template_content = current_template.render().ok();
     Some(template.render(&globals).unwrap())
 }
 

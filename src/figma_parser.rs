@@ -25,7 +25,8 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     // for example core.natural.fr.c1
     for file in &json_files {
         let data_object: serde_json::Value = general::get_json(file);
-    
+        // let data = serde_json::from_value::<Option<Box<serde_json::Value>>>(data_object.to_owned()).unwrap();
+        // dbg!(data);
         for (key, val) in data_object.as_object().iter().flat_map(|d| d.iter()) {
 
             if (val.is_object()) {
@@ -68,9 +69,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         }
     }
     
-
-
-    let create_styles_directory = "assets/generated_styles/";
+    let create_styles_directory = &token_config.global.style_output_path;//"assets/generated_styles/";
     // merging files and updating the values
     // the merged files are dependant on the config
     
@@ -181,25 +180,7 @@ pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_js
                     p_cloned.push("value".to_string());
                     let pure_values_key = p_cloned.join(".");
 
-                    if ival["type"] == "color" {
-                         
-                    let mut hex: Hex;
-                    let v = token_value.to_owned();
-                    match v.as_str().try_into() {
-                        Ok(color_value) => {
-                            let mut rgba: RGBA = color_value;
-                            hex = rgba.to_hex();
-                        },
-                        Err(_) => {
-                            hex = v.as_str().try_into().unwrap();
-                        },
-                    }
-                        
-                        //pure_values.insert(pure_values_key, token_value.to_owned());
-                        pure_values.insert(pure_values_key, hex.to_string());
-                    } else {
-                        pure_values.insert(pure_values_key, token_value.to_owned());
-                    }
+                    pure_values.insert(pure_values_key, token_value.to_owned());
                 }
             } else {
                 generate_figma_token_value(ival["value"].to_owned(), pure_values, p.to_owned(), true);
@@ -239,27 +220,17 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
             add_pure_value(&value.borderRadiusTopLeft, global::field_value_border_radius_top_left, pure_values, &p, &add_val_path);
             add_pure_value(&value.borderRadiusTopRight, global::field_value_border_radius_top_right, pure_values, &p, &add_val_path);
             add_pure_value(&value.blur, global::field_value_blur, pure_values, &p, &add_val_path);
-            //add_pure_value(&value.color, global::field_value_color, pure_values, &p, &add_val_path);
+            add_pure_value(&value.color, global::field_value_color, pure_values, &p, &add_val_path);
             add_pure_value(&value.spread, global::field_value_spread, pure_values, &p, &add_val_path);
             add_pure_value(&value.t_type, global::field_value_type, pure_values, &p, &add_val_path);
             add_pure_value(&value.x, global::field_value_x, pure_values, &p, &add_val_path);
             add_pure_value(&value.y, global::field_value_y, pure_values, &p, &add_val_path);
          
-            if let Some(v) = &value.color {
+            // if let Some(v) = &value.color {
                 
-                let mut hex: Hex;
-                match v.as_str().try_into() {
-                    Ok(color_value) => {
-                        let mut rgba: RGBA = color_value;
-                        hex = rgba.to_hex();
-                    },
-                    Err(_) => {
-                        hex = v.as_str().try_into().unwrap();
-                    },
-                }
-                
-                add_pure_value(&Some(hex.to_string()), global::field_value_color, pure_values, &p, &add_val_path);
-            }
+            //     let mut hex: Hex = utils::color_to_hex(v);
+            //     add_pure_value(&Some(hex.to_string()), global::field_value_color, pure_values, &p, &add_val_path);
+            // }
         },
     }
 
@@ -278,7 +249,6 @@ fn add_path_value_get_full(path: &[String], newPath: &str, add_value: &bool) -> 
     }
     p.push(newPath.to_string());
     
-
     p.join(".")
 }
 

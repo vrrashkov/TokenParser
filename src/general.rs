@@ -206,8 +206,6 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
 }
 
 pub fn case_from_str(input: &str) -> Case {
-    
-
     match input {
         "camel"   => Case::Camel,
         "snake"   => Case::Snake,
