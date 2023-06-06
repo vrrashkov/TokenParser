@@ -42,5 +42,5 @@ pub fn color_to_hex(color: &str) -> Hex {
     }
 
     //println!("hex: {}", hex);
-    return hex;
+    hex
 }

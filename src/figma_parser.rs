@@ -44,7 +44,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                 //     }
                 // };
                
-                filter_sub_properties(key.to_owned(), vec![key.to_owned()], &val, &mut pure_values, vec![]);
+                filter_sub_properties(key.to_owned(), vec![key.to_owned()], val, &mut pure_values, vec![]);
             }
         }
     }
