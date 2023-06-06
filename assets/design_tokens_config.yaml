@@ -58,6 +58,8 @@ templates:
       template_type:
         - type: color
           value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}};"
+        - type: lineHeights
+          value: "{{variable_name | kebab}} {{lineHeight}};"
         - type: composition
           value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
         - type: composition

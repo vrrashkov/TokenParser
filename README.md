@@ -120,29 +120,33 @@ Optional values can be added with the **optional** filter. Instead of using if s
 
 ##### Keywords
 
-| type          | value                                                                                                                                                                                                                                                                                                                               |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| color         | variable_name<br/>color                                                                                                                                                                                                                                                                                                             |
-| typography    | variable_name<br/>font_family<br/>font_size<br/>font_weight<br/>spacing<br/>line_height                                                                                                                                                                                                                                             |
-| spacing       | variable_name<br/>spacing                                                                                                                                                                                                                                                                                                           |
-| borderWidth   | variable_name<br/>border_width                                                                                                                                                                                                                                                                                                      |
-| borderRadius  | variable_name<br/>border_radius                                                                                                                                                                                                                                                                                                     |
-| letterSpacing | variable_name<br/>spacing                                                                                                                                                                                                                                                                                                           |
-| lineHeights   | variable_name<br/>line_height                                                                                                                                                                                                                                                                                                       |
-| fontSizes     | variable_name<br/>font_size                                                                                                                                                                                                                                                                                                         |
-| fontWeights   | variable_name<br/>font_weight                                                                                                                                                                                                                                                                                                       |
-| fontFamilies  | variable_name<br/>font_family                                                                                                                                                                                                                                                                                                       |
-| boxShadow     | variable_name<br/>color<br/>blur<br/>spread<br/>type<br/>x<br/>y                                                                                                                                                                                                                                                                    |
-| composition   | variable_name<br/>padding_bottom<br/>padding_top<br/>padding_left<br/>padding_right<br/>sizing<br/>height<br/>width<br/>border_radius<br/>border_width<br/>border_radius_bottom_left<br/>border_radius_bottom_right<br/>border_radius_top__left<br/>border_radius_top_right<br/>spacing<br/>vertical_padding<br/>horizontal_padding |
+| type             | value                                                                                                                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| color            | variable_name<br/>color                                                                                                                                                                                                                                                                                       |
+| typography       | variable_name<br/>fontFamily<br/>fontSize<br/>fontWeight<br/>spacing<br/>lineHeight<br/>paragraphSpacing<br/>paragraphIndent<br/>textCase<br/>textDecoration                                                                                                                                                  |
+| paragraphSpacing | variable_name<br/>paragraphSpacing                                                                                                                                                                                                                                                                            |
+| paragraphIndent  | variable_name<br/>paragraphIndent                                                                                                                                                                                                                                                                             |
+| textCase         | variable_name<br/>textCase                                                                                                                                                                                                                                                                                    |
+| textDecoration   | variable_name<br/>textDecoration                                                                                                                                                                                                                                                                              |
+| spacing          | variable_name<br/>spacing                                                                                                                                                                                                                                                                                     |
+| borderWidth      | variable_name<br/>borderWidth                                                                                                                                                                                                                                                                                 |
+| borderRadius     | variable_name<br/>borderRadius                                                                                                                                                                                                                                                                                |
+| letterSpacing    | variable_name<br/>spacing                                                                                                                                                                                                                                                                                     |
+| lineHeights      | variable_name<br/>lineHeight                                                                                                                                                                                                                                                                                  |
+| fontSizes        | variable_name<br/>fontSize                                                                                                                                                                                                                                                                                    |
+| fontWeights      | variable_name<br/>fontWeight                                                                                                                                                                                                                                                                                  |
+| fontFamilies     | variable_name<br/>fontFamily                                                                                                                                                                                                                                                                                  |
+| boxShadow        | variable_name<br/>color<br/>blur<br/>spread<br/>type<br/>x<br/>y                                                                                                                                                                                                                                              |
+| composition      | variableName<br/>paddingBottom<br/>paddingTop<br/>paddingLeft<br/>paddingRight<br/>sizing<br/>height<br/>width<br/>borderRdius<br/>borderWidth<br/>borderRadiusBottomLeft<br/>border_radiusBottomRight<br/>borderRadiusTopLeft<br/>borderRadiusTopRight<br/>spacing<br/>verticalPadding<br/>horizontalPadding |
 
 You can use the keywords in the following way: **{variable_name | kebab }** name of the keyword and next to it you can add a filter, or multiple filters by separating them with **|** lie this **{variable_name | kebab | no_space }**.
 
 ##### Variants
 
-| type            | variant                                                                                                                                                                                                                                          |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| added to GLOBAL | no_space, pascal, kebab, camel                                                                                                                                                                                                                   |
-| color           | rgb_r_v1, rgb_g_v1, rgb_b_v1, rgb_a_v1<br/>rgb_r_v2, rgb_g_v2, rgb_b_v2, rgb_a_v2<br/>hex<br/><br/>v1 - values from 0 to 255<br/>v2 - values from 0 to 1                                                                                       |
+| type            | variant                                                                                                                                                  |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| added to GLOBAL | no_space, pascal, kebab, camel                                                                                                                           |
+| color           | rgb_r_v1, rgb_g_v1, rgb_b_v1, rgb_a_v1<br/>rgb_r_v2, rgb_g_v2, rgb_b_v2, rgb_a_v2<br/>hex<br/><br/>v1 - values from 0 to 255<br/>v2 - values from 0 to 1 |
 
 > You can get example of full configuration from the assets folder
 
@@ -160,6 +164,42 @@ You can use the keywords in the following way: **{variable_name | kebab }** name
   value: 
     - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
     - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
+```
+
+##### Important
+
+You can have as many nested layers as you want. The only condition is to have more than 1 layer. 
+
+
+
+```json
+// This is allowed
+{
+	"Foreground": {
+		"Neutral": {
+		  "value": "#ffffff",
+		  "type": "color"
+		}
+	}
+}
+// This is allowed
+{
+	"Foreground": {
+		"Accent": {
+			"Neutral": {
+			  "value": "#ffffff",
+			  "type": "color"
+			}
+		}
+	}
+}
+// This is NOT allowed
+{
+	"Foreground": {
+	  "value": "#ffffff",
+	  "type": "color"
+	}
+}
 ```
 
 ##### More
