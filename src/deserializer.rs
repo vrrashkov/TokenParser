@@ -1,5 +1,6 @@
 use serde::{de, Serialize, Deserialize, Deserializer};
 use serde_json::Number;
+use std::fmt::Debug;
 use std::fmt::Display;
 use std::str::FromStr;
 use convert_case::{Case, Casing};
@@ -73,6 +74,10 @@ pub enum CustomConfigTempalteType {
     borderWidth(String),
     borderRadius(String),
     letterSpacing(String),
+    paragraphSpacing(String),
+    paragraphIndent(String),
+    textCase(String),
+    textDecoration(String),
     lineHeights(String),
     fontSizes(String),
     fontWeights(String),
@@ -91,6 +96,12 @@ pub enum ConfigTemplateType {
     borderWidth,
     borderRadius,
     letterSpacing,
+
+    paragraphSpacing,
+    paragraphIndent,
+    textCase,
+    textDecoration,
+
     lineHeights,
     fontSizes,
     fontWeights,
@@ -134,42 +145,19 @@ pub struct ConfigTemplateSettingsSwiftUI {
 pub enum TokenDataType {
     color { value: String },
     typography { value: TokenDataTypeTypographyValue },
-    borderWidth { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
+    borderWidth { value: String },
     sizing { value: String },
-    spacing { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
-    borderRadius { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
+    spacing { value: String },
+    borderRadius { value: String },
     boxShadow { value: BoxShadowData},
     opacity { value: String },
     fontFamilies { value: String },
-    fontWeights { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
-    fontSizes { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
-    lineHeights { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
-    letterSpacing { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
-    paragraphSpacing { 
-        #[serde(deserialize_with = "maybe_number")]
-        value: Number 
-    },
+    fontWeights {  value: String },
+    fontSizes { value: String },
+    lineHeights { value: String },
+    letterSpacing { value: String },
+    paragraphSpacing { value: String },
+    paragraphIndent { value: String },
     textCase { value: String },
     textDecoration { value: String },
     asset { value: String },
@@ -182,38 +170,38 @@ pub enum TokenDataType {
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataTypeCompositionValue { 
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub horizontalPadding: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub verticalPadding: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub itemSpacing: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub paddingBottom: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub paddingTop: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub paddingLeft: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub paddingRight: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub borderRadius: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub borderWidth: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub borderRadiusBottomLeft: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub borderRadiusBottomRight: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub borderRadiusTopLeft: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub borderRadiusTopRight: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub sizing: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub height: Option<Number>,
-    #[serde(default, deserialize_with = "maybe_number_opt")]
-    pub width: Option<Number>
+    #[serde(default)]
+    pub horizontalPadding: Option<String>,
+    #[serde(default)]
+    pub verticalPadding: Option<String>,
+    #[serde(default)]
+    pub itemSpacing: Option<String>,
+    #[serde(default)]
+    pub paddingBottom: Option<String>,
+    #[serde(default)]
+    pub paddingTop: Option<String>,
+    #[serde(default)]
+    pub paddingLeft: Option<String>,
+    #[serde(default)]
+    pub paddingRight: Option<String>,
+    #[serde(default)]
+    pub borderRadius: Option<String>,
+    #[serde(default)]
+    pub borderWidth: Option<String>,
+    #[serde(default)]
+    pub borderRadiusBottomLeft: Option<String>,
+    #[serde(default)]
+    pub borderRadiusBottomRight: Option<String>,
+    #[serde(default)]
+    pub borderRadiusTopLeft: Option<String>,
+    #[serde(default)]
+    pub borderRadiusTopRight: Option<String>,
+    #[serde(default)]
+    pub sizing: Option<String>,
+    #[serde(default)]
+    pub height: Option<String>,
+    #[serde(default)]
+    pub width: Option<String>
 }
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 #[serde(untagged)]
@@ -224,15 +212,24 @@ pub enum BoxShadowData {
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataTypeTypographyValue { 
-    pub fontFamily: String,
-    #[serde(deserialize_with = "as_string")]
-    pub fontWeight: String,
-    #[serde(deserialize_with = "maybe_number")]
-    pub lineHeight: Number,
-    #[serde(deserialize_with = "maybe_number")]
-    pub fontSize: Number,
-    #[serde(deserialize_with = "maybe_number")]
-    pub letterSpacing: Number,
+    #[serde(default)]
+    pub fontFamily: Option<String>,
+    #[serde(default)]
+    pub fontWeight: Option<String>,
+    #[serde(default)]
+    pub lineHeight: Option<String>,
+    #[serde(default)]
+    pub fontSize: Option<String>,
+    #[serde(default)]
+    pub letterSpacing: Option<String>,
+    #[serde(default)]
+    pub paragraphSpacing: Option<String>,
+    #[serde(default)]
+    pub paragraphIndent: Option<String>,
+    #[serde(default)]
+    pub textCase: Option<String>,
+    #[serde(default)]
+    pub textDecoration: Option<String>
 }
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
@@ -282,11 +279,15 @@ pub enum BoxShadowType {
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataBoxShadowValue { 
-    pub blur: Number,
+    #[serde(default)]
+    pub blur: Option<String>,
     pub color: TokenDataColorValue,
-    pub spread: Number,
-    pub x: Number,
-    pub y: Number,
+    #[serde(default)]
+    pub spread: Option<String>,
+    #[serde(default)]
+    pub x: Option<String>,
+    #[serde(default)]
+    pub y: Option<String>,
 }
 
 impl TokensConfig {
@@ -336,6 +337,10 @@ pub enum TemplateField {
     horizontal_padding,
     vertical_padding,
     spacing,
+    paragraph_spacing,
+    paragraph_indent,
+    text_case,
+    text_decoration,
     padding_bottom,
     padding_top,
     padding_left,
@@ -361,8 +366,6 @@ pub enum TemplateField {
 impl TemplateField {
     pub fn from_str(input: &str) -> TemplateField {
       
-        
-
         match input {
             global::field_variable_name => TemplateField::variable_name,
             global::field_color => TemplateField::color,
@@ -370,6 +373,10 @@ impl TemplateField {
             global::field_value_font_size => TemplateField::font_size,
             global::field_value_font_weight => TemplateField::font_weight,
             global::field_value_spacing => TemplateField::spacing,
+            global::field_value_paragraph_spacing => TemplateField::paragraph_spacing,
+            global::field_value_paragraph_indent => TemplateField::paragraph_indent,
+            global::field_value_text_case => TemplateField::text_case,
+            global::field_value_text_decoration => TemplateField::text_decoration,
             global::field_value_line_height => TemplateField::line_height,
             global::field_value_horizontal_padding => TemplateField::horizontal_padding,
             global::field_value_vertical_padding => TemplateField::vertical_padding,
@@ -395,7 +402,6 @@ impl TemplateField {
         }
     }
 }
-
 
 pub fn maybe_number_opt<'de, T, D>(deserializer: D) -> Result<Option<T>, D::Error>
 where
@@ -425,8 +431,6 @@ where
             _ => T::from_str(&s).map(Some).map_err(serde::de::Error::custom),
         },
         NumericOrNull::Null => {
-            
-            
             Ok(None)
         },
     }
@@ -509,6 +513,13 @@ impl ConfigTemplateType {
             global::type_color         => ConfigTemplateType::color,
             global::type_typography    => ConfigTemplateType::typography,
             global::type_spacing       => ConfigTemplateType::spacing,
+            global::type_paragraph_spacing      => ConfigTemplateType::paragraphSpacing,
+            global::type_paragraph_ident        => ConfigTemplateType::paragraphIndent,
+            global::type_text_case              => ConfigTemplateType::textCase,
+            global::type_text_decoration        => ConfigTemplateType::textDecoration,
+            global::type_spacing       => ConfigTemplateType::spacing,
+            global::type_spacing       => ConfigTemplateType::spacing,
+            global::type_spacing       => ConfigTemplateType::spacing,
             global::type_borderWidth   => ConfigTemplateType::borderWidth,
             global::type_borderRadius  => ConfigTemplateType::borderRadius,
             global::type_letterSpacing => ConfigTemplateType::letterSpacing,
@@ -543,6 +554,10 @@ impl CustomConfigTempalteType {
                     global::field_value_font_size.to_string(), 
                     global::field_value_font_weight.to_string(), 
                     global::field_value_spacing.to_string(),
+                    global::field_value_paragraph_spacing.to_string(),
+                    global::field_value_paragraph_indent.to_string(),
+                    global::field_value_text_case.to_string(),
+                    global::field_value_text_decoration.to_string(),
                     global::field_value_line_height.to_string()
                 ]
             },
@@ -611,6 +626,22 @@ impl CustomConfigTempalteType {
             CustomConfigTempalteType::none => AvailableFields {
                 name: global::type_color.to_string(),
                 values: vec![global::field_variable_name.to_string(),]
+            },
+            CustomConfigTempalteType::paragraphSpacing(_) => AvailableFields {
+                name: global::type_paragraph_spacing.to_string(),
+                values: vec![global::field_variable_name.to_string(), global::field_value_paragraph_spacing.to_string(),]
+            },
+            CustomConfigTempalteType::paragraphIndent(_) => AvailableFields {
+                name: global::type_paragraph_ident.to_string(),
+                values: vec![global::field_variable_name.to_string(), global::field_value_paragraph_indent.to_string(),]
+            },
+            CustomConfigTempalteType::textCase(_) => AvailableFields {
+                name: global::type_text_case.to_string(),
+                values: vec![global::field_variable_name.to_string(), global::field_value_text_case.to_string(),]
+            },
+            CustomConfigTempalteType::textDecoration(_) => AvailableFields {
+                name: global::type_text_decoration.to_string(),
+                values: vec![global::field_variable_name.to_string(), global::field_value_text_decoration.to_string(),]
             },
         }
     }

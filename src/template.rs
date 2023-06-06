@@ -29,6 +29,10 @@ pub struct CustomTemplate { // the name of the struct can be anything
     pub border_width_values: Option<Vec<String>>, 
     pub border_radius_values: Option<Vec<String>>, 
     pub letter_spacing_values: Option<Vec<String>>, 
+    pub paragraph_spacing_values: Option<Vec<String>>, 
+    pub paragraph_indent_values: Option<Vec<String>>, 
+    pub text_case_values: Option<Vec<String>>, 
+    pub text_decoration_values: Option<Vec<String>>, 
     pub line_height_values: Option<Vec<String>>, 
     pub font_sizes_values: Option<Vec<String>>, 
     pub font_weights_values: Option<Vec<String>>, 
@@ -66,6 +70,18 @@ impl CustomTemplate {
             },
             deserializer::ConfigTemplateType::letterSpacing => {
                 Self::set_template_value(&mut self.letter_spacing_values, values);
+            },
+            deserializer::ConfigTemplateType::paragraphSpacing => {
+                Self::set_template_value(&mut self.paragraph_spacing_values, values);
+            },
+            deserializer::ConfigTemplateType::paragraphIndent => {
+                Self::set_template_value(&mut self.paragraph_indent_values, values);
+            },
+            deserializer::ConfigTemplateType::textCase => {
+                Self::set_template_value(&mut self.text_case_values, values);
+            },
+            deserializer::ConfigTemplateType::textDecoration => {
+                Self::set_template_value(&mut self.text_decoration_values, values);
             },
             deserializer::ConfigTemplateType::lineHeights => {
                 Self::set_template_value(&mut self.line_height_values, values);

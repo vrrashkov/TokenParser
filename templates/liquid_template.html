@@ -39,6 +39,18 @@
 {% for composition in composition_values -%}
 {{composition}}
 {% endfor -%}
+{% for paragraph_spacing in paragraph_spacing_values -%}
+{{paragraph_spacing}}
+{% endfor -%}
+{% for paragraph_indent in paragraph_indent_values -%}
+{{paragraph_indent}}
+{% endfor -%}
+{% for text_case in text_case_values -%}
+{{text_case}}
+{% endfor -%}
+{% for text_decoration in text_decoration_values -%}
+{{text_decoration}}
+{% endfor -%}
 {% if sub_footer != empty %}{{sub_footer}}{% endif %}
 {% if class != empty %}
 }

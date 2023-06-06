@@ -10,7 +10,7 @@ use json_value_merge::Merge;
 use easy_color::{RGBA, RGB, HSL, Hex, ColorMix, IntoHex};
 
 use crate::general;
-use crate::deserializer;
+use crate::deserializer::{self};
 use crate::template;
 use crate::utils;
 use crate::global;
@@ -27,11 +27,24 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         let data_object: serde_json::Value = general::get_json(file);
         // let data = serde_json::from_value::<Option<Box<serde_json::Value>>>(data_object.to_owned()).unwrap();
         // dbg!(data);
+          
         for (key, val) in data_object.as_object().iter().flat_map(|d| d.iter()) {
-
             if (val.is_object()) {
                 let mut file_name = Path::new(file).file_stem().unwrap().to_str().unwrap().to_owned();
-                filter_sub_properties(key.to_owned(), vec![key.to_owned()], val, &mut pure_values, vec![]);
+                // let mapped_val: serde_json::Value  = match val {
+                //     serde_json::Value::Object(map) => {
+                //         if map.contains_key("type") && map.contains_key("value") {
+                //             json!({ "design-tokens-empty-value": val })
+                //         } else {
+                //             val.clone()
+                //         }
+                //     },
+                //     _ => {
+                //         val.clone()
+                //     }
+                // };
+               
+                filter_sub_properties(key.to_owned(), vec![key.to_owned()], &val, &mut pure_values, vec![]);
             }
         }
     }
@@ -99,13 +112,13 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                         *v = json!(val)
                     },
                     Value::Float(val) => {
-                        *v = json!(val)
+                        *v = json!(val.to_string())
                     },
                     Value::Int(val) => {
-                        *v = json!(val)
+                        *v = json!(val.to_string())
                     },
                     Value::Boolean(val) => {
-                        *v = json!(val)
+                        *v = json!(val.to_string())
                     },
                     Value::Tuple(val) => {},
                     Value::Empty => {},
@@ -154,16 +167,19 @@ fn find_all_between(search_inside: String, list: &mut Vec<String>, pure_values: 
     (search_inside, list.to_owned())
 }
 
-
 pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_json::Value, pure_values: &mut HashMap<String, String>, path: Vec<String>) { 
-    for (ikey, ival) in val.as_object().iter().flat_map(|f| f.iter()) {
+
+    for (ikey, ival) in val.as_object().iter().flat_map(|f|  f.iter()) {
+       
         let template_type = ival["type"].as_str();
     
         let mut p: Vec<String> = path.clone();
         if p.is_empty() {
             p.push(start_key.join(".").to_owned());
         }
+      
         p.push(ikey.to_string());
+        
         if (ival.is_object() && template_type.is_some()) {
            
             let token_type = ival["type"].as_str();
@@ -193,7 +209,7 @@ pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_js
 
 
 fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut HashMap<String, String>, p: Vec<String>, add_val_path: bool) { 
-
+   
     let value_object: FigmaTokenValue = serde_json::from_value(json_string).expect("Unable to read the json");
 
     match &value_object {
@@ -202,6 +218,10 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
             add_pure_value(&value.fontSize, global::field_value_font_size, pure_values, &p, &add_val_path);
             add_pure_value(&value.fontWeight, global::field_value_font_weight, pure_values, &p, &add_val_path);
             add_pure_value(&value.letterSpacing, global::field_value_letter_spacing, pure_values, &p, &add_val_path);
+            add_pure_value(&value.paragraphSpacing, global::field_value_paragraph_spacing, pure_values, &p, &add_val_path);
+            add_pure_value(&value.paragraphIndent, global::field_value_paragraph_indent, pure_values, &p, &add_val_path);
+            add_pure_value(&value.textCase, global::field_value_text_case, pure_values, &p, &add_val_path);
+            add_pure_value(&value.textDecoration, global::field_value_text_decoration, pure_values, &p, &add_val_path);
             add_pure_value(&value.lineHeight, global::field_value_line_height, pure_values, &p, &add_val_path);
             add_pure_value(&value.horizontalPadding, global::field_value_horizontal_padding, pure_values, &p, &add_val_path);
             add_pure_value(&value.verticalPadding, global::field_value_vertical_padding, pure_values, &p, &add_val_path);
@@ -282,6 +302,10 @@ pub struct FigmaTokenValueSingle {
     pub lineHeight: Option<String>,
     pub fontSize: Option<String>,
     pub letterSpacing: Option<String>,
+    pub paragraphSpacing: Option<String>,
+    pub paragraphIndent: Option<String>,
+    pub textCase: Option<String>,
+    pub textDecoration: Option<String>,
 
     pub blur: Option<String>,
     pub color: Option<String>,

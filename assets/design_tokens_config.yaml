@@ -68,3 +68,14 @@ templates:
           value: 
             - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
             - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
+      # template_type:
+      #   - type: typography
+      #     value: "Typography: {{variable_name | kebab}}, {{fontFamily | optional: 'fontFamily: %value'}}, {{paragraphSpacing | optional: 'paragraphSpacing: %value'}}, {{paragraphIndent | optional: 'paragraphIndent: %value'}}, {{textCase | optional: 'textCase: %value'}}, {{textDecoration | optional: 'textDecoration: %value'}}"
+      #   - type: paragraphSpacing
+      #     value: "paragraphSpacing: {{variable_name | kebab}}, {{paragraphSpacing}}"
+      #   - type: paragraphIndent
+      #     value: "paragraphIndent: {{variable_name | kebab}}, {{paragraphIndent}}"
+      #   - type: textCase
+      #     value: "textCase: {{variable_name | kebab}}, {{textCase}}"
+      #   - type: textDecoration
+      #     value: "textDecoration: {{variable_name | kebab}}, {{textDecoration}}"

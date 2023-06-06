@@ -57,6 +57,10 @@ fn template_content_custom(
         border_width_values: None,
         border_radius_values: None, 
         letter_spacing_values: None, 
+        paragraph_spacing_values: None, 
+        paragraph_indent_values: None, 
+        text_case_values: None, 
+        text_decoration_values: None, 
         line_height_values: None, 
         font_sizes_values: None, 
         font_weights_values: None, 
@@ -86,6 +90,18 @@ fn template_content_custom(
             },
             deserializer::CustomConfigTempalteType::letterSpacing(value) => {
                 template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::letterSpacing, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::paragraphSpacing(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::paragraphSpacing, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::paragraphIndent(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::paragraphIndent, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::textCase(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::textCase, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::textDecoration(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::textDecoration, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::lineHeights(value) => {
                 template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::lineHeights, value, &available_fields);
@@ -131,6 +147,10 @@ fn template_content_custom(
         "font_families_values": current_template.font_families_values,
         "box_shadow_values": current_template.box_shadow_values,
         "composition_values": current_template.composition_values,
+        "paragraph_spacing_values": current_template.paragraph_spacing_values,
+        "paragraph_indent_values": current_template.paragraph_indent_values,
+        "text_case_values": current_template.text_case_values,
+        "text_decoration_values": current_template.text_decoration_values,
     });
     
     Some(template.render(&globals).unwrap())
@@ -211,7 +231,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                     template::set_global(globals, field_name, value);
                 }
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                    template::set_global(globals, field_name, &value.letterSpacing);
+                    template::set_optional_global(globals, field_name, value.letterSpacing.to_owned(), "");
                 }
                 if let deserializer::TokenDataType::letterSpacing { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
@@ -226,7 +246,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                 }
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
                     let typography_value = value;
-                    template::set_global(globals, field_name, typography_value.fontFamily.to_owned());
+                    template::set_optional_global(globals, field_name, typography_value.fontFamily.to_owned(), "");
                 }
             },
             TemplateField::color => {
@@ -239,7 +259,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             }
             TemplateField::font_size => {
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                    template::set_global(globals, field_name, value.fontFamily.to_owned());
+                    template::set_optional_global(globals, field_name, value.fontFamily.to_owned(), "");
                 }
                 if let deserializer::TokenDataType::fontSizes { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
@@ -247,7 +267,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             },
             TemplateField::font_weight => {
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                    template::set_global(globals, field_name, &value.fontWeight);
+                    template::set_optional_global(globals, field_name, value.fontWeight.to_owned(), "");
                 }
                 if let deserializer::TokenDataType::fontWeights { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
@@ -255,7 +275,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             },
             TemplateField::line_height => {
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                    template::set_global(globals, field_name, &value.lineHeight);
+                    template::set_optional_global(globals, field_name, value.lineHeight.to_owned(), "");
                 }
                 if let deserializer::TokenDataType::lineHeights { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
@@ -365,6 +385,38 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             TemplateField::y => {
                 if let deserializer::TokenDataType::boxShadow { value } = &token_value.value {
                     template::set_box_shadow_global(globals, index, value, deserializer::BoxShadowType::y, field_data, &mut template);
+                }
+            },
+            TemplateField::paragraph_spacing => {
+                if let deserializer::TokenDataType::typography { value } = &token_value.value {
+                    template::set_optional_global(globals, field_name, value.paragraphSpacing.to_owned(), "");
+                }
+                if let deserializer::TokenDataType::paragraphSpacing { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::paragraph_indent => {
+                if let deserializer::TokenDataType::typography { value } = &token_value.value {
+                    template::set_optional_global(globals, field_name, value.paragraphIndent.to_owned(), "");
+                }
+                if let deserializer::TokenDataType::paragraphIndent { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::text_case => {
+                if let deserializer::TokenDataType::typography { value } = &token_value.value {
+                    template::set_optional_global(globals, field_name, value.textCase.to_owned(), "");
+                }
+                if let deserializer::TokenDataType::textCase { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::text_decoration => {
+                if let deserializer::TokenDataType::typography { value } = &token_value.value {
+                    template::set_optional_global(globals, field_name, value.textDecoration.to_owned(), "");
+                }
+                if let deserializer::TokenDataType::textDecoration { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
                 }
             },
             _ => {}
