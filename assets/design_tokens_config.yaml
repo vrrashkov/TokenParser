@@ -36,7 +36,7 @@ global:
       - "light.json"
       - "core.json"
       - "mobile.json"
-  # Output path 
+  #Output path 
   style_output_path: "assets/generated_styles/"
 templates:
   - settings_general:

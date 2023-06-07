@@ -151,8 +151,10 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
 }
 
 pub fn deserialize_token_data_value(data: &Value) -> deserializer::TokenDataType { 
+  
+    //dbg!(&data);
     let value_object: deserializer::TokenDataType = serde_json::from_value(data.to_owned()).expect("Unable to read the json");
-
+    //dbg!(&value_object);
     value_object
 }
 pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_list: &mut Vec<template::TokenData>, path: Vec<String>) { 

@@ -166,42 +166,6 @@ You can use the keywords in the following way: **{variable_name | kebab }** name
     - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
 
-##### Important
-
-You can have as many nested layers as you want. The only condition is to have more than 1 layer. 
-
-
-
-```json
-// This is allowed
-{
-	"Foreground": {
-		"Neutral": {
-		  "value": "#ffffff",
-		  "type": "color"
-		}
-	}
-}
-// This is allowed
-{
-	"Foreground": {
-		"Accent": {
-			"Neutral": {
-			  "value": "#ffffff",
-			  "type": "color"
-			}
-		}
-	}
-}
-// This is NOT allowed
-{
-	"Foreground": {
-	  "value": "#ffffff",
-	  "type": "color"
-	}
-}
-```
-
 ##### More
 
 For any ideas or issues please don't hasitate to ask/report. 

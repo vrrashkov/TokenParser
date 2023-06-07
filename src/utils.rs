@@ -1,4 +1,4 @@
-use easy_color::{RGBA, RGB, HSL, Hex, ColorMix, IntoHex};
+use easy_color::{RGBA, RGB, HSL, Hex, ColorMix, IntoHex, HSLA};
 
 pub fn between<'a>(source: &'a str, start: &'a str, end: &'a str) -> &'a str {
 
@@ -30,14 +30,30 @@ pub fn remove_white_spaces(value: &mut String) {
 }
 // Convert any color to hex
 pub fn color_to_hex(color: &str) -> Hex { 
-    let mut hex: Hex;
-    match color.try_into() {
-        Ok(color_value) => {
-            let mut rgba: RGBA = color_value;
-            hex = rgba.to_hex();
+    let mut hex: Hex = "#ffffff".try_into().unwrap();
+    let hexResult: Result<Hex,_>  = color.try_into();
+    match hexResult {
+        Ok(color_value_hex) => {
+            hex = color_value_hex;
         },
         Err(_) => {
-            hex = color.try_into().unwrap();
+            let rgbResult: Result<RGBA, _> = color.try_into();
+            match rgbResult {
+                Ok(color_value_rgb) => {
+                    hex = color_value_rgb.to_hex();
+                }
+                Err(_) => {
+                    let rgbResult: Result<HSLA, _> = color.try_into();
+                    match rgbResult {
+                        Ok(color_value_hsla) => {
+                            hex = color_value_hsla.to_hex();
+                        }
+                        Err(_) => {
+                            
+                        }
+                    }
+                }
+            }
         },
     }
 
