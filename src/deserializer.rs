@@ -147,6 +147,10 @@ pub enum TokenDataType {
     typography { value: TokenDataTypeTypographyValue },
     boxShadow { value: BoxShadowData},
     composition { value: TokenDataTypeCompositionValue },
+    #[serde(alias = "color", alias = "borderWidth", alias = "sizing", alias = "spacing", alias = "border_radius", 
+    alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights", 
+    alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase", 
+    alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border")]
     pure_value { value: String },
     #[default]
     #[serde(other)]
