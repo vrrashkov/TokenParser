@@ -57,7 +57,7 @@ templates:
       #class_name: "DSCore{style}"
       template_type:
         - type: color
-          value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}};"
+          value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}}; {{description | optional: '// desc = %value'}}"
         - type: lineHeights
           value: "{{variable_name | kebab}} {{lineHeight}};"
         - type: composition

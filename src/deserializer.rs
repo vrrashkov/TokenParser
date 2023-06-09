@@ -141,34 +141,6 @@ pub struct ConfigTemplateSettingsSwiftUI {
     pub class_name_prefix: Option<String>
 }
 
-// #[derive(Eq, Clone, PartialEq, Default, Serialize, Deserialize, Debug)]
-// #[serde(tag = "type")]
-// pub enum TokenDataType {
-//     color { value: String },
-//     typography { value: TokenDataTypeTypographyValue },
-//     borderWidth { value: String },
-//     sizing { value: String },
-//     spacing { value: String },
-//     borderRadius { value: String },
-//     boxShadow { value: BoxShadowData},
-//     opacity { value: String },
-//     fontFamilies { value: String },
-//     fontWeights {  value: String },
-//     fontSizes { value: String },
-//     lineHeights { value: String },
-//     letterSpacing { value: String },
-//     paragraphSpacing { value: String },
-//     paragraphIndent { value: String },
-//     textCase { value: String },
-//     textDecoration { value: String },
-//     asset { value: String },
-//     composition { value: TokenDataTypeCompositionValue },
-//     dimension { value: String },
-//     border { value: String },
-//     #[default]
-//     None
-// }
-
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Default, Debug)]
 #[serde(tag = "type")]
 pub enum TokenDataType {
@@ -367,6 +339,7 @@ pub enum TemplateField {
     spread,
     t_type,
     x,
+    description,
     y,
     #[default]
     None
@@ -407,6 +380,7 @@ impl TemplateField {
             global::field_value_type => TemplateField::t_type,
             global::field_value_x => TemplateField::x,
             global::field_value_y => TemplateField::y,
+            global::field_description => TemplateField::description,
             _ => TemplateField::None
         }
     }
@@ -492,6 +466,13 @@ pub struct AvailableFields {
 }
 
 impl CustomConfigTempalteType {
+
+    pub fn global_available_fields() -> AvailableFields { 
+        return AvailableFields {
+            name: global::global.to_string(),
+            values: vec![global::field_variable_name.to_string(), global::field_description.to_string()]
+        };
+    }
     pub fn available_fields(&self) -> AvailableFields { 
         match &self {
             CustomConfigTempalteType::color(_) => AvailableFields {

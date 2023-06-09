@@ -156,10 +156,7 @@ pub fn filter_sub_properties(key: &str, val: &serde_json::Value, pure_values: &m
         let template_type = ival["type"].as_str();
     
         let mut p: Vec<String> = path.clone();
-        // if p.is_empty() {
-        //     p.push(start_key.join(".").to_owned());
-        // }
-      
+
         p.push(ikey.to_string());
         
         if (ival.is_object() && template_type.is_some()) {
@@ -188,47 +185,6 @@ pub fn filter_sub_properties(key: &str, val: &serde_json::Value, pure_values: &m
         }
     }
 }
-
-// pub fn filter_sub_properties(key: String, start_key: Vec<String>, val: &serde_json::Value, pure_values: &mut HashMap<String, String>, path: Vec<String>) { 
-
-//     for (ikey, ival) in val.as_object().iter().flat_map(|f|  f.iter()) {
-       
-//         let template_type = ival["type"].as_str();
-    
-//         let mut p: Vec<String> = path.clone();
-//         if p.is_empty() {
-//             p.push(start_key.join(".").to_owned());
-//         }
-      
-//         p.push(ikey.to_string());
-        
-//         if (ival.is_object() && template_type.is_some()) {
-           
-//             let token_type = ival["type"].as_str();
-//             if !ival["value"].is_object() {
-//                 if (ival["value"].is_array()) {
-//                     for (vi, v) in ival["value"].as_array().unwrap().iter().enumerate() {
-//                         let mut p_cloned = p.clone();
-//                         p_cloned.push("value".to_string());
-//                         p_cloned.push(vi.to_string());
-//                         generate_figma_token_value(v.clone(), pure_values, p_cloned.to_owned(), false);
-//                     }
-//                 } else if let Some(token_value) = ival["value"].as_str() {
-//                     let mut p_cloned = p.clone();
-//                     p_cloned.push("value".to_string());
-//                     let pure_values_key = p_cloned.join(".");
-
-//                     pure_values.insert(pure_values_key, token_value.to_owned());
-//                 }
-//             } else {
-//                 generate_figma_token_value(ival["value"].to_owned(), pure_values, p.to_owned(), true);
-//             }
-//         } else {
-//             self::filter_sub_properties(ikey.to_owned(), start_key.to_owned(), ival, pure_values, p);
-//         }
-//     }
-// }
-
 
 fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut HashMap<String, String>, p: Vec<String>, add_val_path: bool) { 
    
@@ -267,12 +223,6 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
     add_pure_value(&value.x, global::field_value_x, pure_values, &p, &add_val_path);
     add_pure_value(&value.y, global::field_value_y, pure_values, &p, &add_val_path);
     
-    // if let Some(v) = &value.color {
-        
-    //     let mut hex: Hex = utils::color_to_hex(v);
-    //     add_pure_value(&Some(hex.to_string()), global::field_value_color, pure_values, &p, &add_val_path);
-    // }
-  
 }
 
 fn add_pure_value(value: &Option<String>, path: &str, pure_values: &mut HashMap<String, String>, p: &[String], add_val_path: &bool) { 

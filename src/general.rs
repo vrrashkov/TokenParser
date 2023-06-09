@@ -48,11 +48,11 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         
         let token_data_list = filter_properties(&res);
     
-        let token_data_list_combined = combine_tokens(&token_data_list, tokens_config);
+        //let token_data_list_combined = combine_tokens(&token_data_list, tokens_config);
 
         let token_data_wrapper: template::TokenDataWrapper = template::TokenDataWrapper { 
             style_name : file_name.to_string(),
-            token_data : token_data_list_combined
+            token_data : token_data_list
         };
         
         token_data_wrapper_list.push(token_data_wrapper);
@@ -165,6 +165,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
         if (ival.is_object() && template_type.is_some()) {
 
             let token_type = ival["type"].as_str();
+            let token_description = ival["description"].as_str().map(|s| s.into());;
 
             let mut p: Vec<String> = path.clone();
             p.push(key.to_owned());
@@ -180,6 +181,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
                     special: deserializer::ConfigTemplateType::from_str(&token_value_type)
                 },
                 value: deserialize_token_data_value(value_object),
+                description: token_description
             };
 
             let mut token = template::TokenData { 

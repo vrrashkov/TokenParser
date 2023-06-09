@@ -1,3 +1,7 @@
+use crate::deserializer::AvailableFields;
+
+pub const global: &str = "global";
+
 pub const type_color: &str = "color";
 pub const type_typography: &str = "typography";
 pub const type_spacing: &str = "spacing";
@@ -16,6 +20,7 @@ pub const type_fontFamilies: &str = "fontFamilies";
 pub const type_boxShadow: &str = "boxShadow";
 
 pub const field_variable_name: &str = "variable_name";
+pub const field_description: &str = "description";
 pub const field_color: &str = type_color;
 
 pub const field_value_color: &str = type_color;
@@ -63,3 +68,4 @@ pub const color_hex: &str = "hex";
 
 pub const optional_key: &str = "optional";
 pub const optional_value: &str = "%value";
+

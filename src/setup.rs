@@ -222,11 +222,15 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
     let mut template: Option<String> = Some(pure_template.to_string());
     for field_data in fields {
         let field_name = field_data.key_full.as_str();
-
-        if available_fields.values.contains(&field_data.key_without_index.to_string()) {
+       
+        if available_fields.values.contains(&field_data.key_without_index.to_string()) 
+        || deserializer::CustomConfigTempalteType::global_available_fields().values.contains(&field_data.key_without_index.to_string()) {
          match &field_data.special {
             TemplateField::variable_name => {
                 template::set_global(globals, field_name, token_value.variable_name());
+            },
+            TemplateField::description => {
+                template::set_optional_global(globals, field_name, token_value.description.to_owned(), "");
             },
             TemplateField::spacing => {
                 if let deserializer::TokenDataType::pure_value { value } = &token_value.value {

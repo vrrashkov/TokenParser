@@ -148,7 +148,8 @@ pub struct TokenValue {
     pub name: String,
     pub value: deserializer::TokenDataType,
     pub path: Vec<String>,
-    pub token_type: TokenValueType
+    pub token_type: TokenValueType,
+    pub description: Option<String>,
 }
 #[derive(Clone, Debug, Default)]
 pub struct TokenValueType { 
