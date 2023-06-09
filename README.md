@@ -1,5 +1,7 @@
 # Token Parser
 
+<a href="https://crates.io/crates/design_token_parser" rel="nofollow"><img alt="Crates.io" src="https://img.shields.io/crates/v/design_token_parser?color=FC8D62&style=for-the-badge"></a>
+
 ## Overview
 
 Token Parser is a tool for generating runnable code for any language from your [Figma tokens](https://github.com/tokens-studio/figma-plugin). It is written in Rust so you have the freedom to use it anywhere you would like without having **node.js** or anything else installed other than the executable on your system. The full configuration is happening through a **configuration yaml** file from which you can customize to build for as many different languages as you want from a single place. 
