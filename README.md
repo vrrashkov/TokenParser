@@ -12,7 +12,7 @@ You can get the whole project and build it yourself or if you don't have Rust or
 
 1. Setup the **assts/configuration.yaml** file
 
-2. Run with: for windows (WIN_design_token_parser.exe) for MAC (MAC_design_token_parser) in you can find them in Release section
+2. Run with: for windows (WIN_design_token_parser.exe) for MAC (MAC_design_token_parser) you can find them in Release section
 
 ```shell
    WIN_design_token_parser.exe --generate --config "path/design_tokens_config.yaml"
