@@ -10,12 +10,12 @@ Token Parser is a tool for generating runnable code for any language from your [
 
 You can get the whole project and build it yourself or if you don't have Rust or just don't want to deal with the builds yourself, go in the Release section and get the executables from there. 
 
-1. Setup the **configuration.yaml** file
+1. Setup the **assts/configuration.yaml** file
 
-2. Run with 
+2. Run with: for windows (WIN_design_token_parser.exe) for MAC (MAC_design_token_parser) in you can find them in Release section
 
 ```shell
-   "executable" --generate --config "path/design_tokens_config.yaml"
+   WIN_design_token_parser.exe --generate --config "path/design_tokens_config.yaml"
 ```
 
 That's all, your files will be generated and ready to use
@@ -29,7 +29,7 @@ The process for generating the usable tokens is split into two.
 If you have already generated the usable json files you can just run the end code generation by running.
 
 ```shell
- "executable" --config "path/design_tokens_config.yaml"
+ WIN_design_token_parser.exe --config "path/design_tokens_config.yaml"
 ```
 
 ## Configuration
