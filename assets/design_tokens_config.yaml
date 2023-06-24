@@ -1,8 +1,9 @@
+global: 
   # Figma variables source paths
   figma_variables_source_paths: 
-    - "assets/figma/variables/Dark.json"
-    - "assets/figma/variables/Light.json"
-    # - "assets/figma/variables/light_variables.json"
+    - "assets/figma/variables/light_variables.json"
+    # - "assets/figma/variables/Dark.json"
+    # - "assets/figma/variables/Light.json"
   # Figma studio source paths
   figma_studio_source_paths: 
     # - "assets/figma/studio/core.json"
@@ -19,11 +20,11 @@
   # mobile.json
   figma_output_paths:
     - combine:
-      - "assets/figma/variables/Dark.json"
-    - combine:
-      - "assets/figma/variables/Light.json"
+      - "assets/figma/variables/light_variables.json"
     # - combine:
-    #   - "assets/figma/variables/light_variables.json"
+    #   - "assets/figma/variables/Dark.json"
+    # - combine:
+    #   - "assets/figma/variables/Light.json"
     # - combine:
     #   - "assets/figma/studio/dark.json"
     # - combine:
@@ -70,8 +71,10 @@ templates:
       template_type:
         - type: color
           value: "let {{variable_name | camel}} = {{color | color: 'hex'}} {{description | optional: '// desc = %value'}}"
-        - type: number
-          value: "let {{variable_name | camel}} = CGFloat({{number}})  {{description | optional: '// desc = %value'}}"
+        - type: string
+          value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
+        - type: float
+          value: "let {{variable_name | camel}} = CGFloat({{float}})  {{description | optional: '// desc = %value'}}"
         # - type: text
         #   value: "text test = {{variable_name | kebab}} {{text}};"
         # - type: boolean

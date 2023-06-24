@@ -87,8 +87,8 @@ pub enum CustomConfigTempalteType {
     fontFamilies(String),
     composition(String),
     boxShadow(Vec<String>),
-    text(String),
-    number(String),
+    string(String),
+    float(String),
     boolean(String),
     #[default]
     none
@@ -115,8 +115,8 @@ pub enum ConfigTemplateType {
     boxShadow,
     composition,
     
-    text,
-    number,
+    string,
+    float,
     boolean,
     #[default]
     none
@@ -160,7 +160,7 @@ pub enum TokenDataType {
     alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights",
     alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase",
     alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border",
-    alias = "text", alias = "number", alias = "boolean")]
+    alias = "string", alias = "float", alias = "boolean")]
     pure_value { value: String },
     #[default]
     #[serde(other)]
@@ -355,8 +355,8 @@ pub enum TemplateField {
     x,
     description,
     y,
-    text,
-    number,
+    string,
+    float,
     boolean,
     #[default]
     None
@@ -398,8 +398,8 @@ impl TemplateField {
             global::field_value_x => TemplateField::x,
             global::field_value_y => TemplateField::y,
             global::field_description => TemplateField::description,
-            global::field_value_text => TemplateField::text,
-            global::field_value_number => TemplateField::number,
+            global::field_value_string => TemplateField::string,
+            global::field_value_float => TemplateField::float,
             global::field_value_boolean => TemplateField::boolean,
             _ => TemplateField::None
         }
@@ -476,8 +476,8 @@ impl ConfigTemplateType {
             global::type_fontFamilies  => ConfigTemplateType::fontFamilies,
             global::type_boxShadow     => ConfigTemplateType::boxShadow,
             global::type_color         => ConfigTemplateType::color,
-            global::type_text         => ConfigTemplateType::text,
-            global::type_number         => ConfigTemplateType::number,
+            global::type_string         => ConfigTemplateType::string,
+            global::type_float         => ConfigTemplateType::float,
             global::type_boolean         => ConfigTemplateType::boolean,
             _                          => ConfigTemplateType::none,
         }
@@ -597,13 +597,13 @@ impl CustomConfigTempalteType {
                 name: global::type_text_decoration.to_string(),
                 values: vec![global::field_value_text_decoration.to_string(),]
             },
-            CustomConfigTempalteType::text(_) => AvailableFields {
-                name: global::type_text.to_string(),
-                values: vec![global::field_value_text.to_string()]
+            CustomConfigTempalteType::string(_) => AvailableFields {
+                name: global::type_string.to_string(),
+                values: vec![global::field_value_string.to_string()]
             },
-            CustomConfigTempalteType::number(_) => AvailableFields {
-                name: global::type_number.to_string(),
-                values: vec![global::field_value_number.to_string()]
+            CustomConfigTempalteType::float(_) => AvailableFields {
+                name: global::type_float.to_string(),
+                values: vec![global::field_value_float.to_string()]
             },
             CustomConfigTempalteType::boolean(_) => AvailableFields {
                 name: global::type_boolean.to_string(),

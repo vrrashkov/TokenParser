@@ -124,11 +124,11 @@ fn template_content_custom(
             deserializer::CustomConfigTempalteType::composition(value) => {
                 template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::composition, value, &available_fields);
             },
-            deserializer::CustomConfigTempalteType::text(value) => {
-                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::text, value, &available_fields);
+            deserializer::CustomConfigTempalteType::string(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::string, value, &available_fields);
             },
-            deserializer::CustomConfigTempalteType::number(value) => {
-                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::number, value, &available_fields);
+            deserializer::CustomConfigTempalteType::float(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::float, value, &available_fields);
             },
             deserializer::CustomConfigTempalteType::boolean(value) => {
                 template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::boolean, value, &available_fields);
@@ -437,12 +437,12 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                     template::set_global(globals, field_name, value);
                 }
             },
-            TemplateField::text => {
+            TemplateField::string => {
                 if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
                 }
             },
-            TemplateField::number => {
+            TemplateField::float => {
                 if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
                 }

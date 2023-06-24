@@ -104,10 +104,10 @@ impl CustomTemplate {
             deserializer::ConfigTemplateType::composition => {
                 Self::set_template_value(&mut self.composition_values, values);
             },
-            deserializer::ConfigTemplateType::text => {
+            deserializer::ConfigTemplateType::string => {
                 Self::set_template_value(&mut self.text_values, values);
             },
-            deserializer::ConfigTemplateType::number => {
+            deserializer::ConfigTemplateType::float => {
                 Self::set_template_value(&mut self.number_values, values);
             },
             deserializer::ConfigTemplateType::boolean => {

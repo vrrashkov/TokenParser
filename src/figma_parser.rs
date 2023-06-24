@@ -232,8 +232,8 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
     add_pure_value(&value.borderRadiusTopRight, global::field_value_border_radius_top_right, pure_values, &p, &add_val_path);
     add_pure_value(&value.blur, global::field_value_blur, pure_values, &p, &add_val_path);
     add_pure_value(&value.color, global::field_value_color, pure_values, &p, &add_val_path);
-    add_pure_value(&value.text, global::field_value_text, pure_values, &p, &add_val_path);
-    add_pure_value(&value.number, global::field_value_number, pure_values, &p, &add_val_path);
+    add_pure_value(&value.string, global::field_value_string, pure_values, &p, &add_val_path);
+    add_pure_value(&value.float, global::field_value_float, pure_values, &p, &add_val_path);
     add_pure_value(&value.boolen, global::field_value_boolean, pure_values, &p, &add_val_path);
     add_pure_value(&value.spread, global::field_value_spread, pure_values, &p, &add_val_path);
     add_pure_value(&value.t_type, global::field_value_type, pure_values, &p, &add_val_path);
@@ -317,9 +317,9 @@ pub struct FigmaTokenValueSingle {
     #[serde(default, deserialize_with="parse_to_optional_string")]
     pub color: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub text: Option<String>,
+    pub string: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub number: Option<String>,
+    pub float: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
     pub boolen: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]

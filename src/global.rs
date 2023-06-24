@@ -4,8 +4,8 @@ pub const global: &str = "global";
 
 pub const type_unknown: &str = "unknown";
 pub const type_color: &str = "color";
-pub const type_text: &str = "text";
-pub const type_number: &str = "number";
+pub const type_string: &str = "string";
+pub const type_float: &str = "float";
 pub const type_boolean: &str = "boolean";
 pub const type_typography: &str = "typography";
 pub const type_spacing: &str = "spacing";
@@ -29,8 +29,8 @@ pub const field_color: &str = type_color;
 
 pub const field_value_color: &str = type_color;
 pub const field_value_font_family: &str = "fontFamily";
-pub const field_value_text: &str = type_text;
-pub const field_value_number: &str = type_number;
+pub const field_value_string: &str = type_string;
+pub const field_value_float: &str = type_float;
 pub const field_value_boolean: &str = type_boolean;
 pub const field_value_font_size: &str = "fontSize";
 pub const field_value_font_weight: &str = "fontWeight";
