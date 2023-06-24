@@ -36,8 +36,11 @@ If you have already generated the usable json files you can just run the end cod
 
 ```yaml
 global:
-  # Figma source paths
-  figma_source_paths: 
+  # Figma variables source paths
+  figma_variables_source_paths: 
+    - "assets/figma/light_variables.json"
+  # Figma studio source paths
+  figma_studio_source_paths: 
     - "assets/figma/core.json"
     - "assets/figma/typography.json"
     - "assets/figma/global.json"
@@ -65,14 +68,8 @@ global:
   # The available paths are the ones created from figma_output_paths
   # In this case we can only access dark.json, light.json, core.json, mobile.json 
   output_paths:
-    - combine:
-      - "dark.json"
-      - "core.json"
-      - "mobile.json"
-    - combine:
-      - "light.json"
-      - "core.json"
-      - "mobile.json"
+    - "dark.json"
+    - "light.json"
   # Output path 
   style_output_path: "assets/generated_styles"
 ```
