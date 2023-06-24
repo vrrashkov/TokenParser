@@ -39,6 +39,9 @@ pub struct CustomTemplate { // the name of the struct can be anything
     pub font_families_values: Option<Vec<String>>, 
     pub box_shadow_values: Option<Vec<String>>, 
     pub composition_values: Option<Vec<String>>, 
+    pub text_values: Option<Vec<String>>, 
+    pub number_values: Option<Vec<String>>, 
+    pub boolean_values: Option<Vec<String>>, 
 }
 
 impl CustomTemplate {
@@ -101,6 +104,15 @@ impl CustomTemplate {
             deserializer::ConfigTemplateType::composition => {
                 Self::set_template_value(&mut self.composition_values, values);
             },
+            deserializer::ConfigTemplateType::text => {
+                Self::set_template_value(&mut self.text_values, values);
+            },
+            deserializer::ConfigTemplateType::number => {
+                Self::set_template_value(&mut self.number_values, values);
+            },
+            deserializer::ConfigTemplateType::boolean => {
+                Self::set_template_value(&mut self.boolean_values, values);
+            },
             deserializer::ConfigTemplateType::none => {},
         }
     }
@@ -162,7 +174,7 @@ impl TokenValue {
     //     return format!("{}_{}",self.path.join("_"),self.name).to_case(case);
     // }
     pub fn variable_name(&self) -> String { 
-        format!("{}_{}",self.path.join("_"),self.name)
+        format!("{}_{}",self.path.join("_"),self.name.replace("/", " "))
     }
 }
 #[derive(Clone, Debug, Default)]

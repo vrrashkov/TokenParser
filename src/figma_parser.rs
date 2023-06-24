@@ -8,6 +8,7 @@ use json_comments::StripComments;
 use evalexpr::*;
 use json_value_merge::Merge;
 use easy_color::{RGBA, RGB, HSL, Hex, ColorMix, IntoHex};
+use jsonptr::Pointer;
 
 use crate::general;
 use crate::deserializer::{self};
@@ -17,13 +18,25 @@ use crate::global;
 
 pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
 
-    let mut json_files:Vec<String> = token_config.global.figma_source_paths.to_owned();
     let mut pure_values: HashMap<String, String> = HashMap::new();
-
+    // FIGMA VARIABLES
+    let mut json_figma_variable_source:Vec<String> = token_config.global.figma_variables_source_paths.to_owned();
     // get all keys with their values
     // key contains the full path of the tree
     // for example core.natural.fr.c1
-    for file in &json_files {
+    for file in &json_figma_variable_source {
+        let data_object: serde_json::Value = general::get_json(file);
+
+        filter_sub_properties("", &data_object, &mut pure_values, vec![]);
+ 
+    }
+
+    // FIGMA STUDIO
+    let mut json_figma_studio_source:Vec<String> = token_config.global.figma_studio_source_paths.to_owned();
+    // get all keys with their values
+    // key contains the full path of the tree
+    // for example core.natural.fr.c1
+    for file in &json_figma_studio_source {
         let data_object: serde_json::Value = general::get_json(file);
 
         filter_sub_properties("", &data_object, &mut pure_values, vec![]);
@@ -85,9 +98,11 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
             let path_list_count = path_list.len();
             
             let pointer_value = format!("/{}", path_list.join("/"));
-        
+
+            let ptr = Pointer::new(path_list);
+   
             // replace the values from json
-            data_object.pointer_mut(pointer_value.as_str()).map(|v| {
+            data_object.pointer_mut(ptr.as_str()).map(|v| {
                 match key_value {
                     Value::String(val) => {
                         *v = json!(val)
@@ -147,7 +162,6 @@ fn find_all_between(search_inside: String, list: &mut Vec<String>, pure_values: 
 
     (search_inside, list.to_owned())
 }
-
 
 pub fn filter_sub_properties(key: &str, val: &serde_json::Value, pure_values: &mut HashMap<String, String>, path: Vec<String>) { 
 
@@ -218,6 +232,9 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
     add_pure_value(&value.borderRadiusTopRight, global::field_value_border_radius_top_right, pure_values, &p, &add_val_path);
     add_pure_value(&value.blur, global::field_value_blur, pure_values, &p, &add_val_path);
     add_pure_value(&value.color, global::field_value_color, pure_values, &p, &add_val_path);
+    add_pure_value(&value.text, global::field_value_text, pure_values, &p, &add_val_path);
+    add_pure_value(&value.number, global::field_value_number, pure_values, &p, &add_val_path);
+    add_pure_value(&value.boolen, global::field_value_boolean, pure_values, &p, &add_val_path);
     add_pure_value(&value.spread, global::field_value_spread, pure_values, &p, &add_val_path);
     add_pure_value(&value.t_type, global::field_value_type, pure_values, &p, &add_val_path);
     add_pure_value(&value.x, global::field_value_x, pure_values, &p, &add_val_path);
@@ -299,6 +316,12 @@ pub struct FigmaTokenValueSingle {
     pub blur: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
     pub color: Option<String>,
+    #[serde(default, deserialize_with="parse_to_optional_string")]
+    pub text: Option<String>,
+    #[serde(default, deserialize_with="parse_to_optional_string")]
+    pub number: Option<String>,
+    #[serde(default, deserialize_with="parse_to_optional_string")]
+    pub boolen: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
     pub spread: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]

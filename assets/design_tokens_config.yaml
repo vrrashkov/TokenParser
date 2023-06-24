@@ -1,12 +1,15 @@
 global:
-  # Figma source paths
-  figma_source_paths: 
-    - "assets/figma/core.json"
-    - "assets/figma/typography.json"
-    - "assets/figma/global.json"
-    - "assets/figma/mobile.json"
-    - "assets/figma/dark.json"
-    - "assets/figma/light.json"
+  # Figma variables source paths
+  figma_variables_source_paths: 
+    - "assets/figma/light_variables.json"
+  # Figma studio source paths
+  figma_studio_source_paths: 
+    # - "assets/figma/core.json"
+    # - "assets/figma/typography.json"
+    # - "assets/figma/global.json"
+    # - "assets/figma/mobile.json"
+    # - "assets/figma/dark.json"
+    # - "assets/figma/light.json"
   # Figma output calculated files, 
   # This will output the files
   # dark.json
@@ -15,27 +18,31 @@ global:
   # mobile.json
   figma_output_paths:
     - combine:
-      - "assets/figma/dark.json"
-    - combine:
-      - "assets/figma/light.json"
-    - combine: 
-      - "assets/figma/core.json"
-      - "assets/figma/typography.json"
-      - "assets/figma/global.json"
-    - combine: 
-      - "assets/figma/mobile.json"
+      - "assets/figma/light_variables.json"
+    # - combine:
+    #   - "assets/figma/dark.json"
+    # - combine:
+    #   - "assets/figma/light.json"
+    # - combine: 
+    #   - "assets/figma/core.json"
+    #   - "assets/figma/typography.json"
+    #   - "assets/figma/global.json"
+    # - combine: 
+    #   - "assets/figma/mobile.json"
   # Different themes path
   # The available paths are the ones created from figma_output_paths
   # In this case we can only access dark.json, light.json, core.json, mobile.json 
   output_paths:
     - combine:
-      - "dark.json"
-      - "core.json"
-      - "mobile.json"
-    - combine:
-      - "light.json"
-      - "core.json"
-      - "mobile.json"
+      - "light_variables.json"
+    # - combine:
+    #   - "dark.json"
+    #   - "core.json"
+    #   - "mobile.json"
+    # - combine:
+    #   - "light.json"
+    #   - "core.json"
+    #   - "mobile.json"
   #Output path 
   style_output_path: "assets/generated_styles/"
 templates:
@@ -58,6 +65,12 @@ templates:
       template_type:
         - type: color
           value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}}; {{description | optional: '// desc = %value'}}"
+        - type: text
+          value: "text test = {{variable_name | kebab}} {{text}};"
+        - type: number
+          value: "number test = {{variable_name | camel}} {{number}};"
+        - type: boolean
+          value: "bool test = {{variable_name | pascal}} {{boolean}};"
         - type: lineHeights
           value: "{{variable_name | kebab}} {{lineHeight}};"
         - type: composition

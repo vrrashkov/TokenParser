@@ -51,6 +51,15 @@
 {% for text_decoration in text_decoration_values -%}
 {{text_decoration}}
 {% endfor -%}
+{% for number in number_values -%}
+{{number}}
+{% endfor -%}
+{% for text in text_values -%}
+{{text}}
+{% endfor -%}
+{% for boolean in boolean_values -%}
+{{boolean}}
+{% endfor -%}
 {% if sub_footer != empty %}{{sub_footer}}{% endif %}
 {% if class != empty %}
 }

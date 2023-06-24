@@ -44,8 +44,10 @@ pub struct ConfigTemplateSettingsCustom {
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
-    #[serde(alias = "figma_source_paths")]
-    pub figma_source_paths: Vec<String>,
+    #[serde(alias = "figma_variables_source_paths")]
+    pub figma_variables_source_paths: Vec<String>,
+    #[serde(alias = "figma_studio_source_paths")]
+    pub figma_studio_source_paths: Vec<String>,
     #[serde(alias = "figma_output_paths")]
     pub figma_output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "output_paths")]
@@ -85,6 +87,9 @@ pub enum CustomConfigTempalteType {
     fontFamilies(String),
     composition(String),
     boxShadow(Vec<String>),
+    text(String),
+    number(String),
+    boolean(String),
     #[default]
     none
 }
@@ -109,6 +114,10 @@ pub enum ConfigTemplateType {
     fontFamilies,
     boxShadow,
     composition,
+    
+    text,
+    number,
+    boolean,
     #[default]
     none
 }
@@ -147,10 +156,11 @@ pub enum TokenDataType {
     typography { value: TokenDataTypeTypographyValue },
     boxShadow { value: BoxShadowData},
     composition { value: TokenDataTypeCompositionValue },
-    #[serde(alias = "color", alias = "borderWidth", alias = "sizing", alias = "spacing", alias = "border_radius", 
-    alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights", 
-    alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase", 
-    alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border")]
+    #[serde(alias = "color", alias = "borderWidth", alias = "sizing", alias = "spacing", alias = "border_radius",
+    alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights",
+    alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase",
+    alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border",
+    alias = "text", alias = "number", alias = "boolean")]
     pure_value { value: String },
     #[default]
     #[serde(other)]
@@ -345,6 +355,9 @@ pub enum TemplateField {
     x,
     description,
     y,
+    text,
+    number,
+    boolean,
     #[default]
     None
 }
@@ -385,6 +398,9 @@ impl TemplateField {
             global::field_value_x => TemplateField::x,
             global::field_value_y => TemplateField::y,
             global::field_description => TemplateField::description,
+            global::field_value_text => TemplateField::text,
+            global::field_value_number => TemplateField::number,
+            global::field_value_boolean => TemplateField::boolean,
             _ => TemplateField::None
         }
     }
@@ -459,6 +475,10 @@ impl ConfigTemplateType {
             global::type_fontWeights   => ConfigTemplateType::fontWeights,
             global::type_fontFamilies  => ConfigTemplateType::fontFamilies,
             global::type_boxShadow     => ConfigTemplateType::boxShadow,
+            global::type_color         => ConfigTemplateType::color,
+            global::type_text         => ConfigTemplateType::text,
+            global::type_number         => ConfigTemplateType::number,
+            global::type_boolean         => ConfigTemplateType::boolean,
             _                          => ConfigTemplateType::none,
         }
     }
@@ -481,12 +501,11 @@ impl CustomConfigTempalteType {
         match &self {
             CustomConfigTempalteType::color(_) => AvailableFields {
                 name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_color.to_string()]
+                values: vec![global::field_color.to_string()]
             },
             CustomConfigTempalteType::typography(_) => AvailableFields {
-                name: global::type_color.to_string(),
+                name: global::type_typography.to_string(),
                 values: vec![
-                    global::field_variable_name.to_string(), 
                     global::field_value_font_family.to_string(), 
                     global::field_value_font_size.to_string(), 
                     global::field_value_font_weight.to_string(), 
@@ -499,41 +518,40 @@ impl CustomConfigTempalteType {
                 ]
             },
             CustomConfigTempalteType::spacing(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_spacing.to_string()]
+                name: global::type_spacing.to_string(),
+                values: vec![global::field_value_spacing.to_string()]
             },
             CustomConfigTempalteType::borderWidth(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_border_width.to_string()]
+                name: global::type_borderWidth.to_string(),
+                values: vec![global::field_value_border_width.to_string()]
             },
             CustomConfigTempalteType::borderRadius(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_border_radius.to_string()]
+                name: global::type_borderRadius.to_string(),
+                values: vec![global::field_value_border_radius.to_string()]
             },
             CustomConfigTempalteType::letterSpacing(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_spacing.to_string()]
+                name: global::type_letterSpacing.to_string(),
+                values: vec![global::field_value_spacing.to_string()]
             },
             CustomConfigTempalteType::lineHeights(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_line_height.to_string()]
+                name: global::type_lineHeights.to_string(),
+                values: vec![global::field_value_line_height.to_string()]
             },
             CustomConfigTempalteType::fontSizes(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_font_size.to_string()]
+                name: global::type_fontSizes.to_string(),
+                values: vec![global::field_value_font_size.to_string()]
             },
             CustomConfigTempalteType::fontWeights(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_font_weight.to_string()]
+                name: global::type_fontWeights.to_string(),
+                values: vec![global::field_value_font_weight.to_string()]
             },
             CustomConfigTempalteType::fontFamilies(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_font_family.to_string()]
+                name: global::type_fontFamilies.to_string(),
+                values: vec![global::field_value_font_family.to_string()]
             },
             CustomConfigTempalteType::boxShadow(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(), 
-                global::field_color.to_string(), 
+                name: global::type_boxShadow.to_string(),
+                values: vec![global::field_color.to_string(), 
                 global::field_value_blur.to_string(), 
                 global::field_value_spread.to_string(), 
                 global::field_value_type.to_string(), 
@@ -541,9 +559,8 @@ impl CustomConfigTempalteType {
                 global::field_value_y.to_string()]
             },
             CustomConfigTempalteType::composition(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(),
-                global::field_value_padding_bottom.to_string(),
+                name: global::type_composition.to_string(),
+                values: vec![global::field_value_padding_bottom.to_string(),
                 global::field_value_padding_top.to_string(),
                 global::field_value_padding_left.to_string(),
                 global::field_value_padding_right.to_string(),
@@ -561,24 +578,36 @@ impl CustomConfigTempalteType {
                 global::field_value_item_spacing.to_string()]
             },
             CustomConfigTempalteType::none => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_variable_name.to_string(),]
+                name: global::type_unknown.to_string(),
+                values: vec![]
             },
             CustomConfigTempalteType::paragraphSpacing(_) => AvailableFields {
                 name: global::type_paragraph_spacing.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_paragraph_spacing.to_string(),]
+                values: vec![global::field_value_paragraph_spacing.to_string(),]
             },
             CustomConfigTempalteType::paragraphIndent(_) => AvailableFields {
                 name: global::type_paragraph_ident.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_paragraph_indent.to_string(),]
+                values: vec![global::field_value_paragraph_indent.to_string(),]
             },
             CustomConfigTempalteType::textCase(_) => AvailableFields {
                 name: global::type_text_case.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_text_case.to_string(),]
+                values: vec![global::field_value_text_case.to_string(),]
             },
             CustomConfigTempalteType::textDecoration(_) => AvailableFields {
                 name: global::type_text_decoration.to_string(),
-                values: vec![global::field_variable_name.to_string(), global::field_value_text_decoration.to_string(),]
+                values: vec![global::field_value_text_decoration.to_string(),]
+            },
+            CustomConfigTempalteType::text(_) => AvailableFields {
+                name: global::type_text.to_string(),
+                values: vec![global::field_value_text.to_string()]
+            },
+            CustomConfigTempalteType::number(_) => AvailableFields {
+                name: global::type_number.to_string(),
+                values: vec![global::field_value_number.to_string()]
+            },
+            CustomConfigTempalteType::boolean(_) => AvailableFields {
+                name: global::type_boolean.to_string(),
+                values: vec![global::field_value_boolean.to_string()]
             },
         }
     }

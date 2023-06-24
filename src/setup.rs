@@ -67,6 +67,9 @@ fn template_content_custom(
         font_families_values: None, 
         box_shadow_values: None, 
         composition_values: None, 
+        text_values: None, 
+        number_values: None, 
+        boolean_values: None, 
     }; 
 
     for template in &custom_template.template_type {
@@ -121,6 +124,15 @@ fn template_content_custom(
             deserializer::CustomConfigTempalteType::composition(value) => {
                 template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::composition, value, &available_fields);
             },
+            deserializer::CustomConfigTempalteType::text(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::text, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::number(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::number, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::boolean(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::boolean, value, &available_fields);
+            },
             deserializer::CustomConfigTempalteType::none => todo!(),
         }
     }
@@ -151,6 +163,9 @@ fn template_content_custom(
         "paragraph_indent_values": current_template.paragraph_indent_values,
         "text_case_values": current_template.text_case_values,
         "text_decoration_values": current_template.text_decoration_values,
+        "text_values": current_template.text_values,
+        "number_values": current_template.number_values,
+        "boolean_values": current_template.boolean_values,
     });
     
     Some(template.render(&globals).unwrap())
@@ -418,6 +433,21 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
                     template::set_optional_global(globals, field_name, value.textDecoration.to_owned(), "");
                 }
+                if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::text => {
+                if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::number => {
+                if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::boolean => {
                 if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
                     template::set_global(globals, field_name, value);
                 }

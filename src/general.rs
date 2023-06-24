@@ -45,9 +45,8 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
 
             res.merge(output_json);
         }
-        
+      
         let token_data_list = filter_properties(&res);
-    
         //let token_data_list_combined = combine_tokens(&token_data_list, tokens_config);
 
         let token_data_wrapper: template::TokenDataWrapper = template::TokenDataWrapper { 
@@ -137,12 +136,13 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
     let mut token_data_list:Vec<template::TokenData> = vec![];
     for (key, val) in data_object.iter().flat_map(|d| d.iter()) {
 
-        //println!("{}", key);
-        //println!("----------------------");
 
         if (val.is_object()) {
 
-            filter_sub_properties(key.to_owned(), val, &mut token_data_list, vec![]);
+            // println!("{}", key);
+            // println!("{}", val);
+            // println!("----------------------");
+            filter_sub_properties(key.to_owned(), val, &mut token_data_list, vec![], true);
         }
 
     }
@@ -157,9 +157,20 @@ pub fn deserialize_token_data_value(data: &Value) -> deserializer::TokenDataType
     //dbg!(&value_object);
     value_object
 }
-pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_list: &mut Vec<template::TokenData>, path: Vec<String>) { 
+pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_list: &mut Vec<template::TokenData>, path: Vec<String>, isFirst: bool) { 
 
-    for (ikey, ival) in val.as_object().iter().flat_map(|f| f.iter()) {
+    let mut listEnum: Vec<(&String, &Value)>;
+    let mut pureValues = false;
+    if val.get("type").is_some() {
+        listEnum = vec!((&key, val));
+        if isFirst {
+            pureValues = true;
+        }
+    } else {
+        listEnum = val.as_object().iter().flat_map(|f| f.iter()).collect::<Vec<(&std::string::String, &serde_json::Value)>>();
+    }
+
+    for (ikey, ival) in listEnum {
         let template_type = ival["type"].as_str();
     
         if (ival.is_object() && template_type.is_some()) {
@@ -168,8 +179,9 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
             let token_description = ival["description"].as_str().map(|s| s.into());;
 
             let mut p: Vec<String> = path.clone();
-            p.push(key.to_owned());
-
+            if !pureValues {
+                p.push(key.to_owned());
+            }
             let token_value_type = token_type.unwrap_or("").to_string();
             let value_object = ival;
 
@@ -204,7 +216,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
         } else {
             let mut p: Vec<String> = path.clone();
             p.push(key.to_owned());
-            self::filter_sub_properties(ikey.to_owned(), ival, token_data_list, p);
+            self::filter_sub_properties(ikey.to_owned(), ival, token_data_list, p, false);
         }
     }
 }
