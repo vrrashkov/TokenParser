@@ -1,5 +1,7 @@
 /target
 /Cargo.lock
 /assets/figma
+/assets/figma/studio
+/assets/figma/variables
 /assets/generated_styles
 /generated_templates

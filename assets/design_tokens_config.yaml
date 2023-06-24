@@ -1,15 +1,16 @@
-global:
   # Figma variables source paths
   figma_variables_source_paths: 
-    - "assets/figma/light_variables.json"
+    - "assets/figma/variables/Dark.json"
+    - "assets/figma/variables/Light.json"
+    # - "assets/figma/variables/light_variables.json"
   # Figma studio source paths
   figma_studio_source_paths: 
-    # - "assets/figma/core.json"
-    # - "assets/figma/typography.json"
-    # - "assets/figma/global.json"
-    # - "assets/figma/mobile.json"
-    # - "assets/figma/dark.json"
-    # - "assets/figma/light.json"
+    # - "assets/figma/studio/core.json"
+    # - "assets/figma/studio/typography.json"
+    # - "assets/figma/studio/global.json"
+    # - "assets/figma/studio/mobile.json"
+    # - "assets/figma/studio/dark.json"
+    # - "assets/figma/studio/light.json"
   # Figma output calculated files, 
   # This will output the files
   # dark.json
@@ -18,15 +19,19 @@ global:
   # mobile.json
   figma_output_paths:
     - combine:
-      - "assets/figma/light_variables.json"
+      - "assets/figma/variables/Dark.json"
+    - combine:
+      - "assets/figma/variables/Light.json"
     # - combine:
-    #   - "assets/figma/dark.json"
+    #   - "assets/figma/variables/light_variables.json"
     # - combine:
-    #   - "assets/figma/light.json"
+    #   - "assets/figma/studio/dark.json"
+    # - combine:
+    #   - "assets/figma/studio/light.json"
     # - combine: 
-    #   - "assets/figma/core.json"
-    #   - "assets/figma/typography.json"
-    #   - "assets/figma/global.json"
+    #   - "assets/figma/studio/core.json"
+    #   - "assets/figma/studio/typography.json"
+    #   - "assets/figma/studio/global.json"
     # - combine: 
     #   - "assets/figma/mobile.json"
   # Different themes path
@@ -64,25 +69,25 @@ templates:
       #class_name: "DSCore{style}"
       template_type:
         - type: color
-          value: "--{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}}; {{description | optional: '// desc = %value'}}"
-        - type: text
-          value: "text test = {{variable_name | kebab}} {{text}};"
+          value: "let {{variable_name | camel}} = {{color | color: 'hex'}} {{description | optional: '// desc = %value'}}"
         - type: number
-          value: "number test = {{variable_name | camel}} {{number}};"
-        - type: boolean
-          value: "bool test = {{variable_name | pascal}} {{boolean}};"
-        - type: lineHeights
-          value: "{{variable_name | kebab}} {{lineHeight}};"
-        - type: composition
-          value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
-        - type: composition
-          value: "{% if height != '' %} height: {{height | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
-        - type: composition
-          value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
-        - type: boxShadow
-          value: 
-            - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
-            - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
+          value: "let {{variable_name | camel}} = CGFloat({{number}})  {{description | optional: '// desc = %value'}}"
+        # - type: text
+        #   value: "text test = {{variable_name | kebab}} {{text}};"
+        # - type: boolean
+        #   value: "bool test = {{variable_name | pascal}} {{boolean}};"
+        # - type: lineHeights
+        #   value: "{{variable_name | kebab}} {{lineHeight}};"
+        # - type: composition
+        #   value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
+        # - type: composition
+        #   value: "{% if height != '' %} height: {{height | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
+        # - type: composition
+        #   value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
+        # - type: boxShadow
+        #   value: 
+        #     - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
+        #     - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
       # template_type:
       #   - type: typography
       #     value: "Typography: {{variable_name | kebab}}, {{fontFamily | optional: 'fontFamily: %value'}}, {{paragraphSpacing | optional: 'paragraphSpacing: %value'}}, {{paragraphIndent | optional: 'paragraphIndent: %value'}}, {{textCase | optional: 'textCase: %value'}}, {{textDecoration | optional: 'textDecoration: %value'}}"
