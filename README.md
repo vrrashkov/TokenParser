@@ -1,5 +1,7 @@
 # Token Parser
 
+<a href="https://crates.io/crates/design_token_parser" rel="nofollow"><img alt="Crates.io" src="https://img.shields.io/crates/v/design_token_parser?color=FC8D62&style=flat-square"></a>
+
 ## Overview
 
 Token Parser is a tool for generating runnable code for any language from your [Figma tokens](https://github.com/tokens-studio/figma-plugin). It is written in Rust so you have the freedom to use it anywhere you would like without having **node.js** or anything else installed other than the executable on your system. The full configuration is happening through a **configuration yaml** file from which you can customize to build for as many different languages as you want from a single place. 
@@ -8,12 +10,12 @@ Token Parser is a tool for generating runnable code for any language from your [
 
 You can get the whole project and build it yourself or if you don't have Rust or just don't want to deal with the builds yourself, go in the Release section and get the executables from there. 
 
-1. Setup the **configuration.yaml** file
-
-2. Run with 
+1. Setup the **assts/configuration.yaml** file
+2. You will need the templates folder as well in the same directory where you will be placing the exe file from the next step
+3. Run with: for windows (WIN_design_token_parser.exe) for MAC (MAC_design_token_parser) you can find them in Release section
 
 ```shell
-   "executable" --generate --config "path/design_tokens_config.yaml"
+   .\WIN_design_token_parser.exe --generate --config "path/design_tokens_config.yaml"
 ```
 
 That's all, your files will be generated and ready to use
@@ -27,7 +29,7 @@ The process for generating the usable tokens is split into two.
 If you have already generated the usable json files you can just run the end code generation by running.
 
 ```shell
- "executable" --config "path/design_tokens_config.yaml"
+ WIN_design_token_parser.exe --config "path/design_tokens_config.yaml"
 ```
 
 ## Configuration
