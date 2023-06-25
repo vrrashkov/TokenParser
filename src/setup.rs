@@ -136,9 +136,10 @@ fn template_content_custom(
             deserializer::CustomConfigTempalteType::none => todo!(),
         }
     }
+    let file = include_str!("../templates/liquid_template.html");
     let template = liquid::ParserBuilder::with_stdlib()
     .build().unwrap()
-    .parse_file("templates/liquid_template.html").unwrap();
+    .parse(file).unwrap();
 
     let mut globals = liquid::object!({
         "header": current_template.header,
