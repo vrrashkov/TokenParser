@@ -30,7 +30,12 @@ If you have already generated the usable json files you can just run the end cod
 ```shell
  WIN_design_token_parser.exe --config "path/design_tokens_config.yaml"
 ```
-
+### Homebrew
+- brew tap vrrashkov/tokenparser
+- brew install tokenparser
+- Configure the yaml config file
+- design_token_parser --generate --config "design_tokens_config.yaml"
+  
 ## Configuration
 
 ##### Input/Output paths for loading and generation
