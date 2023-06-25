@@ -146,7 +146,6 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
         }
 
     }
-     
     token_data_list
 }
 
@@ -154,7 +153,7 @@ pub fn deserialize_token_data_value(data: &Value) -> deserializer::TokenDataType
   
     //dbg!(&data);
     let value_object: deserializer::TokenDataType = serde_json::from_value(data.to_owned()).expect("Unable to read the json");
-    //dbg!(&value_object);
+    
     value_object
 }
 pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_list: &mut Vec<template::TokenData>, path: Vec<String>, isFirst: bool) { 
@@ -182,7 +181,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
             if !pureValues {
                 p.push(key.to_owned());
             }
-            let token_value_type = token_type.unwrap_or("").to_string();
+            let token_value_type = token_type.unwrap_or("").to_string().to_case(Case::Camel);
             let value_object = ival;
 
             let token_value = template::TokenValue {
@@ -206,7 +205,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
             if let Some(token_e) = token_exist {
                 token_e.token_value.push(token_value);
             } else {
-                token.t_type = deserializer::ConfigTemplateType::from_str(&token_value.token_type.text);
+                token.t_type = deserializer::ConfigTemplateType::from_str(&token_value.token_type.text.to_case(Case::Camel));
                 token.token_value.push(token_value);
 
                 token_data_list.push(token.to_owned());

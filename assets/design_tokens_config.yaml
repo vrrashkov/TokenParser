@@ -25,16 +25,16 @@ global:
     #   - "assets/figma/variables/Dark.json"
     # - combine:
     #   - "assets/figma/variables/Light.json"
-    # - combine:
-    #   - "assets/figma/studio/dark.json"
-    # - combine:
-    #   - "assets/figma/studio/light.json"
-    # - combine: 
-    #   - "assets/figma/studio/core.json"
-    #   - "assets/figma/studio/typography.json"
-    #   - "assets/figma/studio/global.json"
-    # - combine: 
-    #   - "assets/figma/mobile.json"
+    - combine:
+      - "assets/figma/studio/dark.json"
+    - combine:
+      - "assets/figma/studio/light.json"
+    - combine: 
+      - "assets/figma/studio/core.json"
+      - "assets/figma/studio/typography.json"
+      - "assets/figma/studio/global.json"
+    - combine: 
+      - "assets/figma/studio/mobile.json"
   # Different themes path
   # The available paths are the ones created from figma_output_paths
   # In this case we can only access dark.json, light.json, core.json, mobile.json 
@@ -42,13 +42,17 @@ global:
     - combine:
       - "light_variables.json"
     # - combine:
-    #   - "dark.json"
-    #   - "core.json"
-    #   - "mobile.json"
+    #   - "Dark.json"
     # - combine:
-    #   - "light.json"
-    #   - "core.json"
-    #   - "mobile.json"
+    #   - "Light.json"
+    - combine:
+      - "dark.json"
+      - "core.json"
+      - "mobile.json"
+    - combine:
+      - "light.json"
+      - "core.json"
+      - "mobile.json"
   #Output path 
   style_output_path: "assets/generated_styles/"
 templates:

@@ -160,7 +160,7 @@ pub enum TokenDataType {
     alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights",
     alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase",
     alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border",
-    alias = "string", alias = "float", alias = "boolean")]
+    alias = "string", alias = "String", alias = "float", alias = "Float", alias = "boolean", alias = "Boolean")]
     pure_value { value: String },
     #[default]
     #[serde(other)]

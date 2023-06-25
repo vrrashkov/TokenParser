@@ -43,6 +43,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
  
     }
 
+ 
     // Calculating all the values to usable ones
     // some values are referencing to other keys for example {spacing.right.1} * 2
     // which we are converting to usable value by eval() the math equation
