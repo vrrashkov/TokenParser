@@ -4,13 +4,13 @@
 
 ## Overview
 
-Token Parser is a tool for generating runnable code for any language from your [Figma tokens](https://github.com/tokens-studio/figma-plugin). It is written in Rust so you have the freedom to use it anywhere you would like without having **node.js** or anything else installed other than the executable on your system. The full configuration is happening through a **configuration yaml** file from which you can customize to build for as many different languages as you want from a single place. 
+Token Parser is a tool for generating runnable code for any language from your [Figma Variables](https://www.figma.com/plugin-docs/working-with-variables/) or [Figma Studio Tokens](https://github.com/tokens-studio/figma-plugin) (*you can even use both at the same time*). It is written in Rust so you have the freedom to use it anywhere you would like without having **node.js** or anything else installed other than the executable on your system. The full configuration is happening through a **configuration yaml** file from which you can customize to build for as many different languages as you want from a single place. 
 
 ## Setup
 
 You can get the whole project and build it yourself or if you don't have Rust or just don't want to deal with the builds yourself, go in the Release section and get the executables from there. 
 
-1. Setup the **assts/configuration.yaml** file
+1. Setup the **assts/design_tokens_config__.yaml** file
 2. You will need the templates folder as well in the same directory where you will be placing the exe file from the next step
 3. Run with: for windows (WIN_design_token_parser.exe) for MAC (MAC_design_token_parser) you can find them in Release section
 
@@ -22,7 +22,7 @@ That's all, your files will be generated and ready to use
 
 The process for generating the usable tokens is split into two.
 
-- Converting the Figma tokens to usable json files (similar to **tokenizer**)
+- Converting the Figma tokens to usable json files (similar to **style-dictionary**)
 
 - Generating the end files for the langages from the previously generated json files
 
@@ -40,15 +40,15 @@ If you have already generated the usable json files you can just run the end cod
 global:
   # Figma variables source paths
   figma_variables_source_paths: 
-    - "assets/figma/light_variables.json"
+    - "assets/figma/variables/light_variables.json"
   # Figma studio source paths
-  figma_studio_source_paths: 
-    - "assets/figma/core.json"
-    - "assets/figma/typography.json"
-    - "assets/figma/global.json"
-    - "assets/figma/mobile.json"
-    - "assets/figma/dark.json"
-    - "assets/figma/light.json"
+  figma_studio_source_paths:
+    - "assets/figma/studio/core.json"
+    - "assets/figma/studio/typography.json"
+    - "assets/figma/studio/global.json"
+    - "assets/figma/studio/mobile.json"
+    - "assets/figma/studio/dark.json"
+    - "assets/figma/studio/light.json"
   # Figma output calculated files, 
   # This will output the files
   # dark.json
@@ -57,21 +57,24 @@ global:
   # mobile.json
   figma_output_paths:
     - combine:
-      - "assets/figma/dark.json"
+      - "assets/figma/variables/light_variables.json"
     - combine:
-      - "assets/figma/light.json"
+      - "assets/figma/studio/dark.json"
+    - combine:
+      - "assets/figma/studio/light.json"
     - combine: 
-      - "assets/figma/core.json"
-      - "assets/figma/typography.json"
-      - "assets/figma/global.json"
+      - "assets/figma/studio/core.json"
+      - "assets/figma/studio/typography.json"
+      - "assets/figma/studio/global.json"
     - combine: 
-      - "assets/figma/mobile.json"
+      - "assets/figma/studio/mobile.json"
   # Different themes path
   # The available paths are the ones created from figma_output_paths
   # In this case we can only access dark.json, light.json, core.json, mobile.json 
   output_paths:
     - "dark.json"
     - "light.json"
+    - "light-variables.json"
   # Output path 
   style_output_path: "assets/generated_styles"
 ```
@@ -111,11 +114,63 @@ templates:
             - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
 
-In the above scenario 2 files are going to be generated **cds-dark** and **cds-light** they will both be containing tokens which we set through **template_type** in this case **composition**, **boxShadow** and **color**.  <u>Every different type contains specific keys you can use to create the template that you want</u>. See below the list of special keywords you can use.
+In the above scenario 3 files are going to be generated **cds-dark**, **cds-light** and **cds-light-variables** they will be containing tokens which we set through **template_type** in this case **composition**, **boxShadow** and **color**, in this case we are using 2 different methods together, just for the example tokens from Figma Variables and from Figma Studio.  <u>Every different type contains specific keys you can use to create the template that you want</u>. See below the list of special keywords you can use.
 
 You can use every type multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something. 
 
 Optional values can be added with the **optional** filter. Instead of using if statements sometimes it's easier to just use the **optional** filter and display the value only if it exists.
+
+##### Valid JSON
+
+Both type of jsons are valid, you can have infinite amount of nesting or no nesting at all.  
+
+```json
+{
+    "size/XL": {
+        "type": "float",
+        "value": "56",
+        "description": ""
+    },
+    "text/fr": {
+        "type": "string",
+        "value": "Some Text",
+        "description": ""
+    },
+    "color/bg": {
+        "type": "color",
+        "value": "#000000",
+        "description": ""
+    }
+}
+```
+
+```json
+{
+    "size": {
+		"XL": {
+			"type": "float",
+			"value": "56",
+			"description": ""
+		}
+    },
+    "text": {
+		"fr": {
+			"type": "string",
+			"value": "Some Text",
+			"description": ""
+		}
+    },
+    "color": {
+		"bg": {
+			"type": "color",
+			"value": "#000000",
+			"description": ""
+		}
+    }
+}
+```
+
+
 
 ##### Keywords
 
@@ -123,6 +178,9 @@ Optional values can be added with the **optional** filter. Instead of using if s
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GLOBAL VALUES    | variable_name<br/>description                                                                                                                                                                                                                                                                |
 | color            | color                                                                                                                                                                                                                                                                                        |
+| float            | float                                                                                                                                                                                                                                                                                        |
+| string           | string                                                                                                                                                                                                                                                                                       |
+| boolean          | boolean                                                                                                                                                                                                                                                                                      |
 | typography       | fontFamily<br/>fontSize<br/>fontWeight<br/>spacing<br/>lineHeight<br/>paragraphSpacing<br/>paragraphIndent<br/>textCase<br/>textDecoration                                                                                                                                                   |
 | paragraphSpacing | paragraphSpacing                                                                                                                                                                                                                                                                             |
 | paragraphIndent  | paragraphIndent                                                                                                                                                                                                                                                                              |
@@ -139,7 +197,7 @@ Optional values can be added with the **optional** filter. Instead of using if s
 | boxShadow        | color<br/>blur<br/>spread<br/>type<br/>x<br/>y                                                                                                                                                                                                                                               |
 | composition      | paddingBottom<br/>paddingTop<br/>paddingLeft<br/>paddingRight<br/>sizing<br/>height<br/>width<br/>borderRdius<br/>borderWidth<br/>borderRadiusBottomLeft<br/>border_radiusBottomRight<br/>borderRadiusTopLeft<br/>borderRadiusTopRight<br/>spacing<br/>verticalPadding<br/>horizontalPadding |
 
-You can use the keywords in the following way: **{variable_name | kebab }** name of the keyword and next to it you can add a filter, or multiple filters by separating them with **|** lie this **{variable_name | kebab | no_space }**.
+You can use the keywords in the following way: **{{variable_name | kebab }}** name of the keyword and next to it you can add a filter, or multiple filters by separating them with **|** lie this **{{variable_name | kebab | no_space }}**.
 
 ##### Variants
 

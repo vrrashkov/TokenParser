@@ -29,7 +29,7 @@ fn main() {
 
     // Covert to usable code
     let matches: clap::ArgMatches = Command::new("Design Tokens")
-        .version("1.7.0")
+        .version("1.8.0")
         .author("Vladislav R. <vrrashkov@gmail.com>")
         .about("Parses figma design tokens to usable code")
         .arg(Arg::new("config").short('c').long("config").action(ArgAction::Set).required(true))

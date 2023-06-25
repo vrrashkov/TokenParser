@@ -6,12 +6,12 @@ global:
     # - "assets/figma/variables/Light.json"
   # Figma studio source paths
   figma_studio_source_paths: 
-    # - "assets/figma/studio/core.json"
-    # - "assets/figma/studio/typography.json"
-    # - "assets/figma/studio/global.json"
-    # - "assets/figma/studio/mobile.json"
-    # - "assets/figma/studio/dark.json"
-    # - "assets/figma/studio/light.json"
+    - "assets/figma/studio/core.json"
+    - "assets/figma/studio/typography.json"
+    - "assets/figma/studio/global.json"
+    - "assets/figma/studio/mobile.json"
+    - "assets/figma/studio/dark.json"
+    - "assets/figma/studio/light.json"
   # Figma output calculated files, 
   # This will output the files
   # dark.json
