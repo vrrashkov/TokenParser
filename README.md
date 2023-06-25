@@ -70,7 +70,7 @@ global:
       - "assets/figma/studio/mobile.json"
   # Different themes path
   # The available paths are the ones created from figma_output_paths
-  # In this case we can only access dark.json, light.json, core.json, mobile.json 
+  # In this case we can only access dark.json, light.json, core.json, mobile.json, light-variables.json
   output_paths:
     - "dark.json"
     - "light.json"
