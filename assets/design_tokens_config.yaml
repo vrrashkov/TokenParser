@@ -1,84 +1,89 @@
 global: 
   # Figma variables source paths
   figma_variables_source_paths: 
-    - "assets/figma/variables/light_variables.json"
+    # - "assets/figma/variables/light_variables.json"
     # - "assets/figma/variables/Dark.json"
     # - "assets/figma/variables/Light.json"
   # Figma studio source paths
   figma_studio_source_paths: 
     - "assets/figma/studio/core.json"
-    - "assets/figma/studio/typography.json"
-    - "assets/figma/studio/global.json"
-    - "assets/figma/studio/mobile.json"
     - "assets/figma/studio/dark.json"
+    - "assets/figma/studio/global.json"
     - "assets/figma/studio/light.json"
+    - "assets/figma/studio/mobile.json"
+    - "assets/figma/studio/m-button.json"
+    - "assets/figma/studio/m-progress.json"
+    - "assets/figma/studio/m-reg.json"
+    - "assets/figma/studio/typography.json"
   # Figma output calculated files, 
-  # This will output the files
-  # dark.json
-  # light.json
-  # core.json - (merged with typography, global)
-  # mobile.json
   figma_output_paths:
     - combine:
-      - "assets/figma/variables/light_variables.json"
-    # - combine:
-    #   - "assets/figma/variables/Dark.json"
-    # - combine:
-    #   - "assets/figma/variables/Light.json"
+        file_name: "light"
+        files:
+          - "assets/figma/studio/light.json"
+          - "assets/figma/studio/global.json"
     - combine:
-      - "assets/figma/studio/dark.json"
+        file_name: "dark"
+        files:
+          - "assets/figma/studio/dark.json"
+          - "assets/figma/studio/global.json"
     - combine:
-      - "assets/figma/studio/light.json"
-    - combine: 
-      - "assets/figma/studio/core.json"
-      - "assets/figma/studio/typography.json"
-      - "assets/figma/studio/global.json"
-    - combine: 
-      - "assets/figma/studio/mobile.json"
-  # Different themes path
-  # The available paths are the ones created from figma_output_paths
-  # In this case we can only access dark.json, light.json, core.json, mobile.json 
+        file_name: "core"
+        files:
+          - "assets/figma/studio/core.json"
+          - "assets/figma/studio/typography.json"
+          - "assets/figma/studio/mobile.json"
+          - "assets/figma/studio/m-reg.json"
+          - "assets/figma/studio/m-button.json"
+          - "assets/figma/studio/m-progress.json"
+  # Different generated
   output_paths:
     - combine:
-      - "light_variables.json"
-    # - combine:
-    #   - "Dark.json"
-    # - combine:
-    #   - "Light.json"
+        files:
+          - "core"
     - combine:
-      - "dark.json"
-      - "core.json"
-      - "mobile.json"
+        files:
+          - "light"
     - combine:
-      - "light.json"
-      - "core.json"
-      - "mobile.json"
+        files:
+          - "dark"
   #Output path 
   style_output_path: "assets/generated_styles/"
 templates:
   - settings_general:
       generate_file_path: "generated_templates"
       file_name:
-        format: "cds-{style}"
-        extension: "css"
-        case: "kebab"
+        format: "DS{style}"
+        extension: "swift"
+        #case: "kebab"
         #This will replace the class_name from template_type as well
         #use_as_class_name: true
     settings_custom:
-      header: ":root {"
+      header: "import SwiftUI"
       #sub_header: "test sub header"
       #sub_footer: "test sub footer"
-      footer: "}"
+      #footer: "}"
       # Only if class is set, class_name will be displayed
-      #class: "public class"
-      #class_name: "DSCore{style}"
+      class: "public class"
+      class_name: "DSCore{style}"
       template_type:
+      # For themes
         - type: color
-          value: "let {{variable_name | camel}} = {{color | color: 'hex'}} {{description | optional: '// desc = %value'}}"
-        - type: string
-          value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
-        - type: float
-          value: "let {{variable_name | camel}} = CGFloat({{float}})  {{description | optional: '// desc = %value'}}"
+          value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
+        - type: boxShadow
+          value: 
+            - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
+            - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
+        # For Core
+        - type: typography
+          value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
+        - type: spacing
+          value: "public static let {{variable_name | camel}} = CGFloat({{spacing}})"
+      
+        # - type: string
+        #   value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
+        # - type: float
+        #   value: "let {{variable_name | camel}} = CGFloat({{float}})  {{description | optional: '// desc = %value'}}"
         # - type: text
         #   value: "text test = {{variable_name | kebab}} {{text}};"
         # - type: boolean
@@ -91,10 +96,6 @@ templates:
         #   value: "{% if height != '' %} height: {{height | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
         # - type: composition
         #   value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
-        # - type: boxShadow
-        #   value: 
-        #     - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
-        #     - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
       # template_type:
       #   - type: typography
       #     value: "Typography: {{variable_name | kebab}}, {{fontFamily | optional: 'fontFamily: %value'}}, {{paragraphSpacing | optional: 'paragraphSpacing: %value'}}, {{paragraphIndent | optional: 'paragraphIndent: %value'}}, {{textCase | optional: 'textCase: %value'}}, {{textDecoration | optional: 'textDecoration: %value'}}"

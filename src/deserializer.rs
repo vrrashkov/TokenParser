@@ -58,9 +58,18 @@ pub struct ConfigTokensGlobal {
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPath {
     #[serde(alias = "combine")]
-    pub combine: Vec<String>
+    pub combine: ConfigTokensGlobalOtherPathCombine
 }
 
+#[derive(Default, Deserialize, Debug)]
+pub struct ConfigTokensGlobalOtherPathCombine {
+    #[serde(alias = "file_name")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub file_name: Option<String>,
+    #[serde(alias = "files")]
+    pub files: Vec<String>
+}
 #[derive(Default, Serialize, Deserialize, Debug)]
 #[serde(tag = "type", rename_all="lowercase")]
 pub enum ConfigGlobalType {

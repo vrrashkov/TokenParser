@@ -34,9 +34,12 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         let mut data_object: serde_json::Value;
         let mut file_name = String::from("");
         let mut res: Value = Value::Null;
-        for (index, combine) in group.combine.iter().enumerate() {
+        for (index, combine) in group.combine.files.iter().enumerate() {
             let current_file_name = Path::new(combine).file_stem().unwrap().to_str().unwrap().to_owned();
-            if index == 0 {
+            
+            if let Some(custom_file_name) = &group.combine.file_name {
+                file_name = custom_file_name.to_string()
+            } else {
                 file_name = current_file_name.to_string();
             }
             

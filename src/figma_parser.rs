@@ -85,9 +85,14 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         
         let mut data_object: serde_json::Value = serde_json::Value::Null;
         let mut file_name = String::from("");
-        for (index, path) in group.combine.iter().enumerate() {
+        for (index, path) in group.combine.files.iter().enumerate() {
+            let mut current_file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
             if index == 0 {
-                file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
+                if let Some(custom_file_name) = &group.combine.file_name {
+                    file_name = custom_file_name.to_string()
+                } else {
+                    file_name = current_file_name.to_string();
+                }
             }
 
             let data_to_merge_with: serde_json::Value = general::get_json(path);

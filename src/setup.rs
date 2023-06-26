@@ -205,6 +205,7 @@ fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<t
             //print!("current: {}", &current);
             let template_parsed = liquid::ParserBuilder::with_stdlib()
             .filter(filters::remove_space::RemoveSpace)
+            .filter(filters::as_text_or_number::AsTextOrNumber)
             .filter(filters::color::Color)
             .filter(filters::case::CamelCase)
             .filter(filters::case::PascalCase)
@@ -278,7 +279,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             }
             TemplateField::font_size => {
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                    template::set_optional_global(globals, field_name, value.fontFamily.to_owned(), "");
+                    template::set_optional_global(globals, field_name, value.fontSize.to_owned(), "");
                 }
                 if let deserializer::TokenDataType::pure_value{ value } = &token_value.value {
                     template::set_global(globals, field_name, value);
