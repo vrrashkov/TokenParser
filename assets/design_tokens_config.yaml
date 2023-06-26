@@ -67,7 +67,7 @@ templates:
       class: "public class"
       class_name: "DSCore{style}"
       template_type:
-      # For themes
+        # For themes
         - type: color
           value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
         - type: boxShadow
@@ -79,8 +79,13 @@ templates:
           value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
         - type: spacing
           value: "public static let {{variable_name | camel}} = CGFloat({{spacing}})"
-      
-        # - type: string
+        - type: borderWidth
+          value: "public static let {{variable_name | camel}} = CGFloat({{borderWidth}})"   
+        - type: borderRadius
+          value: "public static let {{variable_name | camel}} = CGFloat({{borderRadius}})"   
+        - type: lineHeights
+          value: "public static let {{variable_name | camel}} = CGFloat({{lineHeight}})"   
+       # - type: string
         #   value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
         # - type: float
         #   value: "let {{variable_name | camel}} = CGFloat({{float}})  {{description | optional: '// desc = %value'}}"
