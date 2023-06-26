@@ -245,6 +245,7 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
     add_pure_value(&value.t_type, global::field_value_type, pure_values, &p, &add_val_path);
     add_pure_value(&value.x, global::field_value_x, pure_values, &p, &add_val_path);
     add_pure_value(&value.y, global::field_value_y, pure_values, &p, &add_val_path);
+    add_pure_value(&value.other, global::field_value_other, pure_values, &p, &add_val_path);
     
 }
 
@@ -294,6 +295,8 @@ pub struct FigmaTokenValueSingle {
     pub borderRadiusTopRight: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
     pub sizing: Option<String>,
+    #[serde(default, deserialize_with="parse_to_optional_string")]
+    pub other: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]
     pub height: Option<String>,
     #[serde(default, deserialize_with="parse_to_optional_string")]

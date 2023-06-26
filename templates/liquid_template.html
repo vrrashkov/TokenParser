@@ -60,6 +60,12 @@
 {% for boolean in boolean_values -%}
 {{boolean}}
 {% endfor -%}
+{% for sizing in sizing_values -%}
+{{sizing}}
+{% endfor -%}
+{% for other in other_values -%}
+{{other}}
+{% endfor -%}
 {% if sub_footer != empty %}{{sub_footer}}{% endif %}
 {% if class != empty %}
 }

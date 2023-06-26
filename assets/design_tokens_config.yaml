@@ -16,6 +16,8 @@ global:
     - "assets/figma/studio/m-reg.json"
     - "assets/figma/studio/typography.json"
   # Figma output calculated files, 
+  # file_name: If set this will be the name of the merged file
+  # if not, than the first file name will be used
   figma_output_paths:
     - combine:
         file_name: "light"
@@ -85,6 +87,10 @@ templates:
           value: "public static let {{variable_name | camel}} = CGFloat({{borderRadius}})"   
         - type: lineHeights
           value: "public static let {{variable_name | camel}} = CGFloat({{lineHeight}})"   
+        - type: sizing
+          value: "public static let {{variable_name | camel}} = CGFloat({{sizing}})"   
+        - type: other
+          value: "public static let {{variable_name | camel}} = CGFloat({{other}})"   
        # - type: string
         #   value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
         # - type: float

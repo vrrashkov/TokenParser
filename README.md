@@ -36,44 +36,58 @@ If you have already generated the usable json files you can just run the end cod
 ##### Input/Output paths for loading and generation
 
 ```yaml
-global:
+global: 
   # Figma variables source paths
   figma_variables_source_paths: 
-    - "assets/figma/variables/light_variables.json"
+    # - "assets/figma/variables/light_variables.json"
+    # - "assets/figma/variables/Dark.json"
+    # - "assets/figma/variables/Light.json"
   # Figma studio source paths
-  figma_studio_source_paths:
+  figma_studio_source_paths: 
     - "assets/figma/studio/core.json"
-    - "assets/figma/studio/typography.json"
-    - "assets/figma/studio/global.json"
-    - "assets/figma/studio/mobile.json"
     - "assets/figma/studio/dark.json"
+    - "assets/figma/studio/global.json"
     - "assets/figma/studio/light.json"
+    - "assets/figma/studio/mobile.json"
+    - "assets/figma/studio/m-button.json"
+    - "assets/figma/studio/m-progress.json"
+    - "assets/figma/studio/m-reg.json"
+    - "assets/figma/studio/typography.json"
   # Figma output calculated files, 
-  # This will output the files
-  # dark.json
-  # light.json
-  # core.json - (merged with typography, global)
-  # mobile.json
+  # file_name: If set this will be the name of the merged file
+  # if not, than the first file name will be used
+  # This will output files light.json, dark.json, core.json
   figma_output_paths:
     - combine:
-      - "assets/figma/variables/light_variables.json"
+        file_name: "light"
+        files:
+          - "assets/figma/studio/light.json"
+          - "assets/figma/studio/global.json"
     - combine:
-      - "assets/figma/studio/dark.json"
+        file_name: "dark"
+        files:
+          - "assets/figma/studio/dark.json"
+          - "assets/figma/studio/global.json"
     - combine:
-      - "assets/figma/studio/light.json"
-    - combine: 
-      - "assets/figma/studio/core.json"
-      - "assets/figma/studio/typography.json"
-      - "assets/figma/studio/global.json"
-    - combine: 
-      - "assets/figma/studio/mobile.json"
-  # Different themes path
-  # The available paths are the ones created from figma_output_paths
-  # In this case we can only access dark.json, light.json, core.json, mobile.json, light-variables.json
+        file_name: "core"
+        files:
+          - "assets/figma/studio/core.json"
+          - "assets/figma/studio/typography.json"
+          - "assets/figma/studio/mobile.json"
+          - "assets/figma/studio/m-reg.json"
+          - "assets/figma/studio/m-button.json"
+          - "assets/figma/studio/m-progress.json"
+  # Different styles generated
   output_paths:
-    - "dark.json"
-    - "light.json"
-    - "light-variables.json"
+    - combine:
+        files:
+          - "core"
+    - combine:
+        files:
+          - "light"
+    - combine:
+        files:
+          - "dark"
   # Output path 
   style_output_path: "assets/generated_styles"
 ```
@@ -146,30 +160,28 @@ Both type of jsons are valid, you can have infinite amount of nesting or no nest
 ```json
 {
     "size": {
-		"XL": {
-			"type": "float",
-			"value": "56",
-			"description": ""
-		}
+        "XL": {
+            "type": "float",
+            "value": "56",
+            "description": ""
+        }
     },
     "text": {
-		"fr": {
-			"type": "string",
-			"value": "Some Text",
-			"description": ""
-		}
+        "fr": {
+            "type": "string",
+            "value": "Some Text",
+            "description": ""
+        }
     },
     "color": {
-		"bg": {
-			"type": "color",
-			"value": "#000000",
-			"description": ""
-		}
+        "bg": {
+            "type": "color",
+            "value": "#000000",
+            "description": ""
+        }
     }
 }
 ```
-
-
 
 ##### Keywords
 
@@ -193,6 +205,8 @@ Both type of jsons are valid, you can have infinite amount of nesting or no nest
 | fontSizes        | fontSize                                                                                                                                                                                                                                                                                     |
 | fontWeights      | fontWeight                                                                                                                                                                                                                                                                                   |
 | fontFamilies     | fontFamily                                                                                                                                                                                                                                                                                   |
+| sizing           | sizing                                                                                                                                                                                                                                                                                       |
+| other            | other                                                                                                                                                                                                                                                                                        |
 | boxShadow        | color<br/>blur<br/>spread<br/>type<br/>x<br/>y                                                                                                                                                                                                                                               |
 | composition      | paddingBottom<br/>paddingTop<br/>paddingLeft<br/>paddingRight<br/>sizing<br/>height<br/>width<br/>borderRdius<br/>borderWidth<br/>borderRadiusBottomLeft<br/>border_radiusBottomRight<br/>borderRadiusTopLeft<br/>borderRadiusTopRight<br/>spacing<br/>verticalPadding<br/>horizontalPadding |
 

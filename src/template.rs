@@ -42,6 +42,8 @@ pub struct CustomTemplate { // the name of the struct can be anything
     pub text_values: Option<Vec<String>>, 
     pub number_values: Option<Vec<String>>, 
     pub boolean_values: Option<Vec<String>>, 
+    pub sizing_values: Option<Vec<String>>, 
+    pub other_values: Option<Vec<String>>, 
 }
 
 impl CustomTemplate {
@@ -112,6 +114,12 @@ impl CustomTemplate {
             },
             deserializer::ConfigTemplateType::boolean => {
                 Self::set_template_value(&mut self.boolean_values, values);
+            },
+            deserializer::ConfigTemplateType::sizing => {
+                Self::set_template_value(&mut self.sizing_values, values);
+            },
+            deserializer::ConfigTemplateType::other => {
+                Self::set_template_value(&mut self.other_values, values);
             },
             deserializer::ConfigTemplateType::none => {},
         }
