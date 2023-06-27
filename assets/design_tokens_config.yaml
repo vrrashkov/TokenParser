@@ -1,54 +1,69 @@
 global: 
   # Figma variables source paths
+  # These are the pure files from Figma, they can contain aliases
+  # For example if we have aliases we will need the actual value and not the alias
+  # Separating different files is necessary in case there are duplicate trees but different values/aliases
+  # So if we have button-md and button-big with the same trees but different values with aliases that need to be accesed from core.json
+  # this should be the setup
+  # Look at the figma/variables and figma/generated_styles for better understanding how it works
   figma_variables_source_paths: 
-    # - "assets/figma/variables/light_variables.json"
-    # - "assets/figma/variables/Dark.json"
-    # - "assets/figma/variables/Light.json"
+    - combine:
+        files:
+          - "assets/figma/variables/color-light.json"
+          - "assets/figma/variables/color-dark.json"
+    - combine:
+        files:
+        - "assets/figma/variables/button-md.json"
+        - "assets/figma/variables/core.json"
+    - combine:
+        files:
+        - "assets/figma/variables/button-big.json"
+        - "assets/figma/variables/core.json"
   # Figma studio source paths
-  figma_studio_source_paths: 
-    - "assets/figma/studio/core.json"
-    - "assets/figma/studio/dark.json"
-    - "assets/figma/studio/global.json"
-    - "assets/figma/studio/light.json"
-    - "assets/figma/studio/mobile.json"
-    - "assets/figma/studio/m-button.json"
-    - "assets/figma/studio/m-progress.json"
-    - "assets/figma/studio/m-reg.json"
-    - "assets/figma/studio/typography.json"
+  # figma_studio_source_paths: 
+  #   - "assets/figma/studio/core.json"
+  #   - "assets/figma/studio/dark.json"
+  #   - "assets/figma/studio/global.json"
+  #   - "assets/figma/studio/light.json"
+  #   - "assets/figma/studio/mobile.json"
+  #   - "assets/figma/studio/m-button.json"
+  #   - "assets/figma/studio/m-progress.json"
+  #   - "assets/figma/studio/m-reg.json"
+  #   - "assets/figma/studio/typography.json"
   # Figma output calculated files, 
   # file_name: If set this will be the name of the merged file
   # if not, than the first file name will be used
   figma_output_paths:
     - combine:
-        file_name: "light"
+        file_name: "color-light"
         files:
-          - "assets/figma/studio/light.json"
-          - "assets/figma/studio/global.json"
+          - "assets/figma/variables/color-light.json"
     - combine:
-        file_name: "dark"
+        file_name: "color-dark"
         files:
-          - "assets/figma/studio/dark.json"
-          - "assets/figma/studio/global.json"
+          - "assets/figma/variables/color-dark.json"
     - combine:
-        file_name: "core"
+        file_name: "button-md"
         files:
-          - "assets/figma/studio/core.json"
-          - "assets/figma/studio/typography.json"
-          - "assets/figma/studio/mobile.json"
-          - "assets/figma/studio/m-reg.json"
-          - "assets/figma/studio/m-button.json"
-          - "assets/figma/studio/m-progress.json"
+          - "assets/figma/variables/button-md.json"
+    - combine:
+        file_name: "button-big"
+        files:
+          - "assets/figma/variables/button-big.json"
   # Different generated
   output_paths:
     - combine:
         files:
-          - "core"
+          - "color-light"
     - combine:
         files:
-          - "light"
+          - "color-dark"
     - combine:
         files:
-          - "dark"
+          - "button-md"
+    - combine:
+        files:
+          - "button-big"
   #Output path 
   style_output_path: "assets/generated_styles/"
 templates:
@@ -72,25 +87,35 @@ templates:
         # For themes
         - type: color
           value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
-        - type: boxShadow
-          value: 
-            - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
-            - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
         # For Core
-        - type: typography
-          value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
-        - type: spacing
-          value: "public static let {{variable_name | camel}} = CGFloat({{spacing}})"
-        - type: borderWidth
-          value: "public static let {{variable_name | camel}} = CGFloat({{borderWidth}})"   
-        - type: borderRadius
-          value: "public static let {{variable_name | camel}} = CGFloat({{borderRadius}})"   
-        - type: lineHeights
-          value: "public static let {{variable_name | camel}} = CGFloat({{lineHeight}})"   
-        - type: sizing
-          value: "public static let {{variable_name | camel}} = CGFloat({{sizing}})"   
-        - type: other
-          value: "public static let {{variable_name | camel}} = CGFloat({{other}})"   
+        - type: string
+          value: "public static let {{variable_name | camel}} = {{string}}"   
+        - type: float
+          value: "public static let {{variable_name | camel}} = CGFloat({{float}})"   
+        - type: boolean
+          value: "public static let {{variable_name | camel}} = {{boolean}}"   
+        # For themes
+        # - type: color
+        #   value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
+        # - type: boxShadow
+        #   value: 
+        #     - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
+        #     - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
+        # # For Core
+        # - type: typography
+        #   value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
+        # - type: spacing
+        #   value: "public static let {{variable_name | camel}} = CGFloat({{spacing}})"
+        # - type: borderWidth
+        #   value: "public static let {{variable_name | camel}} = CGFloat({{borderWidth}})"   
+        # - type: borderRadius
+        #   value: "public static let {{variable_name | camel}} = CGFloat({{borderRadius}})"   
+        # - type: lineHeights
+        #   value: "public static let {{variable_name | camel}} = CGFloat({{lineHeight}})"   
+        # - type: sizing
+        #   value: "public static let {{variable_name | camel}} = CGFloat({{sizing}})"   
+        # - type: other
+        #   value: "public static let {{variable_name | camel}} = CGFloat({{other}})"   
        # - type: string
         #   value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
         # - type: float

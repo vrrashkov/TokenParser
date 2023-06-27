@@ -11,129 +11,143 @@ use easy_color::{RGBA, RGB, HSL, Hex, ColorMix, IntoHex};
 use jsonptr::Pointer;
 
 use crate::general;
-use crate::deserializer::{self};
+use crate::deserializer::{self, ConfigTokensGlobalOtherPath};
 use crate::template;
 use crate::utils;
 use crate::global;
 
 pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
+    
+    let mut allSources: Vec<Vec<String>> = vec![];
 
-    let mut pure_values: HashMap<String, String> = HashMap::new();
     // FIGMA VARIABLES
-    let mut json_figma_variable_source:Vec<String> = token_config.global.figma_variables_source_paths.to_owned();
+    let mut json_figma_variable_source:&Vec<ConfigTokensGlobalOtherPath> = &token_config.global.figma_variables_source_paths;
     // get all keys with their values
     // key contains the full path of the tree
     // for example core.natural.fr.c1
-    for file in &json_figma_variable_source {
-        let data_object: serde_json::Value = general::get_json(file);
-
-        filter_sub_properties("", &data_object, &mut pure_values, vec![]);
- 
+    for file in json_figma_variable_source {
+        let files = file.combine.files.to_owned();
+        allSources.push(files);
     }
 
     // FIGMA STUDIO
-    let mut json_figma_studio_source:Vec<String> = token_config.global.figma_studio_source_paths.to_owned();
+    let mut json_figma_studio_source:&Vec<ConfigTokensGlobalOtherPath> = &token_config.global.figma_studio_source_paths;
     // get all keys with their values
     // key contains the full path of the tree
     // for example core.natural.fr.c1
-    for file in &json_figma_studio_source {
-        let data_object: serde_json::Value = general::get_json(file);
-
-        filter_sub_properties("", &data_object, &mut pure_values, vec![]);
- 
+    for file in json_figma_studio_source {
+        let files = file.combine.files.to_owned();
+        allSources.push(files);
     }
 
- 
-    // Calculating all the values to usable ones
-    // some values are referencing to other keys for example {spacing.right.1} * 2
-    // which we are converting to usable value by eval() the math equation
-    let mut calculated_values: HashMap<String, evalexpr::Value> = HashMap::new();
-    for (key, val) in &pure_values {
-        if !val.contains('{') && !val.contains('}') {
-            //println!("don't calculate this val: {}", val);
-            continue;
-        }
-
-        let mut template_values_list:Vec<String> = Vec::new();
-
-        let (template_values, template_list) = find_all_between(val.to_owned(), &mut template_values_list, &pure_values);
-
-        if !template_list.is_empty() { 
-            let mut math_eval = Value::from(template_values.to_owned());
-
-            if let Ok(ev) = eval(template_values.to_owned().as_str()) {
-                math_eval = ev;
-            }
-
-            calculated_values.insert(key.to_string(), math_eval);
-        } else {
-            let mut math_eval = Value::from(val.to_owned());
-            
-            if let Ok(ev) = eval(template_values.to_owned().as_str()) {
-                math_eval = ev;
-            }
-
-            calculated_values.insert(key.to_string(), math_eval);
-        }
-    }
-    
-    let create_styles_directory = &token_config.global.style_output_path;//"assets/generated_styles/";
-    // merging files and updating the values
-    // the merged files are dependant on the config
-    
-    for group in &token_config.global.figma_output_paths {
+    for files in allSources {
         
-        let mut data_object: serde_json::Value = serde_json::Value::Null;
-        let mut file_name = String::from("");
-        for (index, path) in group.combine.files.iter().enumerate() {
-            let mut current_file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
-            if index == 0 {
-                if let Some(custom_file_name) = &group.combine.file_name {
-                    file_name = custom_file_name.to_string()
-                } else {
-                    file_name = current_file_name.to_string();
-                }
-            }
+        let mut pure_values: HashMap<String, String> = HashMap::new();
+        
+        for file in &files {
+            let data_object: serde_json::Value = general::get_json(&file);
 
-            let data_to_merge_with: serde_json::Value = general::get_json(path);
-            data_object.merge(data_to_merge_with);
+            filter_sub_properties("", &data_object, &mut pure_values, vec![]);
         }
 
-        for (key_path, key_value) in &calculated_values {
-            let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
-            let path_list_count = path_list.len();
-            
-            let pointer_value = format!("/{}", path_list.join("/"));
+        // Calculating all the values to usable ones
+        // some values are referencing to other keys for example {spacing.right.1} * 2
+        // which we are converting to usable value by eval() the math equation
+        let mut calculated_values: HashMap<String, evalexpr::Value> = HashMap::new();
+        for (key, val) in &pure_values {
+            if !val.contains('{') && !val.contains('}') {
+                //println!("don't calculate this val: {}", val);
+                continue;
+            }
 
-            let ptr = Pointer::new(path_list);
-   
-            // replace the values from json
-            data_object.pointer_mut(ptr.as_str()).map(|v| {
-                match key_value {
-                    Value::String(val) => {
-                        *v = json!(val)
-                    },
-                    Value::Float(val) => {
-                        *v = json!(val.to_string())
-                    },
-                    Value::Int(val) => {
-                        *v = json!(val.to_string())
-                    },
-                    Value::Boolean(val) => {
-                        *v = json!(val.to_string())
-                    },
-                    Value::Tuple(val) => {},
-                    Value::Empty => {},
+            let mut template_values_list:Vec<String> = Vec::new();
+
+            let (template_values, template_list) = find_all_between(val.to_owned(), &mut template_values_list, &pure_values);
+
+            if !template_list.is_empty() { 
+                let mut math_eval = Value::from(template_values.to_owned());
+
+                if let Ok(ev) = eval(template_values.to_owned().as_str()) {
+                    math_eval = ev;
                 }
+
+                calculated_values.insert(key.to_string(), math_eval);
+            } else {
+                let mut math_eval = Value::from(val.to_owned());
                 
-            });
+                if let Ok(ev) = eval(template_values.to_owned().as_str()) {
+                    math_eval = ev;
+                }
+
+                calculated_values.insert(key.to_string(), math_eval);
+            }
+        }
+
+        let create_styles_directory = &token_config.global.style_output_path;//"assets/generated_styles/";
+        // merging files and updating the values
+        // the merged files are dependant on the config
+        
+        'figma_output: for group in &token_config.global.figma_output_paths {
+            
+            let mut data_object: serde_json::Value = serde_json::Value::Null;
+            let mut file_name = String::from("");
+            for (index, path) in group.combine.files.iter().enumerate() {
+                let currentList = &files;
+                if !currentList.contains(&path) {
+                    continue 'figma_output
+                }
+
+                let mut current_file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
+                if index == 0 {
+                    if let Some(custom_file_name) = &group.combine.file_name {
+                        file_name = custom_file_name.to_string()
+                    } else {
+                        file_name = current_file_name.to_string();
+                    }
+                }
+
+                let data_to_merge_with: serde_json::Value = general::get_json(path);
+                data_object.merge(data_to_merge_with);
+            }
+
+           
+            for (key_path, key_value) in &calculated_values {
+                let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
+                let path_list_count = path_list.len();
+                
+                let pointer_value = format!("/{}", path_list.join("/"));
+
+                let ptr = Pointer::new(path_list);
+    
+                // replace the values from json
+                data_object.pointer_mut(ptr.as_str()).map(|v| {
+                    match key_value {
+                        Value::String(val) => {
+                            *v = json!(val)
+                        },
+                        Value::Float(val) => {
+                            *v = json!(val.to_string())
+                        },
+                        Value::Int(val) => {
+                            *v = json!(val.to_string())
+                        },
+                        Value::Boolean(val) => {
+                            *v = json!(val.to_string())
+                        },
+                        Value::Tuple(val) => {},
+                        Value::Empty => {},
+                    }
+                    
+                });
+            }
+            
+            let file = format!("{}{}.json",&create_styles_directory, &file_name);
+            std::fs::write(
+                &file,
+                serde_json::to_string_pretty(&data_object).unwrap(),
+            );
         }
         
-        let file = format!("{}{}.json",&create_styles_directory, &file_name);
-        std::fs::write(
-            &file,
-            serde_json::to_string_pretty(&data_object).unwrap(),
-        );
     }
 }
 

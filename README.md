@@ -43,58 +43,72 @@ If you have already generated the usable json files you can just run the end cod
 ```yaml
 global: 
   # Figma variables source paths
+  # These are the pure files from Figma, they can contain aliases
+  # For example if we have aliases we will need the actual value and not the alias
+  # Separating different files is necessary in case there are duplicate trees but different values/aliases
+  # So if we have button-md and button-big with the same trees but different values with aliases that need to be accesed from core.json
+  # this should be the setup
+  # Look at the figma/variables and figma/generated_styles for better understanding how it works
   figma_variables_source_paths: 
-    # - "assets/figma/variables/light_variables.json"
-    # - "assets/figma/variables/Dark.json"
-    # - "assets/figma/variables/Light.json"
+    - combine:
+        files:
+          - "assets/figma/variables/color-light.json"
+          - "assets/figma/variables/color-dark.json"
+    - combine:
+        files:
+        - "assets/figma/variables/button-md.json"
+        - "assets/figma/variables/core.json"
+    - combine:
+        files:
+        - "assets/figma/variables/button-big.json"
+        - "assets/figma/variables/core.json"
   # Figma studio source paths
-  figma_studio_source_paths: 
-    - "assets/figma/studio/core.json"
-    - "assets/figma/studio/dark.json"
-    - "assets/figma/studio/global.json"
-    - "assets/figma/studio/light.json"
-    - "assets/figma/studio/mobile.json"
-    - "assets/figma/studio/m-button.json"
-    - "assets/figma/studio/m-progress.json"
-    - "assets/figma/studio/m-reg.json"
-    - "assets/figma/studio/typography.json"
+  # figma_studio_source_paths: 
+  #   - "assets/figma/studio/core.json"
+  #   - "assets/figma/studio/dark.json"
+  #   - "assets/figma/studio/global.json"
+  #   - "assets/figma/studio/light.json"
+  #   - "assets/figma/studio/mobile.json"
+  #   - "assets/figma/studio/m-button.json"
+  #   - "assets/figma/studio/m-progress.json"
+  #   - "assets/figma/studio/m-reg.json"
+  #   - "assets/figma/studio/typography.json"
   # Figma output calculated files, 
   # file_name: If set this will be the name of the merged file
   # if not, than the first file name will be used
-  # This will output files light.json, dark.json, core.json
   figma_output_paths:
     - combine:
-        file_name: "light"
+        file_name: "color-light"
         files:
-          - "assets/figma/studio/light.json"
-          - "assets/figma/studio/global.json"
+          - "assets/figma/variables/color-light.json"
     - combine:
-        file_name: "dark"
+        file_name: "color-dark"
         files:
-          - "assets/figma/studio/dark.json"
-          - "assets/figma/studio/global.json"
+          - "assets/figma/variables/color-dark.json"
     - combine:
-        file_name: "core"
+        file_name: "button-md"
         files:
-          - "assets/figma/studio/core.json"
-          - "assets/figma/studio/typography.json"
-          - "assets/figma/studio/mobile.json"
-          - "assets/figma/studio/m-reg.json"
-          - "assets/figma/studio/m-button.json"
-          - "assets/figma/studio/m-progress.json"
-  # Different styles generated
+          - "assets/figma/variables/button-md.json"
+    - combine:
+        file_name: "button-big"
+        files:
+          - "assets/figma/variables/button-big.json"
+  # Different generated
   output_paths:
     - combine:
         files:
-          - "core"
+          - "color-light"
     - combine:
         files:
-          - "light"
+          - "color-dark"
     - combine:
         files:
-          - "dark"
-  # Output path 
-  style_output_path: "assets/generated_styles"
+          - "button-md"
+    - combine:
+        files:
+          - "button-big"
+  #Output path 
+  style_output_path: "assets/generated_styles/"
 ```
 
 ##### Template config
@@ -102,26 +116,32 @@ global:
 ```yaml
 templates:
   - settings_general:
-      # Path where the template should be created
       generate_file_path: "generated_templates"
       file_name:
-        # Special keyword {style}
-        # it will be replaced with the specific style
-        # In this case dark/light
-        format: "cds-{style}"
-        extension: "css"
-        case: "kebab"
+        format: "DS{style}"
+        extension: "swift"
+        #case: "kebab"
+        #This will replace the class_name from template_type as well
+        #use_as_class_name: true
     settings_custom:
-      header: ":root {"
+      header: "import SwiftUI"
       #sub_header: "test sub header"
       #sub_footer: "test sub footer"
-      footer: "}"
+      #footer: "}"
       # Only if class is set, class_name will be displayed
-      #class: "public class"
-      #class_name: "SomeNameCore{style}"
+      class: "public class"
+      class_name: "DSCore{style}"
       template_type:
+        # For themes
         - type: color
-          value: "{{variable_name | kebab}} {{color | color: 'rgb_r_v1, rgb_g_v2'}}"
+          value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
+        # For Core
+        - type: string
+          value: "public static let {{variable_name | camel}} = {{string}}"   
+        - type: float
+          value: "public static let {{variable_name | camel}} = CGFloat({{float}})"   
+        - type: boolean
+          value: "public static let {{variable_name | camel}} = {{boolean}}"   
         - type: composition
           value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
         - type: composition
@@ -132,7 +152,7 @@ templates:
             - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
 
-In the above scenario 3 files are going to be generated **cds-dark**, **cds-light** and **cds-light-variables** they will be containing tokens which we set through **template_type** in this case **composition**, **boxShadow** and **color**, in this case we are using 2 different methods together, just for the example tokens from Figma Variables and from Figma Studio.  <u>Every different type contains specific keys you can use to create the template that you want</u>. See below the list of special keywords you can use.
+In the above scenario 4 files are going to be generated **DSButtonBig**, **DSButtonMd**, **DSColorDark** and **DSColorLight** they will be containing tokens which we set through **template_type** (**ONLY** if those tokens are available) in this case **composition**, **boxShadow**, **string**, **float**, **boolean** and **color**, in this case we are using Figma Variables but if we want we can have have also tokens from Figma Studio and use them together. <u>Every different type contains specific keys you can use to create the template that you want</u>. See below the list of special keywords you can use.
 
 You can use every type multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something. 
 
@@ -140,7 +160,7 @@ Optional values can be added with the **optional** filter. Instead of using if s
 
 ##### Valid JSON
 
-Both type of jsons are valid, you can have infinite amount of nesting or no nesting at all.  
+Both type of jsons are valid and represent the same structure becase of the forward slash, you can have infinite amount of nesting or no nesting at all.  
 
 ```json
 {

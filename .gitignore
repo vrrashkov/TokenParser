@@ -2,8 +2,8 @@
 /Cargo.lock
 /.cargo
 /.vscode
-/assets/figma
+#/assets/figma
 /assets/figma/studio
-/assets/figma/variables
-/assets/generated_styles
-/generated_templates
+#/assets/figma/variables
+#/assets/generated_styles
+#/generated_templates

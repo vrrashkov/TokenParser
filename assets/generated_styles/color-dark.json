@@ -1,0 +1,16 @@
+{
+  "n": {
+    "bg": {
+      "description": "",
+      "type": "color",
+      "value": "#1a1a1a"
+    },
+    "fr": {
+      "c5": {
+        "description": "",
+        "type": "color",
+        "value": "#d6d9db"
+      }
+    }
+  }
+}

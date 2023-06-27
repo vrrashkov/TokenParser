@@ -45,9 +45,9 @@ pub struct ConfigTemplateSettingsCustom {
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
     #[serde(alias = "figma_variables_source_paths")]
-    pub figma_variables_source_paths: Vec<String>,
+    pub figma_variables_source_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "figma_studio_source_paths")]
-    pub figma_studio_source_paths: Vec<String>,
+    pub figma_studio_source_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "figma_output_paths")]
     pub figma_output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "output_paths")]

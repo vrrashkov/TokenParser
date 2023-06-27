@@ -1,0 +1,16 @@
+{
+    "n": {
+        "fr": {
+            "c5": {
+                "type": "color",
+                "value": "#262222",
+                "description": ""
+            }
+        },
+        "bg": {
+            "type": "color",
+            "value": "#fafafa",
+            "description": ""
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "button": {
+    "primary": {
+      "height": {
+        "description": "",
+        "type": "float",
+        "value": "8"
+      },
+      "width": {
+        "description": "",
+        "type": "float",
+        "value": "100"
+      }
+    }
+  }
+}
