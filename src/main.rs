@@ -15,6 +15,7 @@ mod figma_parser;
 mod utils;
 mod global;
 mod filters {
+    pub mod as_text_or_number;
     pub mod remove_space;
     pub mod color;
     pub mod case;

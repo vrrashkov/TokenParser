@@ -70,6 +70,8 @@ fn template_content_custom(
         text_values: None, 
         number_values: None, 
         boolean_values: None, 
+        sizing_values: None, 
+        other_values: None, 
     }; 
 
     for template in &custom_template.template_type {
@@ -133,6 +135,12 @@ fn template_content_custom(
             deserializer::CustomConfigTempalteType::boolean(value) => {
                 template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::boolean, value, &available_fields);
             },
+            deserializer::CustomConfigTempalteType::sizing(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::sizing, value, &available_fields);
+            },
+            deserializer::CustomConfigTempalteType::other(value) => {
+                template_update_list_values(file_data_list, &mut current_template, deserializer::ConfigTemplateType::other, value, &available_fields);
+            },
             deserializer::CustomConfigTempalteType::none => todo!(),
         }
     }
@@ -167,6 +175,8 @@ fn template_content_custom(
         "text_values": current_template.text_values,
         "number_values": current_template.number_values,
         "boolean_values": current_template.boolean_values,
+        "sizing_values": current_template.sizing_values,
+        "other_values": current_template.other_values,
     });
     
     Some(template.render(&globals).unwrap())
@@ -205,6 +215,7 @@ fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<t
             //print!("current: {}", &current);
             let template_parsed = liquid::ParserBuilder::with_stdlib()
             .filter(filters::remove_space::RemoveSpace)
+            .filter(filters::as_text_or_number::AsTextOrNumber)
             .filter(filters::color::Color)
             .filter(filters::case::CamelCase)
             .filter(filters::case::PascalCase)
@@ -278,7 +289,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             }
             TemplateField::font_size => {
                 if let deserializer::TokenDataType::typography { value } = &token_value.value {
-                    template::set_optional_global(globals, field_name, value.fontFamily.to_owned(), "");
+                    template::set_optional_global(globals, field_name, value.fontSize.to_owned(), "");
                 }
                 if let deserializer::TokenDataType::pure_value{ value } = &token_value.value {
                     template::set_global(globals, field_name, value);
@@ -333,6 +344,14 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
             TemplateField::sizing => {
                 if let deserializer::TokenDataType::composition { value } = &token_value.value {
                     template::set_optional_global(globals, field_name, value.sizing.to_owned(), "");
+                }
+                if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
+                }
+            },
+            TemplateField::other => {
+                if let deserializer::TokenDataType::pure_value { value } = &token_value.value {
+                    template::set_global(globals, field_name, value);
                 }
             },
             TemplateField::height => {

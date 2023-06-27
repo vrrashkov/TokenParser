@@ -1,5 +1,7 @@
 /target
 /Cargo.lock
+/.cargo
+/.vscode
 /assets/figma
 /assets/figma/studio
 /assets/figma/variables

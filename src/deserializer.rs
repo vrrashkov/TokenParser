@@ -58,9 +58,18 @@ pub struct ConfigTokensGlobal {
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPath {
     #[serde(alias = "combine")]
-    pub combine: Vec<String>
+    pub combine: ConfigTokensGlobalOtherPathCombine
 }
 
+#[derive(Default, Deserialize, Debug)]
+pub struct ConfigTokensGlobalOtherPathCombine {
+    #[serde(alias = "file_name")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub file_name: Option<String>,
+    #[serde(alias = "files")]
+    pub files: Vec<String>
+}
 #[derive(Default, Serialize, Deserialize, Debug)]
 #[serde(tag = "type", rename_all="lowercase")]
 pub enum ConfigGlobalType {
@@ -87,6 +96,8 @@ pub enum CustomConfigTempalteType {
     fontFamilies(String),
     composition(String),
     boxShadow(Vec<String>),
+    sizing(String),
+    other(String),
     string(String),
     float(String),
     boolean(String),
@@ -115,6 +126,9 @@ pub enum ConfigTemplateType {
     boxShadow,
     composition,
     
+    sizing,
+    other,
+
     string,
     float,
     boolean,
@@ -159,7 +173,7 @@ pub enum TokenDataType {
     #[serde( alias = "borderWidth", alias = "sizing", alias = "spacing", alias = "border_radius",
     alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights",
     alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase",
-    alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border",
+    alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border", alias = "sizing", alias = "other",
     alias = "string", alias = "String", alias = "STRING",
     alias = "color", alias = "Color", alias = "COLOR",
     alias = "float", alias = "Float", alias = "FLOAT", 
@@ -344,6 +358,7 @@ pub enum TemplateField {
     padding_left,
     padding_right,
     sizing,
+    other,
     height,
     width,
     border_radius,
@@ -404,6 +419,7 @@ impl TemplateField {
             global::field_value_string => TemplateField::string,
             global::field_value_float => TemplateField::float,
             global::field_value_boolean => TemplateField::boolean,
+            global::field_value_other => TemplateField::other,
             _ => TemplateField::None
         }
     }
@@ -466,9 +482,8 @@ impl ConfigTemplateType {
             global::type_paragraph_ident        => ConfigTemplateType::paragraphIndent,
             global::type_text_case              => ConfigTemplateType::textCase,
             global::type_text_decoration        => ConfigTemplateType::textDecoration,
-            global::type_spacing       => ConfigTemplateType::spacing,
-            global::type_spacing       => ConfigTemplateType::spacing,
-            global::type_spacing       => ConfigTemplateType::spacing,
+            global::type_sizing       => ConfigTemplateType::sizing,
+            global::type_other       => ConfigTemplateType::other,
             global::type_borderWidth   => ConfigTemplateType::borderWidth,
             global::type_borderRadius  => ConfigTemplateType::borderRadius,
             global::type_letterSpacing => ConfigTemplateType::letterSpacing,
@@ -523,6 +538,14 @@ impl CustomConfigTempalteType {
             CustomConfigTempalteType::spacing(_) => AvailableFields {
                 name: global::type_spacing.to_string(),
                 values: vec![global::field_value_spacing.to_string()]
+            },
+            CustomConfigTempalteType::sizing(_) => AvailableFields {
+                name: global::type_spacing.to_string(),
+                values: vec![global::field_value_sizing.to_string()]
+            },
+            CustomConfigTempalteType::other(_) => AvailableFields {
+                name: global::type_spacing.to_string(),
+                values: vec![global::field_value_other.to_string()]
             },
             CustomConfigTempalteType::borderWidth(_) => AvailableFields {
                 name: global::type_borderWidth.to_string(),
