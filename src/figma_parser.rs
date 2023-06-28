@@ -21,23 +21,25 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     let mut allSources: Vec<Vec<String>> = vec![];
 
     // FIGMA VARIABLES
-    let mut json_figma_variable_source:&Vec<ConfigTokensGlobalOtherPath> = &token_config.global.figma_variables_source_paths;
-    // get all keys with their values
-    // key contains the full path of the tree
-    // for example core.natural.fr.c1
-    for file in json_figma_variable_source {
-        let files = file.combine.files.to_owned();
-        allSources.push(files);
+    if let Some(json_figma_variable_source) = &token_config.global.figma_variables_source_paths {
+        // get all keys with their values
+        // key contains the full path of the tree
+        // for example core.natural.fr.c1
+        for file in json_figma_variable_source {
+            let files = file.combine.files.to_owned();
+            allSources.push(files);
+        }
     }
-
+    
     // FIGMA STUDIO
-    let mut json_figma_studio_source:&Vec<ConfigTokensGlobalOtherPath> = &token_config.global.figma_studio_source_paths;
-    // get all keys with their values
-    // key contains the full path of the tree
-    // for example core.natural.fr.c1
-    for file in json_figma_studio_source {
-        let files = file.combine.files.to_owned();
-        allSources.push(files);
+    if let Some(json_figma_studio_source) = &token_config.global.figma_studio_source_paths {
+        // get all keys with their values
+        // key contains the full path of the tree
+        // for example core.natural.fr.c1
+        for file in json_figma_studio_source {
+            let files = file.combine.files.to_owned();
+            allSources.push(files);
+        }
     }
 
     for files in allSources {
@@ -265,7 +267,8 @@ fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut 
 
 fn add_pure_value(value: &Option<String>, path: &str, pure_values: &mut HashMap<String, String>, p: &[String], add_val_path: &bool) { 
     if let Some(v) = &value {
-        pure_values.insert(add_path_value_get_full(p, path,add_val_path), v.to_string());
+        let np = add_path_value_get_full(p, path,add_val_path);
+        pure_values.insert(np, v.to_string());
     }
 }
 

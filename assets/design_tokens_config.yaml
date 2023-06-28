@@ -21,15 +21,18 @@ global:
         - "assets/figma/variables/core.json"
   # Figma studio source paths
   # figma_studio_source_paths: 
-  #   - "assets/figma/studio/core.json"
-  #   - "assets/figma/studio/dark.json"
-  #   - "assets/figma/studio/global.json"
-  #   - "assets/figma/studio/light.json"
-  #   - "assets/figma/studio/mobile.json"
-  #   - "assets/figma/studio/m-button.json"
-  #   - "assets/figma/studio/m-progress.json"
-  #   - "assets/figma/studio/m-reg.json"
-  #   - "assets/figma/studio/typography.json"
+  # - combine:
+  #     files:
+  #       - "assets/figma/studio/color-light.json"
+  #       - "assets/figma/studio/color-dark.json"
+  # - combine:
+  #     files:
+  #     - "assets/figma/studio/button-md.json"
+  #     - "assets/figma/studio/core.json"
+  # - combine:
+  #     files:
+  #     - "assets/figma/studio/button-big.json"
+  #     - "assets/figma/studio/core.json"
   # Figma output calculated files, 
   # file_name: If set this will be the name of the merged file
   # if not, than the first file name will be used

@@ -45,9 +45,9 @@ pub struct ConfigTemplateSettingsCustom {
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
     #[serde(alias = "figma_variables_source_paths")]
-    pub figma_variables_source_paths: Vec<ConfigTokensGlobalOtherPath>,
+    pub figma_variables_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
     #[serde(alias = "figma_studio_source_paths")]
-    pub figma_studio_source_paths: Vec<ConfigTokensGlobalOtherPath>,
+    pub figma_studio_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
     #[serde(alias = "figma_output_paths")]
     pub figma_output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "output_paths")]
@@ -601,7 +601,8 @@ impl CustomConfigTempalteType {
                 global::field_value_border_radius_top_right.to_string(),
                 global::field_value_vertical_padding.to_string(),
                 global::field_value_horizontal_padding.to_string(),
-                global::field_value_item_spacing.to_string()]
+                global::field_value_item_spacing.to_string(),
+                global::field_value_spacing.to_string()]
             },
             CustomConfigTempalteType::none => AvailableFields {
                 name: global::type_unknown.to_string(),

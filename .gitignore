@@ -3,6 +3,7 @@
 /.cargo
 /.vscode
 #/assets/figma
+/assets/test
 /assets/figma/studio
 #/assets/figma/variables
 #/assets/generated_styles
