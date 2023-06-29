@@ -117,13 +117,6 @@ pub enum TokenDataType {
     Values(Vec<serde_json::Value>),
     #[default]
     None
-    // typography { value: TokenDataTypeTypographyValue },
-    // boxShadow { value: BoxShadowData},
-    // composition { value: TokenDataTypeCompositionValue },
-    // pure_value { value: String },
-    // #[default]
-    // #[serde(other)]
-    // Unknown
 }
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]

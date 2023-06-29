@@ -185,7 +185,6 @@ pub fn set_optional_global(globals: &mut liquid_core::Object,  key: &str, value:
                 globals.insert(key.to_owned().into(), liquid::model::Value::scalar(default.to_string()));
             }
         }
-        dbg!(&value_transformed);
         globals.insert(key.to_owned().into(), value_transformed);
     } else {
         globals.insert(key.to_owned().into(), liquid::model::Value::scalar(default.to_string()));

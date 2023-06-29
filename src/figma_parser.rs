@@ -16,16 +16,16 @@ use crate::template;
 use crate::utils;
 use crate::global;
 
-pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
-    
-    let mut allSources: Vec<Vec<String>> = vec![];
+        pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
+            
+            let mut allSources: Vec<Vec<String>> = vec![];
 
-    if let Some(json_figma_source) = &token_config.global.figma_source_paths {
-        // get all keys with their values
-        // key contains the full path of the tree
-        // for example core.natural.fr.c1
-        for file in json_figma_source {
-            let files = file.combine.files.to_owned();
+            if let Some(json_figma_source) = &token_config.global.figma_source_paths {
+                // get all keys with their values
+                // key contains the full path of the tree
+                // for example core.natural.fr.c1
+                for file in json_figma_source {
+                    let files = file.combine.files.to_owned();
             allSources.push(files);
         }
     }
@@ -212,50 +212,20 @@ pub fn filter_sub_properties(key: &str, val: &serde_json::Value, pure_values: &m
 }
 
 fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut HashMap<String, String>, p: Vec<String>, add_val_path: bool) { 
-   
-   //dbg!(&json_string);
-    let value: FigmaTokenValueSingle = serde_json::from_value(json_string).expect("Unable to read the json");
-
-    add_pure_value(&value.fontFamily, global::field_value_font_family, pure_values, &p, &add_val_path);
-    add_pure_value(&value.fontSize, global::field_value_font_size, pure_values, &p, &add_val_path);
-    add_pure_value(&value.fontWeight, global::field_value_font_weight, pure_values, &p, &add_val_path);
-    add_pure_value(&value.letterSpacing, global::field_value_letter_spacing, pure_values, &p, &add_val_path);
-    add_pure_value(&value.paragraphSpacing, global::field_value_paragraph_spacing, pure_values, &p, &add_val_path);
-    add_pure_value(&value.paragraphIndent, global::field_value_paragraph_indent, pure_values, &p, &add_val_path);
-    add_pure_value(&value.textCase, global::field_value_text_case, pure_values, &p, &add_val_path);
-    add_pure_value(&value.textDecoration, global::field_value_text_decoration, pure_values, &p, &add_val_path);
-    add_pure_value(&value.lineHeight, global::field_value_line_height, pure_values, &p, &add_val_path);
-    add_pure_value(&value.horizontalPadding, global::field_value_horizontal_padding, pure_values, &p, &add_val_path);
-    add_pure_value(&value.verticalPadding, global::field_value_vertical_padding, pure_values, &p, &add_val_path);
-    add_pure_value(&value.itemSpacing, global::field_value_item_spacing, pure_values, &p, &add_val_path);
-    add_pure_value(&value.paddingBottom, global::field_value_padding_bottom, pure_values, &p, &add_val_path);
-    add_pure_value(&value.paddingTop, global::field_value_padding_top, pure_values, &p, &add_val_path);
-    add_pure_value(&value.paddingLeft, global::field_value_padding_left, pure_values, &p, &add_val_path);
-    add_pure_value(&value.paddingRight, global::field_value_padding_right, pure_values, &p, &add_val_path);
-    add_pure_value(&value.sizing, global::field_value_sizing, pure_values, &p, &add_val_path);
-    add_pure_value(&value.height, global::field_value_height, pure_values, &p, &add_val_path);
-    add_pure_value(&value.width, global::field_value_width, pure_values, &p, &add_val_path);
-    add_pure_value(&value.borderRadius, global::field_value_border_radius, pure_values, &p, &add_val_path);
-    add_pure_value(&value.borderWidth, global::field_value_border_width, pure_values, &p, &add_val_path);
-    add_pure_value(&value.borderRadiusBottomLeft, global::field_value_border_radius_bottom_left, pure_values, &p, &add_val_path);
-    add_pure_value(&value.borderRadiusBottomRight, global::field_value_border_radius_bottom_right, pure_values, &p, &add_val_path);
-    add_pure_value(&value.borderRadiusTopLeft, global::field_value_border_radius_top_left, pure_values, &p, &add_val_path);
-    add_pure_value(&value.borderRadiusTopRight, global::field_value_border_radius_top_right, pure_values, &p, &add_val_path);
-    add_pure_value(&value.blur, global::field_value_blur, pure_values, &p, &add_val_path);
-    add_pure_value(&value.color, global::field_value_color, pure_values, &p, &add_val_path);
-    add_pure_value(&value.string, global::field_value_string, pure_values, &p, &add_val_path);
-    add_pure_value(&value.float, global::field_value_float, pure_values, &p, &add_val_path);
-    add_pure_value(&value.boolen, global::field_value_boolean, pure_values, &p, &add_val_path);
-    add_pure_value(&value.spread, global::field_value_spread, pure_values, &p, &add_val_path);
-    add_pure_value(&value.t_type, global::field_value_type, pure_values, &p, &add_val_path);
-    add_pure_value(&value.x, global::field_value_x, pure_values, &p, &add_val_path);
-    add_pure_value(&value.y, global::field_value_y, pure_values, &p, &add_val_path);
-    add_pure_value(&value.other, global::field_value_other, pure_values, &p, &add_val_path);
-    
+    let value: serde_json::Value = serde_json::from_value(json_string).expect("Unable to read the json");
+  
+    match &value {
+        serde_json::Value::Object(value_map) => {
+            for (key, val) in value_map {
+                add_pure_value(val.as_str(), key, pure_values, &p, &add_val_path);
+            }
+        },
+        _ => {}
+    }
 }
 
-fn add_pure_value(value: &Option<String>, path: &str, pure_values: &mut HashMap<String, String>, p: &[String], add_val_path: &bool) { 
-    if let Some(v) = &value {
+fn add_pure_value(value: Option<&str>, path: &str, pure_values: &mut HashMap<String, String>, p: &[String], add_val_path: &bool) { 
+    if let Some(v) = value {
         let np = add_path_value_get_full(p, path,add_val_path);
         pure_values.insert(np, v.to_string());
     }
@@ -269,123 +239,4 @@ fn add_path_value_get_full(path: &[String], newPath: &str, add_value: &bool) -> 
     p.push(newPath.to_string());
     
     p.join(".")
-}
-
-#[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct FigmaTokenValueSingle { 
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub horizontalPadding: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub verticalPadding: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub itemSpacing: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub paddingBottom: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub paddingTop: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub paddingLeft: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub paddingRight: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub borderRadius: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub borderWidth: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub borderRadiusBottomLeft: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub borderRadiusBottomRight: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub borderRadiusTopLeft: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub borderRadiusTopRight: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub sizing: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub other: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub height: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub width: Option<String>,
-
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub fontFamily: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub fontWeight: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub lineHeight: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub fontSize: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub letterSpacing: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub paragraphSpacing: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub paragraphIndent: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub textCase: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub textDecoration: Option<String>,
-
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub blur: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub color: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub string: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub float: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub boolen: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub spread: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    #[serde(alias = "type")]
-    pub t_type: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub x: Option<String>,
-    #[serde(default, deserialize_with="parse_to_optional_string")]
-    pub y:Option<String>,
-}
-
-pub fn parse_to_optional_string<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    #[derive(Deserialize)]
-    #[serde(untagged)]
-    enum StringOrNull {
-        ToStr(serde_json::Value),
-        Null,
-    }
-
-    let des = StringOrNull::deserialize(deserializer)?;
-  
-    match des {
-        StringOrNull::ToStr(values) => {
-            match values {
-                serde_json::Value::Null => {
-                    Ok(None)
-                },
-                serde_json::Value::Bool(x) => {
-                    Ok(Some(x.to_string()))
-                },
-                serde_json::Value::Number(x) => {
-                    Ok(Some(x.to_string()))
-                },
-                serde_json::Value::String(x) => {
-                    Ok(Some(x))
-                },
-                serde_json::Value::Array(x) => {
-                    Ok(None)
-                },
-                serde_json::Value::Object(x) => {
-                    Ok(None)
-                },
-            }
-        },
-        StringOrNull::Null => {
-            Ok(None)
-        },
-    }
 }

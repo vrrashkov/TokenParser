@@ -155,7 +155,24 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
         } else {
             match &token_value.value {
                 deserializer::TokenDataType::Value(value) => {
-                    let pure_value = value.get(field_name_without_index);
+                   
+                    let mut pure_value = value.get(field_name_without_index);
+                    if pure_value.is_none() {
+                        if let Some(val) = value.get("value") {
+                            match val {
+                                serde_json::Value::Array(values) => {
+                                    pure_value = val.get(field_index)?.get(field_name_without_index);
+                                },
+                                serde_json::Value::Object(obj_val) => {
+                                    pure_value = obj_val.get(field_name_without_index);
+                                }
+                                _ => {
+                                    
+                                }
+                            };
+                        }
+                    }
+                  
                     template::set_optional_global(globals, field_name, pure_value.cloned(), "");
                 },
                 deserializer::TokenDataType::Values(values) => {
