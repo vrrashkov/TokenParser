@@ -7,7 +7,7 @@
         "value": "32"
       },
       "width": {
-        "description": "",
+        "description": "test description 1",
         "type": "float",
         "value": "100"
       }

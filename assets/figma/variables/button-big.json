@@ -4,7 +4,7 @@
             "width": {
                 "type": "float",
                 "value": "100",
-                "description": ""
+                "description": "test description 1"
             },
             "height": {
                 "type": "float",

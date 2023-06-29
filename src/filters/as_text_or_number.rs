@@ -20,11 +20,11 @@ impl Filter for AsTextOrNumberFilter {
         if input.is_nil() {
             return Ok(Value::Nil);
         }
-
-        let num: std::result::Result<f64, std::num::ParseFloatError> = input.to_kstr().parse::<f64>();
+        let value = input.to_kstr().to_string();
+        let num: std::result::Result<f64, std::num::ParseFloatError> = value.parse::<f64>();
         return match num {
             Ok(val) => Ok(Value::scalar(val)),
-            Err(why) => Ok(Value::scalar(format!("\"{}\"", input.to_kstr().to_string())))
+            Err(why) => Ok(Value::scalar(format!("\"{}\"", value)))
         }
     }
 }

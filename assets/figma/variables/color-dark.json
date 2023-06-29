@@ -10,7 +10,7 @@
         "bg": {
             "type": "color",
             "value": "#1a1a1a",
-            "description": ""
+            "description": "test description 2"
         }
     }
 }

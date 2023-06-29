@@ -89,60 +89,12 @@ templates:
       template_type:
         # For themes
         - type: color
-          value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
+          value: "public static let {{variable_name | camel}} = {{value | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}  {{description | optional: '// desc = %value'}}"
         # For Core
         - type: string
-          value: "public static let {{variable_name | camel}} = {{string}}"   
+          value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
         - type: float
-          value: "public static let {{variable_name | camel}} = CGFloat({{float}})"   
+          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
         - type: boolean
-          value: "public static let {{variable_name | camel}} = {{boolean}}"   
-        # For themes
-        # - type: color
-        #   value: "public static let {{variable_name | camel}} = {{color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}"
-        # - type: boxShadow
-        #   value: 
-        #     - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
-        #     - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
-        # # For Core
-        # - type: typography
-        #   value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
-        # - type: spacing
-        #   value: "public static let {{variable_name | camel}} = CGFloat({{spacing}})"
-        # - type: borderWidth
-        #   value: "public static let {{variable_name | camel}} = CGFloat({{borderWidth}})"   
-        # - type: borderRadius
-        #   value: "public static let {{variable_name | camel}} = CGFloat({{borderRadius}})"   
-        # - type: lineHeights
-        #   value: "public static let {{variable_name | camel}} = CGFloat({{lineHeight}})"   
-        # - type: sizing
-        #   value: "public static let {{variable_name | camel}} = CGFloat({{sizing}})"   
-        # - type: other
-        #   value: "public static let {{variable_name | camel}} = CGFloat({{other}})"   
-       # - type: string
-        #   value: "let {{variable_name | camel}} = CGFloat({{string}})  {{description | optional: '// desc = %value'}}"
-        # - type: float
-        #   value: "let {{variable_name | camel}} = CGFloat({{float}})  {{description | optional: '// desc = %value'}}"
-        # - type: text
-        #   value: "text test = {{variable_name | kebab}} {{text}};"
-        # - type: boolean
-        #   value: "bool test = {{variable_name | pascal}} {{boolean}};"
-        # - type: lineHeights
-        #   value: "{{variable_name | kebab}} {{lineHeight}};"
-        # - type: composition
-        #   value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
-        # - type: composition
-        #   value: "{% if height != '' %} height: {{height | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
-        # - type: composition
-        #   value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
-      # template_type:
-      #   - type: typography
-      #     value: "Typography: {{variable_name | kebab}}, {{fontFamily | optional: 'fontFamily: %value'}}, {{paragraphSpacing | optional: 'paragraphSpacing: %value'}}, {{paragraphIndent | optional: 'paragraphIndent: %value'}}, {{textCase | optional: 'textCase: %value'}}, {{textDecoration | optional: 'textDecoration: %value'}}"
-      #   - type: paragraphSpacing
-      #     value: "paragraphSpacing: {{variable_name | kebab}}, {{paragraphSpacing}}"
-      #   - type: paragraphIndent
-      #     value: "paragraphIndent: {{variable_name | kebab}}, {{paragraphIndent}}"
-      #   - type: textCase
-      #     value: "textCase: {{variable_name | kebab}}, {{textCase}}"
-      #   - type: textDecoration
-      #     value: "textDecoration: {{variable_name | kebab}}, {{textDecoration}}"
+          value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
+   

@@ -8,7 +8,6 @@ use convert_case::{Case, Casing};
 
 use crate::deserializer;
 use crate::deserializer::BoxShadowData;
-use crate::deserializer::ConfigTemplateType;
 use crate::deserializer::TokenDataColorValue;
 use crate::general;
 use crate::utils;
@@ -23,27 +22,7 @@ pub struct CustomTemplate { // the name of the struct can be anything
     pub sub_header: Option<String>,
     pub sub_footer: Option<String>,
     pub footer: Option<String>,
-    pub color_values: Option<Vec<String>>, 
-    pub font_values: Option<Vec<String>>, 
-    pub spacing_values: Option<Vec<String>>, 
-    pub border_width_values: Option<Vec<String>>, 
-    pub border_radius_values: Option<Vec<String>>, 
-    pub letter_spacing_values: Option<Vec<String>>, 
-    pub paragraph_spacing_values: Option<Vec<String>>, 
-    pub paragraph_indent_values: Option<Vec<String>>, 
-    pub text_case_values: Option<Vec<String>>, 
-    pub text_decoration_values: Option<Vec<String>>, 
-    pub line_height_values: Option<Vec<String>>, 
-    pub font_sizes_values: Option<Vec<String>>, 
-    pub font_weights_values: Option<Vec<String>>, 
-    pub font_families_values: Option<Vec<String>>, 
-    pub box_shadow_values: Option<Vec<String>>, 
-    pub composition_values: Option<Vec<String>>, 
-    pub text_values: Option<Vec<String>>, 
-    pub number_values: Option<Vec<String>>, 
-    pub boolean_values: Option<Vec<String>>, 
-    pub sizing_values: Option<Vec<String>>, 
-    pub other_values: Option<Vec<String>>, 
+    pub values: Option<Vec<String>>, 
 }
 
 impl CustomTemplate {
@@ -55,78 +34,9 @@ impl CustomTemplate {
             *current = Some(values);
         }
     }
-    pub fn update_template_values(&mut self, config_type: deserializer::ConfigTemplateType, mut values: Vec<String>) { 
+    pub fn update_template_values(&mut self, config_type: String, mut values: Vec<String>) { 
         let mut current_values: Vec<String> = Vec::new();
-        match &config_type {
-            deserializer::ConfigTemplateType::color => {
-                Self::set_template_value(&mut self.color_values, values);
-            },
-            deserializer::ConfigTemplateType::typography => {
-                Self::set_template_value(&mut self.font_sizes_values, values);
-            },
-            deserializer::ConfigTemplateType::spacing => {
-                Self::set_template_value(&mut self.spacing_values, values);
-            },
-            deserializer::ConfigTemplateType::borderWidth => {
-                Self::set_template_value(&mut self.border_width_values, values);
-            },
-            deserializer::ConfigTemplateType::borderRadius => {
-                Self::set_template_value(&mut self.border_radius_values, values);
-            },
-            deserializer::ConfigTemplateType::letterSpacing => {
-                Self::set_template_value(&mut self.letter_spacing_values, values);
-            },
-            deserializer::ConfigTemplateType::paragraphSpacing => {
-                Self::set_template_value(&mut self.paragraph_spacing_values, values);
-            },
-            deserializer::ConfigTemplateType::paragraphIndent => {
-                Self::set_template_value(&mut self.paragraph_indent_values, values);
-            },
-            deserializer::ConfigTemplateType::textCase => {
-                Self::set_template_value(&mut self.text_case_values, values);
-            },
-            deserializer::ConfigTemplateType::textDecoration => {
-                Self::set_template_value(&mut self.text_decoration_values, values);
-            },
-            deserializer::ConfigTemplateType::lineHeights => {
-                Self::set_template_value(&mut self.line_height_values, values);
-            },
-            deserializer::ConfigTemplateType::fontSizes => {
-                Self::set_template_value(&mut self.font_sizes_values, values);
-            },
-            deserializer::ConfigTemplateType::fontWeights => {
-                Self::set_template_value(&mut self.font_weights_values, values);
-            },
-            deserializer::ConfigTemplateType::fontFamilies => {
-                Self::set_template_value(&mut self.font_families_values, values);
-            },
-            deserializer::ConfigTemplateType::boxShadow => {
-                Self::set_template_value(&mut self.box_shadow_values, values);
-            },
-            deserializer::ConfigTemplateType::composition => {
-                Self::set_template_value(&mut self.composition_values, values);
-            },
-            deserializer::ConfigTemplateType::string => {
-                Self::set_template_value(&mut self.text_values, values);
-            },
-            deserializer::ConfigTemplateType::float => {
-                Self::set_template_value(&mut self.number_values, values);
-            },
-            deserializer::ConfigTemplateType::boolean => {
-                Self::set_template_value(&mut self.boolean_values, values);
-            },
-            deserializer::ConfigTemplateType::sizing => {
-                Self::set_template_value(&mut self.sizing_values, values);
-            },
-            deserializer::ConfigTemplateType::other => {
-                Self::set_template_value(&mut self.other_values, values);
-            },
-            deserializer::ConfigTemplateType::none => {},
-        }
-    }
-
-    pub fn update_font_values(&mut self, values: Option<Vec<String>>) {
-        self.font_values = values;
+        Self::set_template_value(&mut self.values, values);
     }
 }
 
@@ -174,7 +84,7 @@ pub struct TokenValue {
 #[derive(Clone, Debug, Default)]
 pub struct TokenValueType { 
     pub text: String, 
-    pub special: ConfigTemplateType
+    //pub special: ConfigTemplateType
 }
 
 impl TokenValue { 
@@ -192,7 +102,7 @@ pub struct TokenData {
     // Key = the token type so we can sort and extract all types where we want to
     // so we sore it in a map with duplicated keyslike MultiMap crate  
     //pub token_value: MultiMap<String, TokenValue>
-    pub t_type: deserializer::ConfigTemplateType,
+    pub t_type: String,//deserializer::ConfigTemplateType,
     pub token_value: Vec<TokenValue>
 }
 
@@ -256,9 +166,31 @@ pub fn set_global<T: ToString>(globals: &mut liquid_core::Object,  key: &str, va
     globals.insert(key.to_owned().into(), liquid::model::Value::scalar(value.to_string()));
 }
 
-pub fn set_optional_global<T: ToString>(globals: &mut liquid_core::Object,  key: &str, value: Option<T>, default: &str) { 
+pub fn set_optional_global(globals: &mut liquid_core::Object,  key: &str, value: Option<serde_json::Value>, default: &str) { 
     if let Some(val) = value {
-        globals.insert(key.to_owned().into(), liquid::model::Value::scalar(val.to_string()));
+        
+        let mut value_transformed = liquid::model::Value::scalar(default.to_string());
+        match val {
+            serde_json::Value::Bool(pure_value) => {
+                value_transformed = liquid::model::Value::scalar(pure_value);
+            },
+            serde_json::Value::Number(pure_value) => {
+                let pure_value_number: f64 = pure_value.as_f64().unwrap();
+                value_transformed = liquid::model::Value::scalar(pure_value_number);
+            },
+            serde_json::Value::String(pure_value) => {
+                if let Ok(ev) = evalexpr::eval(&pure_value) {
+                    value_transformed = liquid::model::Value::scalar(ev.as_number().unwrap());
+                } else {
+                    value_transformed = liquid::model::Value::scalar(pure_value);
+                }
+            },
+            _ => {
+                globals.insert(key.to_owned().into(), liquid::model::Value::scalar(default.to_string()));
+            }
+        }
+        dbg!(&value_transformed);
+        globals.insert(key.to_owned().into(), value_transformed);
     } else {
         globals.insert(key.to_owned().into(), liquid::model::Value::scalar(default.to_string()));
     }

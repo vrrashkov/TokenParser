@@ -41,7 +41,18 @@ pub struct ConfigTemplateSettingsCustom {
     #[serde(alias = "template_type")]
     pub template_type: Vec<CustomConfigTempalteType>
 }
-
+#[derive( Deserialize, Debug)]
+pub struct CustomConfigTempalteType {
+    #[serde(alias = "type")]
+    pub t_type: String,
+    pub value: CustomConfigTempalteTypeValue,
+}
+#[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
+#[serde(untagged)]
+pub enum CustomConfigTempalteTypeValue {
+    Value(String),
+    Values(Vec<String>)
+}
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
     #[serde(alias = "figma_variables_source_paths")]
@@ -77,65 +88,6 @@ pub enum ConfigGlobalType {
     Default
 }
 
-#[derive(Eq, Clone, PartialEq, Default, Serialize, Deserialize, Debug)]
-#[serde(tag="type", content="value")]
-pub enum CustomConfigTempalteType {
-    color(String),
-    typography(String),
-    spacing(String),
-    borderWidth(String),
-    borderRadius(String),
-    letterSpacing(String),
-    paragraphSpacing(String),
-    paragraphIndent(String),
-    textCase(String),
-    textDecoration(String),
-    lineHeights(String),
-    fontSizes(String),
-    fontWeights(String),
-    fontFamilies(String),
-    composition(String),
-    boxShadow(Vec<String>),
-    sizing(String),
-    other(String),
-    string(String),
-    float(String),
-    boolean(String),
-    #[default]
-    none
-}
-#[derive(Eq, Clone, PartialEq, Default, Serialize, Deserialize, Debug)]
-#[serde(tag = "type")]
-pub enum ConfigTemplateType {
-    color,
-    typography,
-    spacing,
-    borderWidth,
-    borderRadius,
-    letterSpacing,
-
-    paragraphSpacing,
-    paragraphIndent,
-    textCase,
-    textDecoration,
-
-    lineHeights,
-    fontSizes,
-    fontWeights,
-    fontFamilies,
-    boxShadow,
-    composition,
-    
-    sizing,
-    other,
-
-    string,
-    float,
-    boolean,
-    #[default]
-    none
-}
-
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTemplateSettingsGeneral {
     pub generate_file_path: String,
@@ -165,23 +117,19 @@ pub struct ConfigTemplateSettingsSwiftUI {
 }
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Default, Debug)]
-#[serde(tag = "type")]
+#[serde(untagged)]
 pub enum TokenDataType {
-    typography { value: TokenDataTypeTypographyValue },
-    boxShadow { value: BoxShadowData},
-    composition { value: TokenDataTypeCompositionValue },
-    #[serde( alias = "borderWidth", alias = "sizing", alias = "spacing", alias = "border_radius",
-    alias = "opacity", alias = "fontFamilies", alias = "fontWeights", alias = "fontSizes", alias = "lineHeights",
-    alias = "letterSpacing", alias = "paragraphSpacing", alias = "paragraphIndent", alias = "textCase",
-    alias = "textDecoration ", alias = "asset", alias = "dimension", alias = "border", alias = "sizing", alias = "other",
-    alias = "string", alias = "String", alias = "STRING",
-    alias = "color", alias = "Color", alias = "COLOR",
-    alias = "float", alias = "Float", alias = "FLOAT", 
-    alias = "boolean", alias = "Boolean", alias = "BOOLEAN")]
-    pure_value { value: String },
+    Value(serde_json::Value),
+    Values(Vec<serde_json::Value>),
     #[default]
-    #[serde(other)]
-    Unknown
+    None
+    // typography { value: TokenDataTypeTypographyValue },
+    // boxShadow { value: BoxShadowData},
+    // composition { value: TokenDataTypeCompositionValue },
+    // pure_value { value: String },
+    // #[default]
+    // #[serde(other)]
+    // Unknown
 }
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
@@ -330,99 +278,10 @@ impl TokensConfig {
 
 #[derive(Clone, Debug)]
 pub struct TemplateFieldData { 
-    pub index: Option<usize>,
-    // pub name: TemplateField,
+    pub index: usize,
     pub key_full: String,
     pub key_without_index: String,
-    pub special: TemplateField,
     pub full_template: String
-}
-
-#[derive(Eq, Clone, PartialEq, Default, Debug)]
-pub enum TemplateField {
-    variable_name,
-    color,
-    font_family,
-    font_size,
-    font_weight,
-    line_height,
-    horizontal_padding,
-    vertical_padding,
-    spacing,
-    paragraph_spacing,
-    paragraph_indent,
-    text_case,
-    text_decoration,
-    padding_bottom,
-    padding_top,
-    padding_left,
-    padding_right,
-    sizing,
-    other,
-    height,
-    width,
-    border_radius,
-    border_width,
-    border_radius_bottom_left,
-    border_radius_bottom_right,
-    border_radius_top_left,
-    border_radius_top_right,
-    blur,
-    spread,
-    t_type,
-    x,
-    description,
-    y,
-    string,
-    float,
-    boolean,
-    #[default]
-    None
-}
-
-impl TemplateField {
-    pub fn from_str(input: &str) -> TemplateField {
-      
-        match input {
-            global::field_variable_name => TemplateField::variable_name,
-            global::field_color => TemplateField::color,
-            global::field_value_font_family => TemplateField::font_family,
-            global::field_value_font_size => TemplateField::font_size,
-            global::field_value_font_weight => TemplateField::font_weight,
-            global::field_value_spacing => TemplateField::spacing,
-            global::field_value_paragraph_spacing => TemplateField::paragraph_spacing,
-            global::field_value_paragraph_indent => TemplateField::paragraph_indent,
-            global::field_value_text_case => TemplateField::text_case,
-            global::field_value_text_decoration => TemplateField::text_decoration,
-            global::field_value_line_height => TemplateField::line_height,
-            global::field_value_horizontal_padding => TemplateField::horizontal_padding,
-            global::field_value_vertical_padding => TemplateField::vertical_padding,
-            global::field_value_padding_bottom => TemplateField::padding_bottom,
-            global::field_value_padding_top => TemplateField::padding_top,
-            global::field_value_padding_left => TemplateField::padding_left,
-            global::field_value_padding_right => TemplateField::padding_right,
-            global::field_value_sizing => TemplateField::sizing,
-            global::field_value_height => TemplateField::height,
-            global::field_value_width => TemplateField::width,
-            global::field_value_border_radius => TemplateField::border_radius,
-            global::field_value_border_width => TemplateField::border_width,
-            global::field_value_border_radius_bottom_left => TemplateField::border_radius_bottom_left,
-            global::field_value_border_radius_bottom_right => TemplateField::border_radius_bottom_right,
-            global::field_value_border_radius_top_left => TemplateField::border_radius_top_left,
-            global::field_value_border_radius_top_right => TemplateField::border_radius_top_right,
-            global::field_value_blur => TemplateField::blur,
-            global::field_value_spread => TemplateField::spread,
-            global::field_value_type => TemplateField::t_type,
-            global::field_value_x => TemplateField::x,
-            global::field_value_y => TemplateField::y,
-            global::field_description => TemplateField::description,
-            global::field_value_string => TemplateField::string,
-            global::field_value_float => TemplateField::float,
-            global::field_value_boolean => TemplateField::boolean,
-            global::field_value_other => TemplateField::other,
-            _ => TemplateField::None
-        }
-    }
 }
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
@@ -471,171 +330,9 @@ pub enum TemplateFieldVariantVariableName {
     camel,
     snake,
     kebab
-}
-impl ConfigTemplateType {
-    pub fn from_str(input: &str) -> ConfigTemplateType {
-        match input {
-            global::type_color         => ConfigTemplateType::color,
-            global::type_typography    => ConfigTemplateType::typography,
-            global::type_spacing       => ConfigTemplateType::spacing,
-            global::type_paragraph_spacing      => ConfigTemplateType::paragraphSpacing,
-            global::type_paragraph_ident        => ConfigTemplateType::paragraphIndent,
-            global::type_text_case              => ConfigTemplateType::textCase,
-            global::type_text_decoration        => ConfigTemplateType::textDecoration,
-            global::type_sizing       => ConfigTemplateType::sizing,
-            global::type_other       => ConfigTemplateType::other,
-            global::type_borderWidth   => ConfigTemplateType::borderWidth,
-            global::type_borderRadius  => ConfigTemplateType::borderRadius,
-            global::type_letterSpacing => ConfigTemplateType::letterSpacing,
-            global::type_composition   => ConfigTemplateType::composition,
-            global::type_lineHeights   => ConfigTemplateType::lineHeights,
-            global::type_fontSizes     => ConfigTemplateType::fontSizes,
-            global::type_fontWeights   => ConfigTemplateType::fontWeights,
-            global::type_fontFamilies  => ConfigTemplateType::fontFamilies,
-            global::type_boxShadow     => ConfigTemplateType::boxShadow,
-            global::type_color         => ConfigTemplateType::color,
-            global::type_string         => ConfigTemplateType::string,
-            global::type_float         => ConfigTemplateType::float,
-            global::type_boolean         => ConfigTemplateType::boolean,
-            _                          => ConfigTemplateType::none,
-        }
-    }
 } 
 
 pub struct AvailableFields { 
     pub name: String,
     pub values: Vec<String>
-}
-
-impl CustomConfigTempalteType {
-
-    pub fn global_available_fields() -> AvailableFields { 
-        return AvailableFields {
-            name: global::global.to_string(),
-            values: vec![global::field_variable_name.to_string(), global::field_description.to_string()]
-        };
-    }
-    pub fn available_fields(&self) -> AvailableFields { 
-        match &self {
-            CustomConfigTempalteType::color(_) => AvailableFields {
-                name: global::type_color.to_string(),
-                values: vec![global::field_color.to_string()]
-            },
-            CustomConfigTempalteType::typography(_) => AvailableFields {
-                name: global::type_typography.to_string(),
-                values: vec![
-                    global::field_value_font_family.to_string(), 
-                    global::field_value_font_size.to_string(), 
-                    global::field_value_font_weight.to_string(), 
-                    global::field_value_spacing.to_string(),
-                    global::field_value_paragraph_spacing.to_string(),
-                    global::field_value_paragraph_indent.to_string(),
-                    global::field_value_text_case.to_string(),
-                    global::field_value_text_decoration.to_string(),
-                    global::field_value_line_height.to_string()
-                ]
-            },
-            CustomConfigTempalteType::spacing(_) => AvailableFields {
-                name: global::type_spacing.to_string(),
-                values: vec![global::field_value_spacing.to_string()]
-            },
-            CustomConfigTempalteType::sizing(_) => AvailableFields {
-                name: global::type_spacing.to_string(),
-                values: vec![global::field_value_sizing.to_string()]
-            },
-            CustomConfigTempalteType::other(_) => AvailableFields {
-                name: global::type_spacing.to_string(),
-                values: vec![global::field_value_other.to_string()]
-            },
-            CustomConfigTempalteType::borderWidth(_) => AvailableFields {
-                name: global::type_borderWidth.to_string(),
-                values: vec![global::field_value_border_width.to_string()]
-            },
-            CustomConfigTempalteType::borderRadius(_) => AvailableFields {
-                name: global::type_borderRadius.to_string(),
-                values: vec![global::field_value_border_radius.to_string()]
-            },
-            CustomConfigTempalteType::letterSpacing(_) => AvailableFields {
-                name: global::type_letterSpacing.to_string(),
-                values: vec![global::field_value_spacing.to_string()]
-            },
-            CustomConfigTempalteType::lineHeights(_) => AvailableFields {
-                name: global::type_lineHeights.to_string(),
-                values: vec![global::field_value_line_height.to_string()]
-            },
-            CustomConfigTempalteType::fontSizes(_) => AvailableFields {
-                name: global::type_fontSizes.to_string(),
-                values: vec![global::field_value_font_size.to_string()]
-            },
-            CustomConfigTempalteType::fontWeights(_) => AvailableFields {
-                name: global::type_fontWeights.to_string(),
-                values: vec![global::field_value_font_weight.to_string()]
-            },
-            CustomConfigTempalteType::fontFamilies(_) => AvailableFields {
-                name: global::type_fontFamilies.to_string(),
-                values: vec![global::field_value_font_family.to_string()]
-            },
-            CustomConfigTempalteType::boxShadow(_) => AvailableFields {
-                name: global::type_boxShadow.to_string(),
-                values: vec![global::field_color.to_string(), 
-                global::field_value_blur.to_string(), 
-                global::field_value_spread.to_string(), 
-                global::field_value_type.to_string(), 
-                global::field_value_x.to_string(), 
-                global::field_value_y.to_string()]
-            },
-            CustomConfigTempalteType::composition(_) => AvailableFields {
-                name: global::type_composition.to_string(),
-                values: vec![global::field_value_padding_bottom.to_string(),
-                global::field_value_padding_top.to_string(),
-                global::field_value_padding_left.to_string(),
-                global::field_value_padding_right.to_string(),
-                global::field_value_sizing.to_string(),
-                global::field_value_width.to_string(),
-                global::field_value_height.to_string(),
-                global::field_value_border_radius.to_string(),
-                global::field_value_border_width.to_string(),
-                global::field_value_border_radius_bottom_left.to_string(),
-                global::field_value_border_radius_bottom_right.to_string(),
-                global::field_value_border_radius_top_left.to_string(),
-                global::field_value_border_radius_top_right.to_string(),
-                global::field_value_vertical_padding.to_string(),
-                global::field_value_horizontal_padding.to_string(),
-                global::field_value_item_spacing.to_string(),
-                global::field_value_spacing.to_string()]
-            },
-            CustomConfigTempalteType::none => AvailableFields {
-                name: global::type_unknown.to_string(),
-                values: vec![]
-            },
-            CustomConfigTempalteType::paragraphSpacing(_) => AvailableFields {
-                name: global::type_paragraph_spacing.to_string(),
-                values: vec![global::field_value_paragraph_spacing.to_string(),]
-            },
-            CustomConfigTempalteType::paragraphIndent(_) => AvailableFields {
-                name: global::type_paragraph_ident.to_string(),
-                values: vec![global::field_value_paragraph_indent.to_string(),]
-            },
-            CustomConfigTempalteType::textCase(_) => AvailableFields {
-                name: global::type_text_case.to_string(),
-                values: vec![global::field_value_text_case.to_string(),]
-            },
-            CustomConfigTempalteType::textDecoration(_) => AvailableFields {
-                name: global::type_text_decoration.to_string(),
-                values: vec![global::field_value_text_decoration.to_string(),]
-            },
-            CustomConfigTempalteType::string(_) => AvailableFields {
-                name: global::type_string.to_string(),
-                values: vec![global::field_value_string.to_string()]
-            },
-            CustomConfigTempalteType::float(_) => AvailableFields {
-                name: global::type_float.to_string(),
-                values: vec![global::field_value_float.to_string()]
-            },
-            CustomConfigTempalteType::boolean(_) => AvailableFields {
-                name: global::type_boolean.to_string(),
-                values: vec![global::field_value_boolean.to_string()]
-            },
-        }
-    }
 }

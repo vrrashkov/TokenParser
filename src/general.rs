@@ -97,6 +97,7 @@ pub fn get_json(path: &str) -> serde_json::Value {
     println!("path: {}", path);
     let data = fs::read_to_string(path).expect("Unable to read file");
     let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
+    println!("res: {}", res);
     res
 }
 
@@ -192,7 +193,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
                 name: ikey.to_owned(),
                 token_type: TokenValueType {
                     text: token_value_type.to_owned(),
-                    special: deserializer::ConfigTemplateType::from_str(&token_value_type)
+                   // special: deserializer::ConfigTemplateType::from_str(&token_value_type)
                 },
                 value: deserialize_token_data_value(value_object),
                 description: token_description
@@ -200,15 +201,15 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
 
             let mut token = template::TokenData { 
                 name: key.to_owned(),
-                t_type: deserializer::ConfigTemplateType::none,
+                t_type: String::new(),//deserializer::ConfigTemplateType::none,
                 token_value: Vec::new()//MultiMap::new(),
             };
 
-            let mut token_exist = token_data_list.iter_mut().find(|f| f.t_type == token_value.token_type.special);
+            let mut token_exist = token_data_list.iter_mut().find(|f| f.t_type == token_value.token_type.text);
             if let Some(token_e) = token_exist {
                 token_e.token_value.push(token_value);
             } else {
-                token.t_type = deserializer::ConfigTemplateType::from_str(&token_value.token_type.text.to_case(Case::Camel));
+                token.t_type = token_value.token_type.text.to_case(Case::Camel);//deserializer::ConfigTemplateType::from_str(&token_value.token_type.text.to_case(Case::Camel));
                 token.token_value.push(token_value);
 
                 token_data_list.push(token.to_owned());
