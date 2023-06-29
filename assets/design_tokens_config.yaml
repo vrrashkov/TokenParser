@@ -1,12 +1,12 @@
 global: 
-  # Figma variables source paths
+  # Figma source paths
   # These are the pure files from Figma, they can contain aliases
   # For example if we have aliases we will need the actual value and not the alias
   # Separating different files is necessary in case there are duplicate trees but different values/aliases
   # So if we have button-md and button-big with the same trees but different values with aliases that need to be accesed from core.json
   # this should be the setup
   # Look at the figma/variables and figma/generated_styles for better understanding how it works
-  figma_variables_source_paths: 
+  figma_source_paths: 
     - combine:
         files:
           - "assets/figma/variables/color-light.json"
@@ -19,21 +19,6 @@ global:
         files:
         - "assets/figma/variables/button-big.json"
         - "assets/figma/variables/core.json"
-  # Figma studio source paths
-  # figma_studio_source_paths: 
-  # - combine:
-  #     files:
-  #       - "assets/figma/studio/color-light.json"
-  #       - "assets/figma/studio/color-dark.json"
-  # - combine:
-  #     files:
-  #     - "assets/figma/studio/button-md.json"
-  #     - "assets/figma/studio/core.json"
-  # - combine:
-  #     files:
-  #     - "assets/figma/studio/button-big.json"
-  #     - "assets/figma/studio/core.json"
-  # Figma output calculated files, 
   # file_name: If set this will be the name of the merged file
   # if not, than the first file name will be used
   figma_output_paths:
@@ -79,13 +64,11 @@ templates:
         #This will replace the class_name from template_type as well
         #use_as_class_name: true
     settings_custom:
-      header: "import SwiftUI"
-      #sub_header: "test sub header"
-      #sub_footer: "test sub footer"
-      #footer: "}"
-      # Only if class is set, class_name will be displayed
-      class: "public class"
-      class_name: "DSCore{style}"
+      header: 
+        - "import SwiftUI"
+        - "public class DSCore{style} {"
+      footer: 
+        - "}"
       template_type:
         # For themes
         - type: color

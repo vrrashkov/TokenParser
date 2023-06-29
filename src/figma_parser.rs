@@ -20,27 +20,16 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     
     let mut allSources: Vec<Vec<String>> = vec![];
 
-    // FIGMA VARIABLES
-    if let Some(json_figma_variable_source) = &token_config.global.figma_variables_source_paths {
+    if let Some(json_figma_source) = &token_config.global.figma_source_paths {
         // get all keys with their values
         // key contains the full path of the tree
         // for example core.natural.fr.c1
-        for file in json_figma_variable_source {
+        for file in json_figma_source {
             let files = file.combine.files.to_owned();
             allSources.push(files);
         }
     }
-    
-    // FIGMA STUDIO
-    if let Some(json_figma_studio_source) = &token_config.global.figma_studio_source_paths {
-        // get all keys with their values
-        // key contains the full path of the tree
-        // for example core.natural.fr.c1
-        for file in json_figma_studio_source {
-            let files = file.combine.files.to_owned();
-            allSources.push(files);
-        }
-    }
+
 
     for files in allSources {
         

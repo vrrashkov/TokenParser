@@ -32,12 +32,8 @@ pub struct ConfigTokensTemplates {
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTemplateSettingsCustom {
-    pub header: Option<String>,
-    pub sub_header: Option<String>,
-    pub class: Option<String>,
-    pub class_name: Option<String>,
-    pub sub_footer: Option<String>,
-    pub footer: Option<String>,
+    pub header: Vec<String>,
+    pub footer: Vec<String>,
     #[serde(alias = "template_type")]
     pub template_type: Vec<CustomConfigTempalteType>
 }
@@ -56,9 +52,7 @@ pub enum CustomConfigTempalteTypeValue {
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
     #[serde(alias = "figma_variables_source_paths")]
-    pub figma_variables_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
-    #[serde(alias = "figma_studio_source_paths")]
-    pub figma_studio_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
+    pub figma_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
     #[serde(alias = "figma_output_paths")]
     pub figma_output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "output_paths")]
@@ -251,18 +245,17 @@ pub struct TokenDataBoxShadowValue {
 }
 
 impl TokensConfig {
-    pub fn formatted_class_name(&self, style_name: &str, settings: &ConfigTokensTemplates, file_name: &str) -> Option<String> { 
-        let settings_custom =  &settings.settings_custom;
-        if let Some(class_name) =  &settings_custom.class_name {
-            let mut file_name_formatted = file_name.to_owned();
+    pub fn format_extra(&self, style_name: &str, values: &[String]) -> Vec<String> { 
+        let mut formatted_values: Vec<String> = vec![];
+        for value in values {
+            let mut formatted_value = value.to_owned();
+            
+            formatted_value.replace_range(..,&value.replace("{style}", style_name.to_case(Case::Pascal).as_str()));
 
-            Self::format_class_name_templated(&mut file_name_formatted, &class_name.to_string(), file_name, style_name, &settings.settings_general);
-        
-            Some(file_name_formatted.to_string())
-        
-        }  else {
-                None
-        }  
+            formatted_values.push(formatted_value);
+        }
+
+        return formatted_values;
     }
 
     pub fn format_class_name_templated(file_name_formatted: &mut String, template_text: &str, type_name: &str, style_name: &str, settings_general: &ConfigTemplateSettingsGeneral) { 

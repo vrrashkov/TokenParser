@@ -16,12 +16,8 @@ use crate::utils;
 //#[derive(Template, Debug)] // this will generate the code...
 //#[template(path = "custom_template.html", escape = "none")] // using the template in this path, relative
 pub struct CustomTemplate { // the name of the struct can be anything
-    pub header: Option<String>,
-    pub class: Option<String>,
-    pub class_name: Option<String>,
-    pub sub_header: Option<String>,
-    pub sub_footer: Option<String>,
-    pub footer: Option<String>,
+    pub headers: Vec<String>,
+    pub footers: Vec<String>,
     pub values: Option<Vec<String>>, 
 }
 

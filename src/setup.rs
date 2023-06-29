@@ -43,12 +43,8 @@ fn template_content_custom(
 
     let custom_template = &template_config.settings_custom;
     let mut current_template: CustomTemplate = CustomTemplate { 
-        header: custom_template.header.to_owned(),
-        footer: custom_template.footer.to_owned(),
-        sub_header: custom_template.sub_header.to_owned(),
-        sub_footer: custom_template.sub_footer.to_owned(),
-        class: custom_template.class.to_owned(),
-        class_name: token_config.formatted_class_name(&token_data_wrapper.style_name, template_config, file_data_name),
+        headers: token_config.format_extra(&token_data_wrapper.style_name, &custom_template.header.to_owned()),
+        footers: token_config.format_extra(&token_data_wrapper.style_name, &custom_template.footer.to_owned()),
         values: None,
     }; 
 
@@ -70,12 +66,8 @@ fn template_content_custom(
     .parse(file).unwrap();
 
     let mut globals = liquid::object!({
-        "header": current_template.header,
-        "footer": current_template.footer,
-        "sub_header": current_template.sub_header,
-        "sub_footer": current_template.sub_footer,
-        "class": current_template.class,
-        "class_name": current_template.class_name,
+        "headers": current_template.headers,
+        "footers": current_template.footers,
         "values": current_template.values,
     });
     //dbg!(&globals);

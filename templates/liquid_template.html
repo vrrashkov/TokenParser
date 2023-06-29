@@ -1,13 +1,9 @@
-{% if header != empty %}{{header}}{% endif %}
-{% if class != empty -%}
-{{ class }} {% if class_name != empty %}{{ class_name }}{% endif %} {
-{% endif %}
-{% if sub_header != empty %}{{sub_header}}{% endif %}
+{% for header in headers -%}
+{{header}}
+{% endfor -%}
 {% for value in values -%}
 {{value}}
 {% endfor -%}
-{% if sub_footer != empty %}{{sub_footer}}{% endif %}
-{% if class != empty %}
-}
-{% endif -%}
-{% if footer != empty %}{{footer}}{% endif -%}
+{% for footer in footers -%}
+{{footer}}
+{% endfor -%}
