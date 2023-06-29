@@ -58,15 +58,16 @@ templates:
   - settings_general:
       generate_file_path: "generated_templates"
       file_name:
-        format: "DS{style}"
+        format: "DS{{style}}"
         extension: "swift"
         #case: "kebab"
         #This will replace the class_name from template_type as well
         #use_as_class_name: true
     settings_custom:
+      # For header and footer {{style}} is a secial variable that can be used
       header: 
         - "import SwiftUI"
-        - "public class DSCore{style} {"
+        - "public class DSCore{{style}} {"
       footer: 
         - "}"
       template_type:

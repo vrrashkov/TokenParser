@@ -118,7 +118,7 @@ templates:
   - settings_general:
       generate_file_path: "generated_templates"
       file_name:
-        format: "DS{style}"
+        format: "DS{{style}}"
         extension: "swift"
         #case: "kebab"
         #This will replace the class_name from template_type as well
@@ -130,7 +130,7 @@ templates:
       #footer: "}"
       # Only if class is set, class_name will be displayed
       class: "public class"
-      class_name: "DSCore{style}"
+      class_name: "DSCore{{style}}"
       template_type:
         # For themes
         - type: color

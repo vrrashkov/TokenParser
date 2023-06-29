@@ -250,7 +250,7 @@ impl TokensConfig {
         for value in values {
             let mut formatted_value = value.to_owned();
             
-            formatted_value.replace_range(..,&value.replace("{style}", style_name.to_case(Case::Pascal).as_str()));
+            formatted_value.replace_range(..,&value.replace("{{style}}", style_name.to_case(Case::Pascal).as_str()));
 
             formatted_values.push(formatted_value);
         }
@@ -260,7 +260,7 @@ impl TokensConfig {
 
     pub fn format_class_name_templated(file_name_formatted: &mut String, template_text: &str, type_name: &str, style_name: &str, settings_general: &ConfigTemplateSettingsGeneral) { 
         
-        file_name_formatted.replace_range(..,&template_text.replace("{type}", type_name.to_case(Case::Pascal).as_str()).replace("{style}", style_name.to_case(Case::Pascal).as_str()));
+        file_name_formatted.replace_range(..,&template_text.replace("{{type}}", type_name.to_case(Case::Pascal).as_str()).replace("{{style}}", style_name.to_case(Case::Pascal).as_str()));
 
        let file_name_config= &settings_general.file_name;
         if let Some(file_name_case) = &file_name_config.case {
