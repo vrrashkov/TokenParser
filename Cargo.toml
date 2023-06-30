@@ -6,7 +6,7 @@ repository = "https://github.com/vrrashkov/TokenParser"
 readme = "README.md"
 description = "Figma studio token parser. Convert your tokens to usable code in any language."
 authors = ["Vladislav <vrrashkov@gmail.com>"]
-keywords = ["figma", "tokens", "design-tokens"]
+keywords = ["figma", "tokens", "design-tokens", "figma-variables", "figma-tokens", "figma-design-tokens"]
 license = "MIT"
 
 [dependencies]
