@@ -6,7 +6,6 @@ use std::str::FromStr;
 use convert_case::{Case, Casing};
 
 use crate::deserializer;
-use crate::deserializer::AvailableFields;
 use crate::general;
 use crate::template;
 use crate::template::CustomTemplate;

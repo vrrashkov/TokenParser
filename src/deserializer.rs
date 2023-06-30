@@ -10,7 +10,6 @@ use serde::de::{value, IntoDeserializer};
 use crate::general;
 use crate::global;
 
-
 #[derive(Default, Deserialize, Debug)]
 pub struct TokensConfig { 
     #[serde(default, alias = "global")]
@@ -120,74 +119,6 @@ pub enum TokenDataType {
 }
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct TokenDataTypeCompositionValue { 
-    #[serde(default)]
-    pub horizontalPadding: Option<String>,
-    #[serde(default)]
-    pub verticalPadding: Option<String>,
-    #[serde(default)]
-    pub itemSpacing: Option<String>,
-    #[serde(default)]
-    pub paddingBottom: Option<String>,
-    #[serde(default)]
-    pub paddingTop: Option<String>,
-    #[serde(default)]
-    pub paddingLeft: Option<String>,
-    #[serde(default)]
-    pub paddingRight: Option<String>,
-    #[serde(default)]
-    pub borderRadius: Option<String>,
-    #[serde(default)]
-    pub borderWidth: Option<String>,
-    #[serde(default)]
-    pub borderRadiusBottomLeft: Option<String>,
-    #[serde(default)]
-    pub borderRadiusBottomRight: Option<String>,
-    #[serde(default)]
-    pub borderRadiusTopLeft: Option<String>,
-    #[serde(default)]
-    pub borderRadiusTopRight: Option<String>,
-    #[serde(default)]
-    pub sizing: Option<String>,
-    #[serde(default)]
-    pub height: Option<String>,
-    #[serde(default)]
-    pub width: Option<String>
-}
-#[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
-#[serde(untagged)]
-pub enum BoxShadowData {
-    Shadow(TokenDataTypeBoxShadowValue),
-    Shadows(Vec<TokenDataTypeBoxShadowValue>),
-}
-
-#[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct TokenDataTypeTypographyValue { 
-    #[serde(default)]
-    pub fontFamily: Option<String>,
-    #[serde(default)]
-    pub fontWeight: Option<String>,
-    #[serde(default)]
-    pub lineHeight: Option<String>,
-    #[serde(default)]
-    pub fontSize: Option<String>,
-    #[serde(default)]
-    pub letterSpacing: Option<String>,
-    #[serde(default)]
-    pub paragraphSpacing: Option<String>,
-    #[serde(default)]
-    pub paragraphIndent: Option<String>,
-    #[serde(default)]
-    pub textCase: Option<String>,
-    #[serde(default)]
-    pub textDecoration: Option<String>
-}
-
-#[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct TokenDataTypeColorValue { 
-     pub color: TokenDataColorValue,
-}
-#[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
 pub struct TokenDataColorValue { 
      pub hex: String,
      // v1 is 0-1
@@ -200,41 +131,6 @@ pub struct TokenDataColorValue {
      pub v2_g: String,
      pub v2_b: String, 
      pub v2_a: String,
-}
-
-#[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct TokenDataTypeBoxShadowValue { 
-    pub blur: String,
-    pub color: String,
-    pub spread: String,
-    #[serde(alias = "type")]
-    pub t_type: String,
-    pub x: String,
-    pub y: String,
-}
-
-
-#[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
-pub enum BoxShadowType {
-    blur,
-    color,
-    spread,
-    t_type,
-    x,
-    y
-}
-
-#[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct TokenDataBoxShadowValue { 
-    #[serde(default)]
-    pub blur: Option<String>,
-    pub color: TokenDataColorValue,
-    #[serde(default)]
-    pub spread: Option<String>,
-    #[serde(default)]
-    pub x: Option<String>,
-    #[serde(default)]
-    pub y: Option<String>,
 }
 
 impl TokensConfig {
@@ -317,8 +213,3 @@ pub enum TemplateFieldVariantVariableName {
     snake,
     kebab
 } 
-
-pub struct AvailableFields { 
-    pub name: String,
-    pub values: Vec<String>
-}

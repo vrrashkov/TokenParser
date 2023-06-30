@@ -38,7 +38,8 @@ global:
         file_name: "button-big"
         files:
           - "assets/figma/variables/button-big.json"
-  # Different generated
+  # Generated files
+  # You can combine multiple files also 
   output_paths:
     - combine:
         files:
@@ -61,8 +62,6 @@ templates:
         format: "DS{{style}}"
         extension: "swift"
         #case: "kebab"
-        #This will replace the class_name from template_type as well
-        #use_as_class_name: true
     settings_custom:
       # For header and footer {{style}} is a secial variable that can be used
       header: 
@@ -81,4 +80,11 @@ templates:
           value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
         - type: boolean
           value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
-   
+        - type: composition
+          value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
+        - type: composition
+          value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
+        - type: boxShadow
+          value: 
+            - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
+            - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
