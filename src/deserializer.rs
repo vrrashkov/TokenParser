@@ -28,7 +28,6 @@ pub struct ConfigTokensTemplates {
     pub settings_custom: ConfigTemplateSettingsCustom,
     
 }
-
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTemplateSettingsCustom {
     pub header: Vec<String>,
@@ -53,17 +52,42 @@ pub struct ConfigTokensGlobal {
     #[serde(alias = "figma_variables_source_paths")]
     pub figma_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
     #[serde(alias = "figma_output_paths")]
-    pub figma_output_paths: Vec<ConfigTokensGlobalOtherPath>,
+    pub figma_output_paths: Vec<ConfigTokensGlobalOtherPathWithMode>,
     #[serde(alias = "output_paths")]
     pub output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "style_output_path")]
     pub style_output_path: String
 }
+
+#[derive(Default, Deserialize, Debug)]
+pub struct ConfigTokensGlobalOtherPathWithMode {
+    #[serde(alias = "combine")]
+    pub combine: ConfigTokensGlobalOtherPathCombineWithMode
+}
+
+#[derive(Default, Deserialize, Debug)]
+pub struct ConfigTokensGlobalOtherPathCombineWithMode {
+    #[serde(alias = "file_name")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub file_name: Option<String>,
+    #[serde(alias = "files")]
+    pub files: Vec<GlobalOtherPathCombine>
+}
+
+#[derive( Deserialize, Debug)]
+pub struct GlobalOtherPathCombine {
+    pub path: String,
+    pub mode: Option<String>,
+}
+
+
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPath {
     #[serde(alias = "combine")]
     pub combine: ConfigTokensGlobalOtherPathCombine
 }
+
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPathCombine {

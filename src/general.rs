@@ -42,7 +42,7 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
             } else {
                 file_name = current_file_name.to_string();
             }
-            
+
             let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &current_file_name);
             let output_json = get_json(&output_path);
 

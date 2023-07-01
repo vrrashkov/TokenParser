@@ -16,23 +16,25 @@ use crate::template;
 use crate::utils;
 use crate::global;
 
-        pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
+pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
             
-            let mut allSources: Vec<Vec<String>> = vec![];
+    let mut allSources: Vec<(String, Vec<String>)> = vec![];
 
-            if let Some(json_figma_source) = &token_config.global.figma_source_paths {
-                // get all keys with their values
-                // key contains the full path of the tree
-                // for example core.natural.fr.c1
-                for file in json_figma_source {
-                    let files = file.combine.files.to_owned();
-            allSources.push(files);
+    if let Some(json_figma_source) = &token_config.global.figma_source_paths {
+        // get all keys with their values
+        // key contains the full path of the tree
+        // for example core.natural.fr.c1
+        for file in json_figma_source {
+            let files = file.combine.files.to_owned();
+            let file_name = file.combine.file_name.to_owned().unwrap();
+            allSources.push((file_name, files));
         }
     }
 
+    for data in allSources {
+        let files = data.1;
+        let sourceFileName = data.0;
 
-    for files in allSources {
-        
         let mut pure_values: HashMap<String, String> = HashMap::new();
         
         for file in &files {
@@ -82,57 +84,90 @@ use crate::global;
             
             let mut data_object: serde_json::Value = serde_json::Value::Null;
             let mut file_name = String::from("");
-            for (index, path) in group.combine.files.iter().enumerate() {
+            for (index, fileData) in group.combine.files.iter().enumerate() {
+                let combineFileName = &group.combine.file_name.to_owned().unwrap();
                 let currentList = &files;
-                if !currentList.contains(&path) {
+                if combineFileName.to_owned() != sourceFileName.to_owned() {
                     continue 'figma_output
                 }
 
-                let mut current_file_name = Path::new(path).file_stem().unwrap().to_str().unwrap().to_owned();
-                if index == 0 {
-                    if let Some(custom_file_name) = &group.combine.file_name {
-                        file_name = custom_file_name.to_string()
-                    } else {
-                        file_name = current_file_name.to_string();
-                    }
-                }
+                file_name = combineFileName.to_owned();
+                
+                let uniqueName = Path::new(&fileData.path).file_stem().unwrap().to_str().unwrap().to_owned();
 
-                let data_to_merge_with: serde_json::Value = general::get_json(path);
-                data_object.merge(data_to_merge_with);
+                let mut data_to_merge_with: serde_json::Value = general::get_json(&fileData.path);
+
+                for (key_path, key_value) in &calculated_values {
+                    let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
+                    let path_list_count = path_list.len();
+                    
+                    let pointer_value = format!("/{}", path_list.join("/"));
+
+                    let ptr = Pointer::new(path_list);
+        
+                    // replace the values from json
+                    data_to_merge_with.pointer_mut(ptr.as_str()).map(|v| {
+                        match key_value {
+                            Value::String(val) => {
+                                *v = json!(val)
+                            },
+                            Value::Float(val) => {
+                                *v = json!(val.to_string())
+                            },
+                            Value::Int(val) => {
+                                *v = json!(val.to_string())
+                            },
+                            Value::Boolean(val) => {
+                                *v = json!(val.to_string())
+                            },
+                            Value::Tuple(val) => {},
+                            Value::Empty => {},
+                        }
+                        
+                    });
+                }
+                
+                if let Some(modeName) = &fileData.mode {
+                    let wrapperJson = json!({ modeName : data_to_merge_with});
+                    data_object.merge(wrapperJson);
+                } else {
+                    data_object.merge(data_to_merge_with);
+                }
             }
 
            
-            for (key_path, key_value) in &calculated_values {
-                let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
-                let path_list_count = path_list.len();
+            // for (key_path, key_value) in &calculated_values {
+            //     let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
+            //     let path_list_count = path_list.len();
                 
-                let pointer_value = format!("/{}", path_list.join("/"));
+            //     let pointer_value = format!("/{}", path_list.join("/"));
 
-                let ptr = Pointer::new(path_list);
+            //     let ptr = Pointer::new(path_list);
     
-                // replace the values from json
-                data_object.pointer_mut(ptr.as_str()).map(|v| {
-                    match key_value {
-                        Value::String(val) => {
-                            *v = json!(val)
-                        },
-                        Value::Float(val) => {
-                            *v = json!(val.to_string())
-                        },
-                        Value::Int(val) => {
-                            *v = json!(val.to_string())
-                        },
-                        Value::Boolean(val) => {
-                            *v = json!(val.to_string())
-                        },
-                        Value::Tuple(val) => {},
-                        Value::Empty => {},
-                    }
+            //     // replace the values from json
+            //     data_object.pointer_mut(ptr.as_str()).map(|v| {
+            //         match key_value {
+            //             Value::String(val) => {
+            //                 *v = json!(val)
+            //             },
+            //             Value::Float(val) => {
+            //                 *v = json!(val.to_string())
+            //             },
+            //             Value::Int(val) => {
+            //                 *v = json!(val.to_string())
+            //             },
+            //             Value::Boolean(val) => {
+            //                 *v = json!(val.to_string())
+            //             },
+            //             Value::Tuple(val) => {},
+            //             Value::Empty => {},
+            //         }
                     
-                });
-            }
+            //     });
+            // }
             
             let file = format!("{}{}.json",&create_styles_directory, &file_name);
+            println!("heree: {}", file);
             std::fs::write(
                 &file,
                 serde_json::to_string_pretty(&data_object).unwrap(),
