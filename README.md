@@ -12,8 +12,6 @@ Token Parser is a universal tool for generating runnable code for any language f
 
 2. [Figma Studio Tokens](https://github.com/tokens-studio/figma-plugin)
 
-3. 
-
 > You can use tokens from multiple sources as long as they are with the correct json structure!
 
 ## Setup
