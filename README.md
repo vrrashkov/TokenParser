@@ -12,7 +12,7 @@ Token Parser is a universal tool for generating runnable code for any language f
 
 2. [Figma Studio Tokens](https://github.com/tokens-studio/figma-plugin)
 
-3. [lukasoppermann/design-tokens]([GitHub - lukasoppermann/design-tokens: 🎨 Figma plugin to export design tokens to json in an amazon style dictionary compatible format.](https://github.com/lukasoppermann/design-tokens))
+3. [lukasoppermann/design-tokens](https://github.com/lukasoppermann/design-tokens)
 
 > You can use tokens from multiple sources as long as they are with the correct json structure!
 
