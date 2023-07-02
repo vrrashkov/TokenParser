@@ -437,6 +437,7 @@ You can use the keywords in the following way: **`{{variable_name | kebab }}`** 
 
 | name                                 | extra options/info                                                                                                                                                         |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `empty`                              | Initialize variable without displaying it's value                                                                                                                          |
 | `no_space`                           | If the value contains space, remove it. For example "`Test No Space`" will turnto "`TestNoSpace`"                                                                          |
 | `as_text_or_number`                  | If the value is text it will add double quotes to it.                                                                                                                      |
 | `pascal`, <br/>`kebab`, <br/>`camel` | Different case filters                                                                                                                                                     |
