@@ -1,5 +1,6 @@
 use easy_color::{ColorError, IntoRGBA};
 use easy_color::{Hex, IntoHex};
+use liquid_core::ValueView;
 use serde::de::value::MapAccessDeserializer;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -96,8 +97,16 @@ pub fn set_optional_global(globals: &mut liquid_core::Object,  key: &str, value:
                     value_transformed = liquid::model::Value::scalar(pure_value);
                 }
             },
+            serde_json::Value::Array(pure_value) => {
+                let obj = liquid_core::to_value(&pure_value).unwrap();
+                value_transformed = obj.to_owned();
+            },
+            serde_json::Value::Object(pure_value) => {
+                let obj = liquid_core::to_value(&pure_value).unwrap();
+                value_transformed = obj.to_owned();
+            },
             _ => {
-                globals.insert(key.to_owned().into(), liquid::model::Value::scalar(default.to_string()));
+                value_transformed = liquid::model::Value::scalar(default.to_string());
             }
         }
         globals.insert(key.to_owned().into(), value_transformed);

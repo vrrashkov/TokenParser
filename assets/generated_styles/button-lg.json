@@ -1,0 +1,51 @@
+{
+  "default": {
+    "dissolve": {
+      "description": null,
+      "type": "custom-transition",
+      "value": {
+        "duration": 0.45,
+        "easingFunction": {
+          "x1": 0.6968395709991455,
+          "x2": 0.06683959811925888,
+          "y1": 0.05232666060328483,
+          "y2": 0.9323266744613647
+        },
+        "transitionType": "dissolve"
+      }
+    },
+    "gradient": {
+      "single with multiple color stops": {
+        "description": "Four color stops from yellow to red",
+        "type": "custom-gradient",
+        "value": {
+          "gradientType": "radial",
+          "rotation": 180,
+          "stops": [
+            {
+              "color": "#ffb800ff",
+              "position": 0
+            },
+            {
+              "color": "#ff8a00ff",
+              "position": 0.34
+            },
+            {
+              "color": "#ff2e00ff",
+              "position": 0.65
+            },
+            {
+              "color": "#ff0000ff",
+              "position": 1
+            }
+          ]
+        }
+      }
+    },
+    "height": {
+      "description": "test desc",
+      "type": "float",
+      "value": "20"
+    }
+  }
+}

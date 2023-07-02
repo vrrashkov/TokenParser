@@ -12,6 +12,8 @@ Token Parser is a universal tool for generating runnable code for any language f
 
 2. [Figma Studio Tokens](https://github.com/tokens-studio/figma-plugin)
 
+3. [lukasoppermann/design-tokens]([GitHub - lukasoppermann/design-tokens: 🎨 Figma plugin to export design tokens to json in an amazon style dictionary compatible format.](https://github.com/lukasoppermann/design-tokens))
+
 > You can use tokens from multiple sources as long as they are with the correct json structure!
 
 ## Setup
@@ -61,51 +63,79 @@ global:
   # Look at the figma/variables and figma/generated_styles for better understanding how it works
   figma_source_paths: 
     - combine:
+        file_name: "button-lg"
         files:
-          - "assets/figma/variables/color-light.json"
-          - "assets/figma/variables/color-dark.json"
-    - combine:
-        files:
-        - "assets/figma/variables/button-md.json"
-        - "assets/figma/variables/core.json"
-    - combine:
-        files:
-        - "assets/figma/variables/button-big.json"
-        - "assets/figma/variables/core.json"
-  # file_name: If set this will be the name of the merged file
-  # if not, than the first file name will be used
-  figma_output_paths:
-    - combine:
-        file_name: "color-light"
-        files:
-          - "assets/figma/variables/color-light.json"
-    - combine:
-        file_name: "color-dark"
-        files:
-          - "assets/figma/variables/color-dark.json"
+          - "assets/figma/variables/button-lg.json"
+          - "assets/figma/variables/core-.json"
     - combine:
         file_name: "button-md"
         files:
           - "assets/figma/variables/button-md.json"
+          - "assets/figma/variables/core-.json"
     - combine:
-        file_name: "button-big"
+        file_name: "button-sm"
         files:
-          - "assets/figma/variables/button-big.json"
-  # Generated files
-  # You can combine multiple files also 
-  output_paths:
+          - "assets/figma/variables/button-sm.json"
+          - "assets/figma/variables/core-.json"
     - combine:
+        file_name: "color-light"
         files:
-          - "color-light"
+          - "assets/figma/variables/color-accent-primary.json"
+          - "assets/figma/variables/color-accent-secondary.json"
+          - "assets/figma/variables/color-status-success.json"
+          - "assets/figma/variables/color-status-danger.json"
+          - "assets/figma/variables/color-light.json"
+          - "assets/figma/variables/palette-.json"
     - combine:
+        file_name: "color-dark"
         files:
-          - "color-dark"
+          - "assets/figma/variables/color-accent-primary.json"
+          - "assets/figma/variables/color-accent-secondary.json"
+          - "assets/figma/variables/color-status-success.json"
+          - "assets/figma/variables/color-status-danger.json"
+          - "assets/figma/variables/color-dark.json"
+          - "assets/figma/variables/palette-.json"
+  # file_name: If set this will be the name of the merged file
+  # if not, than the first file name will be used
+  figma_output_paths:
     - combine:
+        file_name: "button-lg"
         files:
-          - "button-md"
+          - path: "assets/figma/variables/button-lg.json"
     - combine:
+        file_name: "button-md"
         files:
-          - "button-big"
+          - path: "assets/figma/variables/button-md.json"
+    - combine:
+        file_name: "button-sm"
+        files:
+          - path: "assets/figma/variables/button-sm.json"
+    - combine:
+        file_name: "color-light"
+        files:
+          - path: "assets/figma/variables/color-accent-primary.json"
+            # if mode is set this will wrap the whole json object with a parent of the mode's value
+            # this helps if you have similar trees in multiple files
+            mode: "primary"
+          - path: "assets/figma/variables/color-accent-secondary.json"
+            mode: "secondary"
+          - path: "assets/figma/variables/color-status-success.json"
+            mode: "success"
+          - path: "assets/figma/variables/color-status-danger.json"
+            mode: "danger"
+          - path: "assets/figma/variables/color-light.json"
+    - combine:
+        file_name: "color-dark"
+        files:
+          - path: "assets/figma/variables/color-accent-primary.json"
+            mode: "primary"
+          - path: "assets/figma/variables/color-accent-secondary.json"
+            mode: "secondary"
+          - path: "assets/figma/variables/color-status-success.json"
+            mode: "success"
+          - path: "assets/figma/variables/color-status-danger.json"
+            mode: "danger"
+          - path: "assets/figma/variables/color-dark.json"
   #Output path 
   style_output_path: "assets/generated_styles/"
 ```
@@ -223,6 +253,10 @@ Both type of jsons are valid and represent the same structure becase of the forw
   value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
 ```
 
+```swift
+public static let xl = CGFloat(56) 
+```
+
 ---
 
 ```json
@@ -241,6 +275,10 @@ Both type of jsons are valid and represent the same structure becase of the forw
 ```yaml
 - type: typography
   value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
+```
+
+```swift
+public static let bold = TextStyle(name: "Noir Pro", size: 16, weight: TextStyle.Weight("Bold"), lineHeight: 23)
 ```
 
 ---
@@ -272,11 +310,124 @@ Both type of jsons are valid and represent the same structure becase of the forw
 ```yaml
 - type: boxShadow
   value: 
-    - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
-    - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
+    - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
+    - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
+      
+```
+
+```swift
+public static let shadowTabBar = [Shadow(x: CGFloat(0), y: CGFloat(0), color: Color(hex: "#00000019"), radius: CGFloat(20)), Shadow(x: CGFloat(0), y: CGFloat(4), color: Color(hex: "#00000019"), radius: CGFloat(8))]
 ```
 
 ---
+
+```json
+"dissolve": {
+  "description": null,
+  "type": "custom-transition",
+  "value": {
+    "duration": 0.45,
+    "easingFunction": {
+      "x1": 0.6968395709991455,
+      "x2": 0.06683959811925888,
+      "y1": 0.05232666060328483,
+      "y2": 0.9323266744613647
+    },
+    "transitionType": "dissolve"
+  }
+}
+```
+
+```yaml
+# Object
+# {{easingFunction | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
+- type: "custom-transition"
+  value: "public static let {{variable_name | camel}} = CustomTransition(duration: {{duration}},
+    {{easingFunction | empty}}
+    x1: CGFloat({{easingFunction.x1}}),
+    x2: CGFloat({{easingFunction.x2}}),
+    y1: CGFloat({{easingFunction.y1}}),
+    y2: CGFloat({{easingFunction.y2}}))
+  " 
+```
+
+---
+
+```json
+"gradient": {
+  "single with multiple color stops": {
+    "description": "Four color stops from yellow to red",
+    "type": "custom-gradient",
+    "value": {
+      "gradientType": "radial",
+      "rotation": 180,
+      "stops": [
+        {
+          "color": "#ffb800ff",
+          "position": 0
+        },
+        {
+          "color": "#ff8a00ff",
+          "position": 0.34
+        },
+        {
+          "color": "#ff2e00ff",
+          "position": 0.65
+        },
+        {
+          "color": "#ff0000ff",
+          "position": 1
+        }
+      ]
+    }
+  }
+}
+```
+
+```yaml
+# Array
+# {{stops | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
+- type: "custom-gradient"
+  value: "public static let {{variable_name | camel}} = CustomGradient(gradientType: {{gradientType}}, rotation: {{rotation}},
+  {{stops | empty}}
+
+  color1: Style1(
+    {% for stop in stops %}
+
+    {{stop.color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}
+    {% if forloop.last == false -%}, {% endif %}
+    {% endfor -%}
+  ),
+
+  color2: Style2(
+    {% assign colors = stops | map: 'color' %}
+    {% for item in colors %}
+    
+    {{item | color: 'Color(red: rgb_r_v2, green: rgb_g_v2, blue: rgb_b_v2, opacity: rgb_a_v2)'}}
+    {% if forloop.last == false -%}, {% endif %}
+    {% endfor %}
+  )
+  " 
+```
+
+```swift
+public static let defaultGradientSingleWithMultipleColorStops = CustomGradient(gradientType: radial, rotation: 180, 
+color1: Style1( 
+Color(red: 1.000, green: 0.722, blue: 0.000, opacity: 1.000) ,  
+Color(red: 1.000, green: 0.541, blue: 0.000, opacity: 1.000) ,  
+Color(red: 1.000, green: 0.180, blue: 0.000, opacity: 1.000) ,  
+Color(red: 1.000, green: 0.000, blue: 0.000, opacity: 1.000)  ),
+color2: Style2(  
+Color(red: 255, green: 184, blue: 0, opacity: 184) ,  
+Color(red: 255, green: 138, blue: 0, opacity: 138) ,  
+Color(red: 255, green: 46, blue: 0, opacity: 46) ,  
+Color(red: 255, green: 0, blue: 0, opacity: 0)   ) 
+}
+```
+
+---
+
+> Use `{{easingFunction | empty}}` empty filter to initialize a variable without displaying it. This filter is unique to this library and necessary for a lot of the blocks that the liquid templating provides.
 
 ##### Keywords
 
@@ -308,6 +459,14 @@ Arrays have a bit different take on how you shuld template them. For example in 
     - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
     - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
+
+##### Liquid filters
+
+Check the available filters/blocks and etc.. for the liquid templating from here:
+
+- [Liquid for Designers · Shopify/liquid Wiki · GitHub](https://github.com/Shopify/liquid/wiki/Liquid-for-Designers)
+
+- https://jg-rp.github.io/liquid/language/filters
 
 ##### More
 

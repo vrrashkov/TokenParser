@@ -1,0 +1,38 @@
+{
+    "accent": {
+        "hover": {
+            "bg": {
+                "type": "color",
+                "value": "{primary.hover.bg}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{primary.hover.text}",
+                "description": ""
+            }
+        },
+        "disabled": {
+            "text": {
+                "type": "color",
+                "value": "{primary.disabled.text}",
+                "description": ""
+            },
+            "bg": {
+                "type": "color",
+                "value": "{primary.disabled.bg}",
+                "description": ""
+            }
+        },
+        "text": {
+            "type": "color",
+            "value": "{primary.text}",
+            "description": ""
+        },
+        "bg": {
+            "type": "color",
+            "value": "{primary.bg}",
+            "description": ""
+        }
+    }
+}

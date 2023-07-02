@@ -53,8 +53,6 @@ pub struct ConfigTokensGlobal {
     pub figma_source_paths: Option<Vec<ConfigTokensGlobalOtherPath>>,
     #[serde(alias = "figma_output_paths")]
     pub figma_output_paths: Vec<ConfigTokensGlobalOtherPathWithMode>,
-    #[serde(alias = "output_paths")]
-    pub output_paths: Vec<ConfigTokensGlobalOtherPath>,
     #[serde(alias = "style_output_path")]
     pub style_output_path: String
 }

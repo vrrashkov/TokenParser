@@ -1,3 +1,4 @@
+# cargo run --release  --  --generate --config "assets/design_tokens_config.yaml"
 global: 
   # Figma source paths
   # These are the pure files from Figma, they can contain aliases
@@ -8,56 +9,84 @@ global:
   # Look at the figma/variables and figma/generated_styles for better understanding how it works
   figma_source_paths: 
     - combine:
+        file_name: "button-lg"
         files:
-          - "assets/figma/variables/color-light.json"
-          - "assets/figma/variables/color-dark.json"
-    - combine:
-        files:
-        - "assets/figma/variables/button-md.json"
-        - "assets/figma/variables/core.json"
-    - combine:
-        files:
-        - "assets/figma/variables/button-big.json"
-        - "assets/figma/variables/core.json"
-  # file_name: If set this will be the name of the merged file
-  # if not, than the first file name will be used
-  figma_output_paths:
-    - combine:
-        file_name: "color-light"
-        files:
-          - "assets/figma/variables/color-light.json"
-    - combine:
-        file_name: "color-dark"
-        files:
-          - "assets/figma/variables/color-dark.json"
+          - "assets/figma/variables/button-lg.json"
+          - "assets/figma/variables/core-.json"
     - combine:
         file_name: "button-md"
         files:
           - "assets/figma/variables/button-md.json"
+          - "assets/figma/variables/core-.json"
     - combine:
-        file_name: "button-big"
+        file_name: "button-sm"
         files:
-          - "assets/figma/variables/button-big.json"
-  # Generated files
-  # You can combine multiple files also 
-  output_paths:
+          - "assets/figma/variables/button-sm.json"
+          - "assets/figma/variables/core-.json"
     - combine:
+        file_name: "color-light"
         files:
-          - "color-light"
+          - "assets/figma/variables/color-accent-primary.json"
+          - "assets/figma/variables/color-accent-secondary.json"
+          - "assets/figma/variables/color-status-success.json"
+          - "assets/figma/variables/color-status-danger.json"
+          - "assets/figma/variables/color-light.json"
+          - "assets/figma/variables/palette-.json"
     - combine:
+        file_name: "color-dark"
         files:
-          - "color-dark"
+          - "assets/figma/variables/color-accent-primary.json"
+          - "assets/figma/variables/color-accent-secondary.json"
+          - "assets/figma/variables/color-status-success.json"
+          - "assets/figma/variables/color-status-danger.json"
+          - "assets/figma/variables/color-dark.json"
+          - "assets/figma/variables/palette-.json"
+  # file_name: If set this will be the name of the merged file
+  # if not, than the first file name will be used
+  figma_output_paths:
     - combine:
+        file_name: "button-lg"
         files:
-          - "button-md"
+          - path: "assets/figma/variables/button-lg.json"
     - combine:
+        file_name: "button-md"
         files:
-          - "button-big"
+          - path: "assets/figma/variables/button-md.json"
+    - combine:
+        file_name: "button-sm"
+        files:
+          - path: "assets/figma/variables/button-sm.json"
+    - combine:
+        file_name: "color-light"
+        files:
+          - path: "assets/figma/variables/color-accent-primary.json"
+            # if mode is set this will wrap the whole json object with a parent of the mode's value
+            # this helps if you have similar trees in multiple files
+            mode: "primary"
+          - path: "assets/figma/variables/color-accent-secondary.json"
+            mode: "secondary"
+          - path: "assets/figma/variables/color-status-success.json"
+            mode: "success"
+          - path: "assets/figma/variables/color-status-danger.json"
+            mode: "danger"
+          - path: "assets/figma/variables/color-light.json"
+    - combine:
+        file_name: "color-dark"
+        files:
+          - path: "assets/figma/variables/color-accent-primary.json"
+            mode: "primary"
+          - path: "assets/figma/variables/color-accent-secondary.json"
+            mode: "secondary"
+          - path: "assets/figma/variables/color-status-success.json"
+            mode: "success"
+          - path: "assets/figma/variables/color-status-danger.json"
+            mode: "danger"
+          - path: "assets/figma/variables/color-dark.json"
   #Output path 
   style_output_path: "assets/generated_styles/"
 templates:
   - settings_general:
-      generate_file_path: "generated_templates"
+      generate_file_path: "assets/generated_templates"
       file_name:
         format: "DS{{style}}"
         extension: "swift"
@@ -80,11 +109,39 @@ templates:
           value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
         - type: boolean
           value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
-        - type: composition
-          value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
-        - type: composition
-          value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
-        - type: boxShadow
-          value: 
-            - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
-            - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
+        # More complex templates
+        # Object
+        # {{easingFunction | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
+        - type: "custom-transition"
+          value: "public static let {{variable_name | camel}} = CustomTransition(duration: {{duration}},
+            {{easingFunction | empty}}
+            x1: CGFloat({{easingFunction.x1}}),
+            x2: CGFloat({{easingFunction.x2}}),
+            y1: CGFloat({{easingFunction.y1}}),
+            y2: CGFloat({{easingFunction.y2}}))
+          " 
+        # Array
+        # {{stops | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
+        - type: "custom-gradient"
+          value: "public static let {{variable_name | camel}} = CustomGradient(gradientType: {{gradientType}}, rotation: {{rotation}},
+          {{stops | empty}}
+
+          color1: Style1(
+            {% for stop in stops %}
+
+            {{stop.color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}
+            {% if forloop.last == false -%}, {% endif %}
+            {% endfor -%}
+          ),
+
+          color2: Style2(
+            {% assign colors = stops | map: 'color' %}
+            {% for item in colors %}
+            
+            {{item | color: 'Color(red: rgb_r_v2, green: rgb_g_v2, blue: rgb_b_v2, opacity: rgb_a_v2)'}}
+            {% if forloop.last == false -%}, {% endif %}
+            {% endfor %}
+          )
+          " 
+        
+   

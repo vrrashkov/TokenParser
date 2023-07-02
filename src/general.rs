@@ -21,7 +21,7 @@ pub fn get_config(config_file: &str) -> deserializer::TokensConfig {
     let data_strip_comments = StripComments::new(data.as_bytes());
     let token_config: deserializer::TokensConfig = serde_yaml::from_reader(data_strip_comments).expect("Unable to read the json");
 
-    //println!("deserialized token_config = {:?}", token_config);
+    println!("deserialized token_config = {:?}", token_config);
 
     token_config
 }
@@ -30,27 +30,27 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
     let mut token_data_wrapper_list = Vec::new();
 
     //let style_files = &tokens_config.global.style_path;
-    for group in &tokens_config.global.output_paths {
+    for group in &tokens_config.global.figma_output_paths {
         let mut data_object: serde_json::Value;
         let mut file_name = String::from("");
         let mut res: Value = Value::Null;
-        for (index, combine) in group.combine.files.iter().enumerate() {
-            let current_file_name = Path::new(combine).file_stem().unwrap().to_str().unwrap().to_owned();
-            
+        for (index, fileData) in group.combine.files.iter().enumerate() {
+
             if let Some(custom_file_name) = &group.combine.file_name {
                 file_name = custom_file_name.to_string()
             } else {
+                let current_file_name = Path::new(&group.combine.files.get(0).unwrap().path).file_stem().unwrap().to_str().unwrap().to_owned();
+       
                 file_name = current_file_name.to_string();
             }
 
-            let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &current_file_name);
+            let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
             let output_json = get_json(&output_path);
 
             res.merge(output_json);
         }
       
         let token_data_list = filter_properties(&res);
-        //let token_data_list_combined = combine_tokens(&token_data_list, tokens_config);
 
         let token_data_wrapper: template::TokenDataWrapper = template::TokenDataWrapper { 
             style_name : file_name.to_string(),
@@ -59,38 +59,7 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         
         token_data_wrapper_list.push(token_data_wrapper);
     }
-   
     token_data_wrapper_list
-}
-
-pub fn combine_tokens(token_data_list: &[template::TokenData], tokens_config: &deserializer::TokensConfig) -> Vec<template::TokenData> { 
-
-    let mut updated_token_data_list: Vec<template::TokenData> = Vec::new();
-  
-    for template_config in &tokens_config.templates { 
-        let mut token_data_combined: template::TokenData = Default::default();
-        
-        for token_data in token_data_list { 
-            if let Some(combine_with) = &template_config.combine{
-                if combine_with.contains(&token_data.name) {
-                    // we use the first one as the name
-                    // it's also not bad idea to combine all 
-                    // or add this as another setting
-                    token_data_combined.name = combine_with[0].to_string();
-                    token_data_combined.token_value.extend(token_data.token_value.to_owned());
-                } else {
-                    updated_token_data_list.push(token_data.to_owned());
-                }
-            } else {
-                updated_token_data_list.push(token_data.to_owned());
-            }
-        }
-
-        if !token_data_combined.token_value.is_empty() {
-            updated_token_data_list.push(token_data_combined);
-        }
-    }
-    updated_token_data_list
 }
 
 pub fn get_json(path: &str) -> serde_json::Value {
@@ -185,7 +154,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
             if !pureValues {
                 p.push(key.to_owned());
             }
-            let token_value_type = token_type.unwrap_or("").to_string().to_case(Case::Camel);
+            let token_value_type = token_type.unwrap_or("").to_string();
             let value_object = ival;
 
             let token_value = template::TokenValue {
@@ -206,14 +175,15 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
             };
 
             let mut token_exist = token_data_list.iter_mut().find(|f| f.t_type == token_value.token_type.text);
+  
             if let Some(token_e) = token_exist {
                 token_e.token_value.push(token_value);
             } else {
-                token.t_type = token_value.token_type.text.to_case(Case::Camel);//deserializer::ConfigTemplateType::from_str(&token_value.token_type.text.to_case(Case::Camel));
+                token.t_type = token_value.token_type.text.to_owned();//deserializer::ConfigTemplateType::from_str(&token_value.token_type.text.to_case(Case::Camel));
                 token.token_value.push(token_value);
-
+         
                 token_data_list.push(token.to_owned());
-            }
+            }        
 
 
         } else {

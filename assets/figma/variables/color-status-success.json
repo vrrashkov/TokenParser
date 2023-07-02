@@ -1,0 +1,38 @@
+{
+    "status": {
+        "hover": {
+            "bg": {
+                "type": "color",
+                "value": "{success.hover.bg}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{success.hover.text}",
+                "description": ""
+            }
+        },
+        "disabled": {
+            "text": {
+                "type": "color",
+                "value": "{success.disabled.text}",
+                "description": ""
+            },
+            "bg": {
+                "type": "color",
+                "value": "{success.disabled.bg}",
+                "description": ""
+            }
+        },
+        "text": {
+            "type": "color",
+            "value": "{success.text}",
+            "description": ""
+        },
+        "bg": {
+            "type": "color",
+            "value": "{success.bg}",
+            "description": ""
+        }
+    }
+}

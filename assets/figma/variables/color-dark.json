@@ -1,16 +1,153 @@
 {
-    "n": {
-        "fr": {
-            "c5": {
+    "success": {
+        "hover": {
+            "bg": {
                 "type": "color",
-                "value": "#d6d9db",
+                "value": "{dark.success.success}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.success.fr.l60}",
+                "description": ""
+            }
+        },
+        "disabled": {
+            "bg": {
+                "type": "color",
+                "value": "{dark.success.fr.l45}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.success.bg}",
+                "description": ""
+            }
+        },
+        "text": {
+            "type": "color",
+            "value": "{dark.success.fr.l60}",
+            "description": ""
+        },
+        "bg": {
+            "type": "color",
+            "value": "{dark.success.bg}",
+            "description": ""
+        }
+    },
+    "danger": {
+        "hover": {
+            "bg": {
+                "type": "color",
+                "value": "{dark.danger.hover}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.danger.fr.l60}",
+                "description": ""
+            }
+        },
+        "disabled": {
+            "bg": {
+                "type": "color",
+                "value": "{dark.danger.fr.l30}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.danger.bg}",
+                "description": ""
+            }
+        },
+        "text": {
+            "type": "color",
+            "value": "{dark.danger.fr.l60}",
+            "description": ""
+        },
+        "bg": {
+            "type": "color",
+            "value": "{dark.danger.bg}",
+            "description": ""
+        }
+    },
+    "secondary": {
+        "hover": {
+            "bg": {
+                "type": "color",
+                "value": "{dark.accent2.hover}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.accent2.fr.l75}",
+                "description": ""
+            }
+        },
+        "disabled": {
+            "bg": {
+                "type": "color",
+                "value": "{dark.accent2.fr.l60}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.accent2.bg}",
                 "description": ""
             }
         },
         "bg": {
             "type": "color",
-            "value": "#1a1a1a",
-            "description": "test description 2"
+            "value": "{dark.accent2.bg}",
+            "description": ""
+        },
+        "text": {
+            "type": "color",
+            "value": "{dark.accent2.fr.l75}",
+            "description": ""
+        }
+    },
+    "primary": {
+        "hover": {
+            "bg": {
+                "type": "color",
+                "value": "{dark.accent1.hover}",
+                "description": ""
+            },
+            "text": {
+                "type": "color",
+                "value": "{dark.accent1.fr.l60}",
+                "description": ""
+            }
+        },
+        "disabled": {
+            "text": {
+                "type": "color",
+                "value": "{dark.accent1.bg}",
+                "description": ""
+            },
+            "bg": {
+                "type": "color",
+                "value": "{dark.accent1.fr.l60}",
+                "description": ""
+            }
+        },
+        "text": {
+            "type": "color",
+            "value": "{dark.accent1.fr.l60}",
+            "description": ""
+        },
+        "bg": {
+            "type": "color",
+            "value": "{dark.accent1.bg}",
+            "description": ""
+        }
+    },
+    "box": {
+        "neutral1": {
+            "type": "color",
+            "value": "{dark.n1.bg}",
+            "description": ""
         }
     }
 }

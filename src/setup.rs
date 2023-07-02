@@ -54,6 +54,7 @@ fn template_content_custom(
                 template_update_list_values(file_data_list, &mut current_template, template_type.to_owned(), value);
             },
             deserializer::CustomConfigTempalteTypeValue::Values(values) => {
+
                 template_list_replaced_values(file_data_list, &mut current_template, template_type.to_owned(),values);
             },
         }
@@ -112,6 +113,7 @@ fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<t
             .filter(filters::case::PascalCase)
             .filter(filters::case::KebabCase)
             .filter(filters::optional::Optional)
+            .filter(filters::empty::Empty)
             .build().unwrap()
             .parse(&current).unwrap();
 
@@ -138,8 +140,7 @@ fn template_pure_values(file_data_list: &[template::TokenData], template_type: S
 pub fn template_set_values(index: usize, data: &template::TokenValue, pure_template: &String, fields: &Vec<deserializer::TemplateFieldData>, globals: &mut liquid::Object) -> Option<String> { 
     let token_value = data;
     let mut template: Option<String> = Some(pure_template.to_string());
-    // dbg!(token_value);
-    // dbg!(fields);
+
     for field_data in fields {
         let field_name = field_data.key_full.as_str();
         let field_name_without_index = field_data.key_without_index.as_str();
@@ -154,22 +155,25 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
         } else {
             match &token_value.value {
                 deserializer::TokenDataType::Value(value) => {
-                   
                     let mut pure_value = value.get(field_name_without_index);
+                  
                     if pure_value.is_none() {
                         if let Some(val) = value.get("value") {
                             match val {
                                 serde_json::Value::Array(values) => {
                                     pure_value = val.get(field_index)?.get(field_name_without_index);
                                 },
-                                serde_json::Value::Object(obj_val) => {
+                                serde_json::Value::Object(obj_val) => {         
                                     pure_value = obj_val.get(field_name_without_index);
+                                   
                                 }
                                 _ => {
-                                    
+                           
                                 }
                             };
                         }
+                    } else {
+                       
                     }
                   
                     template::set_optional_global(globals, field_name, pure_value.cloned(), "");
