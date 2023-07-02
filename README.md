@@ -351,6 +351,9 @@ public static let shadowTabBar = [Shadow(x: CGFloat(0), y: CGFloat(0), color: Co
   " 
 ```
 
+```swift
+public static let dissolve = CustomTransition(duration: 0.45,  x1: CGFloat(0.6968395709991455), x2: CGFloat(0.06683959811925888), y1: CGFloat(0.05232666060328483), y2: CGFloat(0.9323266744613647)) 
+```
 ---
 
 ```json
