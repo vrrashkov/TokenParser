@@ -34,22 +34,33 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         let mut data_object: serde_json::Value;
         let mut file_name = String::from("");
         let mut res: Value = Value::Null;
-        for (index, fileData) in group.combine.files.iter().enumerate() {
+        // for (index, fileData) in group.combine.files.iter().enumerate() {
 
-            if let Some(custom_file_name) = &group.combine.file_name {
-                file_name = custom_file_name.to_string()
-            } else {
-                let current_file_name = Path::new(&group.combine.files.get(0).unwrap().path).file_stem().unwrap().to_str().unwrap().to_owned();
+        //     if let Some(custom_file_name) = &group.combine.file_name {
+        //         file_name = custom_file_name.to_string()
+        //     } else {
+        //         let current_file_name = Path::new(&group.combine.files.get(0).unwrap().path).file_stem().unwrap().to_str().unwrap().to_owned();
        
-                file_name = current_file_name.to_string();
-            }
+        //         file_name = current_file_name.to_string();
+        //     }
 
-            let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
-            let output_json = get_json(&output_path);
+        //     let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
+        //     let output_json = get_json(&output_path);
+        //     println!("output_path: {}", output_path);
+        //     res.merge(output_json);
+        // }
 
-            res.merge(output_json);
+        if let Some(custom_file_name) = &group.combine.file_name {
+            file_name = custom_file_name.to_string()
+        } else {
+            let current_file_name = Path::new(&group.combine.files.get(0).unwrap().path).file_stem().unwrap().to_str().unwrap().to_owned();
+   
+            file_name = current_file_name.to_string();
         }
-      
+
+        let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
+        let output_json = get_json(&output_path);
+        res.merge(output_json);
         let token_data_list = filter_properties(&res);
 
         let token_data_wrapper: template::TokenDataWrapper = template::TokenDataWrapper { 
@@ -59,12 +70,11 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         
         token_data_wrapper_list.push(token_data_wrapper);
     }
-
     token_data_wrapper_list
 }
 
 pub fn get_json(path: &str) -> serde_json::Value {
-    println!("path: {}", path);
+  
     let data = fs::read_to_string(path).expect("Unable to read file");
     let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
   
@@ -120,7 +130,6 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
         }
 
     }
-
     token_data_list
 }
 
@@ -143,6 +152,7 @@ pub fn filter_sub_properties(key: String, val: &serde_json::Value, token_data_li
     } else {
         listEnum = val.as_object().iter().flat_map(|f| f.iter()).collect::<Vec<(&std::string::String, &serde_json::Value)>>();
     }
+
 
     for (ikey, ival) in listEnum {
         let template_type = ival["type"].as_str();

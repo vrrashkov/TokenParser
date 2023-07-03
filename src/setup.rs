@@ -24,7 +24,7 @@ pub fn init(token_config: &deserializer::TokensConfig) {
             let file_data_name = "custom";
         
             let template_content = template_content_custom(template_config, token_data_wrapper, token_config, file_data_name, &token_data_wrapper.token_data);
-            
+    
             general::create_template(template_config, &token_data_wrapper.style_name, file_data_name, &template_content);
             
         }
@@ -49,12 +49,13 @@ fn template_content_custom(
 
     for template in &custom_template.template_type {
        let template_type = &template.t_type;
+      
        match &template.value {
             deserializer::CustomConfigTempalteTypeValue::Value(value) => {
                 template_update_list_values(file_data_list, &mut current_template, template_type.to_owned(), value);
             },
             deserializer::CustomConfigTempalteTypeValue::Values(values) => {
-             
+      
                 template_list_replaced_values(file_data_list, &mut current_template, template_type.to_owned(),values);
             },
         }
@@ -142,7 +143,6 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
     let token_value = data;
     let mut template: Option<String> = Some(pure_template.to_string());
 
-  
     for field_data in fields {
         let field_name = field_data.key_full.as_str();
         let field_name_without_index = field_data.key_without_index.as_str();

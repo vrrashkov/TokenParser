@@ -1,81 +1,40 @@
 {
-  "box": {
-    "neutral1": {
-      "description": "",
-      "type": "color",
-      "value": "#1a1a1a"
-    }
-  },
   "danger": {
-    "bg": {
-      "description": "",
-      "type": "color",
-      "value": "#ea3e3e"
-    },
-    "disabled": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#f6acac"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#ea3e3e"
-      }
-    },
-    "hover": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#ed5959"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#fdeded"
-      }
-    },
     "status": {
       "bg": {
         "description": "",
         "type": "color",
-        "value": "#ea3e3e"
+        "value": "{danger.bg}"
       },
       "disabled": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#f6acac"
+          "value": "{danger.disabled.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#ea3e3e"
+          "value": "{danger.disabled.text}"
         }
       },
       "hover": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#ed5959"
+          "value": "{danger.hover.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#fdeded"
+          "value": "{danger.hover.text}"
         }
       },
       "text": {
         "description": "",
         "type": "color",
-        "value": "#fdeded"
+        "value": "{danger.text}"
       }
-    },
-    "text": {
-      "description": "",
-      "type": "color",
-      "value": "#fdeded"
     }
   },
   "primary": {
@@ -83,71 +42,52 @@
       "bg": {
         "description": "",
         "type": "color",
-        "value": "#fafafa"
+        "value": "{secondary.bg}"
       },
       "disabled": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#85878a"
+          "value": "{secondary.disabled.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#fafafa"
+          "value": "{secondary.disabled.text}"
         }
       },
       "hover": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#e0e0e0"
+          "value": "{secondary.hover.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#646668"
+          "value": "{secondary.hover.text}"
         }
       },
       "text": {
         "description": "",
         "type": "color",
-        "value": "#646668"
+        "value": "{secondary.text}"
       }
-    },
-    "bg": {
-      "description": "",
-      "type": "color",
-      "value": "#3e71ea"
-    },
-    "disabled": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#e8e9ee"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#3e71ea"
+    }
+  },
+  "reg": {
+    "home": {
+      "card": {
+        "type": "boxShadow",
+        "value": {
+          "blur": "10",
+          "color": "rgba(0,0,0,0.25)",
+          "spread": "0",
+          "type": "dropShadow",
+          "x": "0",
+          "y": "4"
+        }
       }
-    },
-    "hover": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#5985ed"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#e8e9ee"
-      }
-    },
-    "text": {
-      "description": "",
-      "type": "color",
-      "value": "#e8e9ee"
     }
   },
   "secondary": {
@@ -155,143 +95,96 @@
       "bg": {
         "description": "",
         "type": "color",
-        "value": "#fafafa"
+        "value": "{secondary.bg}"
       },
       "disabled": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#85878a"
+          "value": "{secondary.disabled.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#fafafa"
+          "value": "{secondary.disabled.text}"
         }
       },
       "hover": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#e0e0e0"
+          "value": "{secondary.hover.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#646668"
+          "value": "{secondary.hover.text}"
         }
       },
       "text": {
         "description": "",
         "type": "color",
-        "value": "#646668"
+        "value": "{secondary.text}"
       }
-    },
-    "bg": {
-      "description": "",
-      "type": "color",
-      "value": "#fafafa"
-    },
-    "disabled": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#85878a"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#fafafa"
-      }
-    },
-    "hover": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#e0e0e0"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#646668"
-      }
-    },
-    "text": {
-      "description": "",
-      "type": "color",
-      "value": "#646668"
     }
   },
   "success": {
-    "bg": {
-      "description": "",
-      "type": "color",
-      "value": "#18cd64"
-    },
-    "disabled": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#0b5b2c"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#18cd64"
-      }
-    },
-    "hover": {
-      "bg": {
-        "description": "",
-        "type": "color",
-        "value": "#2de67b"
-      },
-      "text": {
-        "description": "",
-        "type": "color",
-        "value": "#0f2418"
-      }
-    },
     "status": {
       "bg": {
         "description": "",
         "type": "color",
-        "value": "#ea3e3e"
+        "value": "{danger.bg}"
       },
       "disabled": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#f6acac"
+          "value": "{danger.disabled.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#ea3e3e"
+          "value": "{danger.disabled.text}"
         }
       },
       "hover": {
         "bg": {
           "description": "",
           "type": "color",
-          "value": "#ed5959"
+          "value": "{danger.hover.bg}"
         },
         "text": {
           "description": "",
           "type": "color",
-          "value": "#fdeded"
+          "value": "{danger.hover.text}"
         }
       },
       "text": {
         "description": "",
         "type": "color",
-        "value": "#fdeded"
+        "value": "{danger.text}"
       }
-    },
-    "text": {
-      "description": "",
-      "type": "color",
-      "value": "#0f2418"
     }
+  },
+  "tabBar": {
+    "type": "boxShadow",
+    "value": [
+      {
+        "blur": "20",
+        "color": "rgba(0,0,0,0.1)",
+        "spread": "0",
+        "type": "dropShadow",
+        "x": "0",
+        "y": "0"
+      },
+      {
+        "blur": "8",
+        "color": "rgba(0,0,0,0.1)",
+        "spread": "0",
+        "type": "dropShadow",
+        "x": "0",
+        "y": "4"
+      }
+    ]
   }
 }
