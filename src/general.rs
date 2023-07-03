@@ -59,6 +59,7 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         
         token_data_wrapper_list.push(token_data_wrapper);
     }
+
     token_data_wrapper_list
 }
 
@@ -104,7 +105,7 @@ pub fn create_template_file(template_config: &deserializer::ConfigTokensTemplate
 }
 
 pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
-    let data_object = &json.as_object();
+    let data_object: &Option<&serde_json::Map<String, Value>> = &json.as_object();
     
     let mut token_data_list:Vec<template::TokenData> = vec![];
     for (key, val) in data_object.iter().flat_map(|d| d.iter()) {
@@ -119,6 +120,7 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
         }
 
     }
+
     token_data_list
 }
 

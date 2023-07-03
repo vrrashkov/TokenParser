@@ -54,7 +54,7 @@ fn template_content_custom(
                 template_update_list_values(file_data_list, &mut current_template, template_type.to_owned(), value);
             },
             deserializer::CustomConfigTempalteTypeValue::Values(values) => {
-
+             
                 template_list_replaced_values(file_data_list, &mut current_template, template_type.to_owned(),values);
             },
         }
@@ -83,6 +83,7 @@ fn template_update_list_values(file_data_list: &[template::TokenData], current_t
 fn template_list_replaced_values(file_data_list: &[template::TokenData], current_template: &mut CustomTemplate, config_type: String, templates: &[String]) { 
     let mut values_content:Vec<String> = Vec::new();
     let pure_values = template_pure_values(file_data_list, config_type.to_owned());
+
     for (index, template) in templates.iter().enumerate() { 
         let current = template_replaced_values(index, template, &pure_values);    
         current_template.update_template_values(config_type.to_owned(), current);
@@ -141,6 +142,7 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
     let token_value = data;
     let mut template: Option<String> = Some(pure_template.to_string());
 
+  
     for field_data in fields {
         let field_name = field_data.key_full.as_str();
         let field_name_without_index = field_data.key_without_index.as_str();
@@ -161,9 +163,15 @@ pub fn template_set_values(index: usize, data: &template::TokenValue, pure_templ
                         if let Some(val) = value.get("value") {
                             match val {
                                 serde_json::Value::Array(values) => {
+                                    if (index != values.len()-1) {
+                                        return None;
+                                    }  
                                     pure_value = val.get(field_index)?.get(field_name_without_index);
                                 },
-                                serde_json::Value::Object(obj_val) => {         
+                                serde_json::Value::Object(obj_val) => {     
+                                    if (index != 0) {
+                                        return None;
+                                    }  
                                     pure_value = obj_val.get(field_name_without_index);
                                    
                                 }

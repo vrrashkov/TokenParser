@@ -1,6 +1,6 @@
 [package]
 name = "design_token_parser"
-version = "3.1.0"
+version = "3.1.1"
 edition = "2021"
 repository = "https://github.com/vrrashkov/TokenParser"
 readme = "README.md"

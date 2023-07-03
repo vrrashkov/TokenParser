@@ -31,7 +31,7 @@ fn main() {
 
     // Covert to usable code
     let matches: clap::ArgMatches = Command::new("Design Tokens")
-        .version("3.1.0")
+        .version("3.1.1")
         .author("Vladislav R. <vrrashkov@gmail.com>")
         .about("Parses figma design tokens to usable code")
         .arg(Arg::new("config").short('c').long("config").action(ArgAction::Set).required(true))
@@ -40,10 +40,10 @@ fn main() {
 
     let config_file = matches.get_one::<String>("config").expect("required");
 
-    println!(
-        "config: {:?}",
-        &config_file
-    );
+    // println!(
+    //     "config: {:?}",
+    //     &config_file
+    // );
 
     // Deserialize the config file
     let token_config: deserializer::TokensConfig = general::get_config(config_file);
