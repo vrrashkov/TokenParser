@@ -12,7 +12,7 @@ Token Parser is a universal tool for generating runnable code for any language f
 
 2. [Figma Studio Tokens](https://github.com/tokens-studio/figma-plugin)
 
-3. [lukasoppermann/design-tokens]([GitHub - lukasoppermann/design-tokens: 🎨 Figma plugin to export design tokens to json in an amazon style dictionary compatible format.](https://github.com/lukasoppermann/design-tokens))
+3. [lukasoppermann/design-tokens](https://github.com/lukasoppermann/design-tokens)
 
 > You can use tokens from multiple sources as long as they are with the correct json structure!
 
@@ -351,6 +351,9 @@ public static let shadowTabBar = [Shadow(x: CGFloat(0), y: CGFloat(0), color: Co
   " 
 ```
 
+```swift
+public static let dissolve = CustomTransition(duration: 0.45,  x1: CGFloat(0.6968395709991455), x2: CGFloat(0.06683959811925888), y1: CGFloat(0.05232666060328483), y2: CGFloat(0.9323266744613647)) 
+```
 ---
 
 ```json
@@ -437,6 +440,7 @@ You can use the keywords in the following way: **`{{variable_name | kebab }}`** 
 
 | name                                 | extra options/info                                                                                                                                                         |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `empty`                              | Initialize variable without displaying it's value                                                                                                                          |
 | `no_space`                           | If the value contains space, remove it. For example "`Test No Space`" will turnto "`TestNoSpace`"                                                                          |
 | `as_text_or_number`                  | If the value is text it will add double quotes to it.                                                                                                                      |
 | `pascal`, <br/>`kebab`, <br/>`camel` | Different case filters                                                                                                                                                     |
