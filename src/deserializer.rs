@@ -69,6 +69,7 @@ pub struct ConfigTokensGlobalOtherPathCombineWithMode {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default)]
     pub file_name: Option<String>,
+    pub merge: Vec<String>,
     #[serde(alias = "files")]
     pub files: Vec<GlobalOtherPathCombine>
 }

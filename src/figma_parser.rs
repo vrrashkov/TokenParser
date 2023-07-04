@@ -83,10 +83,10 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         // merging files and updating the values
         // the merged files are dependant on the config
        
-        let mut data_object: serde_json::Value = serde_json::Value::Null;
         let mut file_name = String::from("");
         'figma_output: for group in &token_config.global.figma_output_paths {
             
+        let mut data_object: serde_json::Value = serde_json::Value::Null;
             for (index, fileData) in group.combine.files.iter().enumerate() {
                 let combineFileName = &group.combine.file_name.to_owned().unwrap();
 
@@ -99,11 +99,11 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
           
                 let uniqueName = Path::new(&fileData.path).file_stem().unwrap().to_str().unwrap().to_owned();
 
-                if !&currentList.contains(&fileData.path) {
+                if !&currentList.contains(&fileData.path) || !group.combine.merge.contains(&sourceFileName.to_owned()) {
                     continue 
                 }
-                dbg!(&currentList);
-                dbg!(&fileData.path);
+                dbg!(currentList);
+                dbg!(&uniqueName);
                 
                 let mut data_to_merge_with: serde_json::Value = general::get_json(&fileData.path);
          
