@@ -19,6 +19,9 @@ use crate::global;
 pub fn filter_properties(token_config: &deserializer::TokensConfig) { 
             
     let mut allSources: Vec<(String, Vec<String>)> = vec![];
+    let path = &token_config.global.style_output_path;
+    fs::remove_dir_all(path).unwrap();
+    fs::create_dir(path).unwrap();
 
     if let Some(json_figma_source) = &token_config.global.figma_source_paths {
         // get all keys with their values
@@ -79,23 +82,31 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         let create_styles_directory = &token_config.global.style_output_path;//"assets/generated_styles/";
         // merging files and updating the values
         // the merged files are dependant on the config
-        
+       
+        let mut data_object: serde_json::Value = serde_json::Value::Null;
+        let mut file_name = String::from("");
         'figma_output: for group in &token_config.global.figma_output_paths {
             
-            let mut data_object: serde_json::Value = serde_json::Value::Null;
-            let mut file_name = String::from("");
             for (index, fileData) in group.combine.files.iter().enumerate() {
                 let combineFileName = &group.combine.file_name.to_owned().unwrap();
-                let currentList = &files;
-                if combineFileName.to_owned() != sourceFileName.to_owned() {
-                    continue 'figma_output
-                }
 
                 file_name = combineFileName.to_owned();
-                
+                let file = format!("{}{}.json",&create_styles_directory, &file_name);
+                if Path::new(&file).exists() {
+                    data_object = general::get_json(&file);
+                }
+                let currentList = &files;
+          
                 let uniqueName = Path::new(&fileData.path).file_stem().unwrap().to_str().unwrap().to_owned();
 
+                if !&currentList.contains(&fileData.path) {
+                    continue 
+                }
+                dbg!(&currentList);
+                dbg!(&fileData.path);
+                
                 let mut data_to_merge_with: serde_json::Value = general::get_json(&fileData.path);
+         
 
                 for (key_path, key_value) in &calculated_values {
                     let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
@@ -133,6 +144,15 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                 } else {
                     data_object.merge(data_to_merge_with);
                 }
+        
+                if data_object != serde_json::Value::Null {
+                    let file = format!("{}{}.json",&create_styles_directory, &file_name);
+                    println!("heree: {}", file);
+                    std::fs::write(
+                        &file,
+                        serde_json::to_string_pretty(&data_object).unwrap(),
+                    );
+                }
             }
 
            
@@ -165,15 +185,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                     
             //     });
             // }
-            
-            let file = format!("{}{}.json",&create_styles_directory, &file_name);
-            println!("heree: {}", file);
-            std::fs::write(
-                &file,
-                serde_json::to_string_pretty(&data_object).unwrap(),
-            );
         }
-        
     }
 }
 
