@@ -100,18 +100,22 @@ global:
   figma_output_paths:
     - combine:
         file_name: "button-lg"
+        merge: ["button-lg"]
         files:
           - path: "assets/figma/variables/button-lg.json"
     - combine:
         file_name: "button-md"
+        merge: ["button-md"]
         files:
           - path: "assets/figma/variables/button-md.json"
     - combine:
         file_name: "button-sm"
+        merge: ["button-sm"]
         files:
           - path: "assets/figma/variables/button-sm.json"
     - combine:
         file_name: "color-light"
+        merge: ["color-light"]
         files:
           - path: "assets/figma/variables/color-accent-primary.json"
             # if mode is set this will wrap the whole json object with a parent of the mode's value
@@ -126,6 +130,7 @@ global:
           - path: "assets/figma/variables/color-light.json"
     - combine:
         file_name: "color-dark"
+        merge: ["color-dark"]
         files:
           - path: "assets/figma/variables/color-accent-primary.json"
             mode: "primary"
