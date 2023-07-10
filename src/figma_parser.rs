@@ -1,5 +1,6 @@
 use std::path::{Path, self};
 use std::{collections::HashMap, fs};
+use anyhow::Context;
 use serde::{Serialize, Deserialize, Deserializer};
 use serde_json::{Number, json};
 use std::str::FromStr;
@@ -20,8 +21,8 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
             
     let mut allSources: Vec<(String, Vec<String>)> = vec![];
     let path = &token_config.global.style_output_path;
-    fs::remove_dir_all(path).unwrap();
-    fs::create_dir(path).unwrap();
+    fs::remove_dir_all(path).with_context(|| format!("Unable to remove dir {}", path)).unwrap();
+    fs::create_dir(path).with_context(|| format!("Unable to create dir {}", path)).unwrap();
 
     if let Some(json_figma_source) = &token_config.global.figma_source_paths {
         // get all keys with their values
@@ -88,26 +89,26 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
             
         let mut data_object: serde_json::Value = serde_json::Value::Null;
             for (index, fileData) in group.combine.files.iter().enumerate() {
-                let combineFileName = &group.combine.file_name.to_owned().unwrap();
+                let combineFileName = &group.combine.file_name.to_owned().with_context(|| format!("File name not set for {}", fileData.path)).unwrap();
 
                 file_name = combineFileName.to_owned();
                 let file = format!("{}{}.json",&create_styles_directory, &file_name);
                 if Path::new(&file).exists() {
                     data_object = general::get_json(&file);
                 }
+
                 let currentList = &files;
           
-                let uniqueName = Path::new(&fileData.path).file_stem().unwrap().to_str().unwrap().to_owned();
+                let uniqueName = Path::new(&fileData.path).file_stem()
+                                                .with_context(|| format!("Error(0) getting name from :  {}", &fileData.path)).unwrap().to_str()
+                                                .with_context(|| format!("Error(1) getting name from :  {}", &fileData.path)).unwrap().to_owned();
 
                 if !&currentList.contains(&fileData.path) || !group.combine.merge.contains(&sourceFileName.to_owned()) {
                     continue 
                 }
-                dbg!(currentList);
-                dbg!(&uniqueName);
-                
+
                 let mut data_to_merge_with: serde_json::Value = general::get_json(&fileData.path);
          
-
                 for (key_path, key_value) in &calculated_values {
                     let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
                     let path_list_count = path_list.len();
@@ -147,44 +148,13 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         
                 if data_object != serde_json::Value::Null {
                     let file = format!("{}{}.json",&create_styles_directory, &file_name);
-                    println!("heree: {}", file);
                     std::fs::write(
                         &file,
-                        serde_json::to_string_pretty(&data_object).unwrap(),
+                        serde_json::to_string_pretty(&data_object).with_context(|| format!("Could not prettify the string {}", &data_object)).unwrap(),
                     );
                 }
             }
 
-           
-            // for (key_path, key_value) in &calculated_values {
-            //     let mut path_list = &key_path.split('.').collect::<Vec<&str>>();
-            //     let path_list_count = path_list.len();
-                
-            //     let pointer_value = format!("/{}", path_list.join("/"));
-
-            //     let ptr = Pointer::new(path_list);
-    
-            //     // replace the values from json
-            //     data_object.pointer_mut(ptr.as_str()).map(|v| {
-            //         match key_value {
-            //             Value::String(val) => {
-            //                 *v = json!(val)
-            //             },
-            //             Value::Float(val) => {
-            //                 *v = json!(val.to_string())
-            //             },
-            //             Value::Int(val) => {
-            //                 *v = json!(val.to_string())
-            //             },
-            //             Value::Boolean(val) => {
-            //                 *v = json!(val.to_string())
-            //             },
-            //             Value::Tuple(val) => {},
-            //             Value::Empty => {},
-            //         }
-                    
-            //     });
-            // }
         }
     }
 }
@@ -259,7 +229,7 @@ pub fn filter_sub_properties(key: &str, val: &serde_json::Value, pure_values: &m
 }
 
 fn generate_figma_token_value(json_string: serde_json::Value, pure_values: &mut HashMap<String, String>, p: Vec<String>, add_val_path: bool) { 
-    let value: serde_json::Value = serde_json::from_value(json_string).expect("Unable to read the json");
+    let value: serde_json::Value = serde_json::from_value(json_string.to_owned()).context(format!("Could not convert string to json {}", &json_string)).unwrap();
   
     match &value {
         serde_json::Value::Object(value_map) => {

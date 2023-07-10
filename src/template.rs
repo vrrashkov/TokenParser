@@ -1,3 +1,4 @@
+use anyhow::Context;
 use easy_color::{ColorError, IntoRGBA};
 use easy_color::{Hex, IntoHex};
 use liquid_core::ValueView;
@@ -87,22 +88,22 @@ pub fn set_optional_global(globals: &mut liquid_core::Object,  key: &str, value:
                 value_transformed = liquid::model::Value::scalar(pure_value);
             },
             serde_json::Value::Number(pure_value) => {
-                let pure_value_number: f64 = pure_value.as_f64().unwrap();
+                let pure_value_number: f64 = pure_value.as_f64().with_context(|| format!("Cannot parse to f64 {}", pure_value)).unwrap();
                 value_transformed = liquid::model::Value::scalar(pure_value_number);
             },
             serde_json::Value::String(pure_value) => {
                 if let Ok(ev) = evalexpr::eval(&pure_value) {
-                    value_transformed = liquid::model::Value::scalar(ev.as_number().unwrap());
+                    value_transformed = liquid::model::Value::scalar(ev.as_number().with_context(|| format!("Cannot set as_number {}", ev)).unwrap());
                 } else {
                     value_transformed = liquid::model::Value::scalar(pure_value);
                 }
             },
             serde_json::Value::Array(pure_value) => {
-                let obj = liquid_core::to_value(&pure_value).unwrap();
+                let obj = liquid_core::to_value(&pure_value).with_context(|| format!("Cannot convert to value")).unwrap();
                 value_transformed = obj.to_owned();
             },
             serde_json::Value::Object(pure_value) => {
-                let obj = liquid_core::to_value(&pure_value).unwrap();
+                let obj = liquid_core::to_value(&pure_value).with_context(|| format!("Cannot convert to value")).unwrap();
                 value_transformed = obj.to_owned();
             },
             _ => {

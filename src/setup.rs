@@ -1,3 +1,4 @@
+use anyhow::Context;
 use liquid::ValueView;
 use serde::de::value::MapAccessDeserializer;
 use std::cell::RefCell;
@@ -63,8 +64,8 @@ fn template_content_custom(
 
     let file = include_str!("../templates/liquid_template.html");
     let template = liquid::ParserBuilder::with_stdlib()
-    .build().unwrap()
-    .parse(file).unwrap();
+    .build().with_context(|| format!("Liquid template build error {}", &file)).unwrap()
+    .parse(file).with_context(|| format!("Liquid template parse error {}", &file)).unwrap();
 
     let mut globals = liquid::object!({
         "headers": current_template.headers,
@@ -72,7 +73,7 @@ fn template_content_custom(
         "values": current_template.values,
     });
     //dbg!(&globals);
-    Some(template.render(&globals).unwrap())
+    Some(template.render(&globals).with_context(|| format!("Template could not render with globals {}", &globals.to_kstr())).unwrap())
 }
 
 fn template_update_list_values(file_data_list: &[template::TokenData], current_template: &mut CustomTemplate, config_type: String, value: &String) { 
@@ -116,10 +117,10 @@ fn template_replaced_values(index: usize, template: &String, pure_values: &Vec<t
             .filter(filters::case::KebabCase)
             .filter(filters::optional::Optional)
             .filter(filters::empty::Empty)
-            .build().unwrap()
-            .parse(&current).unwrap();
+            .build().with_context(|| "Error with template setup build").unwrap()
+            .parse(&current).with_context(|| "Error with template setup parse").unwrap();
 
-            let output = template_parsed.render(&globals).unwrap();
+            let output = template_parsed.render(&globals).with_context(|| "Error with template setup render globals").unwrap();
             //dbg!(&globals);
             if !output.is_empty() {
                 values_content.push(output);
@@ -214,7 +215,7 @@ pub fn template_as_values(template: &str, default_globals: &mut liquid_core::Obj
 
         let mut index: usize = 0;
         if key_split.len() == 2 {
-            index = key_split[1].parse::<usize>().unwrap();
+            index = key_split[1].parse::<usize>().with_context(|| format!("Cannot parse to usize {}", key_split[1])).unwrap();
         }
        
         let template_field_data = deserializer::TemplateFieldData {

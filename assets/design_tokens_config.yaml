@@ -56,7 +56,7 @@ global:
           - path: "assets/figma/variables/button-md.json"
     - combine:
         file_name: "button-sm"
-        merge: ["button-md"]
+        merge: ["button-sm"]
         files:
           - path: "assets/figma/variables/button-sm.json"
     # - combine:

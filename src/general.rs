@@ -4,6 +4,7 @@ use std::io::Write;
 use std::fs::File;
 use std::path::Path;
 use std::str::FromStr;
+use anyhow::Context;
 use convert_case::{Case, Casing};
 use json_comments::StripComments;
 use json_value_merge::Merge;
@@ -16,12 +17,12 @@ pub fn get_config(config_file: &str) -> deserializer::TokensConfig {
     
     let design_tokens_config = &config_file;
  
-    let data = fs::read_to_string(design_tokens_config).expect("Unable to read file");
+    let data = fs::read_to_string(design_tokens_config).with_context(|| format!("Unable to read file from {}", config_file)).unwrap();
     
     let data_strip_comments = StripComments::new(data.as_bytes());
-    let token_config: deserializer::TokensConfig = serde_yaml::from_reader(data_strip_comments).expect("Unable to read the json");
+    let token_config: deserializer::TokensConfig = serde_yaml::from_reader(data_strip_comments).with_context(|| format!("Unable to read config {}", data)).unwrap();
 
-    println!("deserialized token_config = {:?}", token_config);
+    //println!("deserialized token_config = {:?}", token_config);
 
     token_config
 }
@@ -34,21 +35,6 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         let mut data_object: serde_json::Value;
         let mut file_name = String::from("");
         let mut res: Value = Value::Null;
-        // for (index, fileData) in group.combine.files.iter().enumerate() {
-
-        //     if let Some(custom_file_name) = &group.combine.file_name {
-        //         file_name = custom_file_name.to_string()
-        //     } else {
-        //         let current_file_name = Path::new(&group.combine.files.get(0).unwrap().path).file_stem().unwrap().to_str().unwrap().to_owned();
-       
-        //         file_name = current_file_name.to_string();
-        //     }
-
-        //     let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
-        //     let output_json = get_json(&output_path);
-        //     println!("output_path: {}", output_path);
-        //     res.merge(output_json);
-        // }
 
         if let Some(custom_file_name) = &group.combine.file_name {
             file_name = custom_file_name.to_string()
@@ -59,7 +45,9 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
         }
 
         let output_path = format!("{}/{}.json", &tokens_config.global.style_output_path, &file_name);
+
         let output_json = get_json(&output_path);
+
         res.merge(output_json);
         let token_data_list = filter_properties(&res);
 
@@ -75,8 +63,8 @@ pub fn generate_tokens(tokens_config: &deserializer::TokensConfig) -> Vec<templa
 
 pub fn get_json(path: &str) -> serde_json::Value {
   
-    let data = fs::read_to_string(path).expect("Unable to read file");
-    let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
+    let data = fs::read_to_string(path).with_context(|| format!("Unable to read file from {}", path)).unwrap();
+    let res: serde_json::Value = serde_json::from_str(&data).with_context(|| format!("Unable to parse {}", data)).unwrap();
   
     res
 }
@@ -108,8 +96,7 @@ pub fn create_template_file(template_config: &deserializer::ConfigTokensTemplate
     fs::create_dir_all(directory);
 
     let file_name = format!("{}/{}",directory,template_name);
-    let mut file = File::create(file_name)
-        .expect("Error encountered while creating file!");
+    let mut file = File::create(&file_name).context(format!("Unable to create file {}", &file_name)).unwrap();
 
     file.write_all(contents.as_bytes());
 }
@@ -136,7 +123,7 @@ pub fn filter_properties(json: &serde_json::Value) -> Vec<template::TokenData> {
 pub fn deserialize_token_data_value(data: &Value) -> deserializer::TokenDataType { 
   
     //dbg!(&data);
-    let value_object: deserializer::TokenDataType = serde_json::from_value(data.to_owned()).expect("Unable to read the json");
+    let value_object: deserializer::TokenDataType = serde_json::from_value(data.to_owned()).with_context(|| format!("Unable to read json {}", data)).unwrap();
     
     value_object
 }
