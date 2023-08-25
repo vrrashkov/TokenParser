@@ -1,9 +1,9 @@
-{% for header in headers -%}
+{%- for header in headers -%}
 {{header}}
 {% endfor -%}
-{% for value in values -%}
+{% for value in values %}
     {{value}}
-{% endfor -%}
-{% for footer in footers -%}
+{%- endfor -%}
+{% for footer in footers %}
 {{footer}}
-{% endfor -%}
+{% endfor %}

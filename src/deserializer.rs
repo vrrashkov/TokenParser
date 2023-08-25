@@ -40,6 +40,7 @@ pub struct CustomConfigTempalteType {
     #[serde(alias = "type")]
     pub t_type: String,
     pub value: CustomConfigTempalteTypeValue,
+    pub source: Option<Vec<String>>,
 }
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 #[serde(untagged)]

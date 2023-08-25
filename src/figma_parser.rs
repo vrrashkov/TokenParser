@@ -1,3 +1,4 @@
+use std::fs::File;
 use std::path::{Path, self};
 use std::{collections::HashMap, fs};
 use anyhow::Context;
@@ -23,6 +24,9 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
     let path = &token_config.global.style_output_path;
     fs::remove_dir_all(path).with_context(|| format!("Unable to remove dir {}", path)).unwrap();
     fs::create_dir(path).with_context(|| format!("Unable to create dir {}", path)).unwrap();
+    // create git keep
+    let file_name = format!("{}/{}",path,".gitkeep");
+    File::create(&file_name).context(format!("Unable to create file {}", &file_name)).unwrap();
 
     if let Some(json_figma_source) = &token_config.global.figma_source_paths {
         // get all keys with their values

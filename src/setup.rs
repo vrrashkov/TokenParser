@@ -49,14 +49,29 @@ fn template_content_custom(
     }; 
 
     for template in &custom_template.template_type {
-       let template_type = &template.t_type;
-      
-       match &template.value {
+        let template_type = &template.t_type;
+        let template_source = &template.source;
+
+        let mut verify_tempalte = true;
+        if let Some(source) = template_source  {
+            if !source.contains(&token_data_wrapper.style_name.to_string()) {
+                verify_tempalte = false;
+            }
+        }
+
+        // If not "source" is set we add all
+        // If there is "source" check if it contains the name and verify 
+        // If not continue
+        if !verify_tempalte {
+            continue;
+        }
+
+        match &template.value {
             deserializer::CustomConfigTempalteTypeValue::Value(value) => {
                 template_update_list_values(file_data_list, &mut current_template, template_type.to_owned(), value);
             },
             deserializer::CustomConfigTempalteTypeValue::Values(values) => {
-      
+
                 template_list_replaced_values(file_data_list, &mut current_template, template_type.to_owned(),values);
             },
         }
