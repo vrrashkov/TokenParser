@@ -24,15 +24,18 @@ pub fn init(token_config: &deserializer::TokensConfig) {
         
             let file_data_name = "custom";
         
-            let template_content = template_content_custom(template_config, token_data_wrapper, token_config, file_data_name, &token_data_wrapper.token_data);
-    
-            general::create_template(template_config, &token_data_wrapper.style_name, file_data_name, &template_content);
-            
+            let mut is_data_available = true;
+            let template_content = template_content_custom(&mut is_data_available, template_config, token_data_wrapper, token_config, file_data_name, &token_data_wrapper.token_data);
+     
+            if is_data_available {
+                general::create_template(template_config, &token_data_wrapper.style_name, file_data_name, &template_content);
+            } 
         }
     }
 }
 
 fn template_content_custom(
+    is_data_available: &mut bool,
     template_config: &deserializer::ConfigTokensTemplates, 
     token_data_wrapper: &template::TokenDataWrapper, 
     token_config: &deserializer::TokensConfig,
@@ -74,6 +77,16 @@ fn template_content_custom(
 
                 template_list_replaced_values(file_data_list, &mut current_template, template_type.to_owned(),values);
             },
+        }
+    }
+
+    if current_template.values.is_none() {
+        *is_data_available = false;
+    }
+
+    if let Some(values) = &current_template.values {
+        if values.len() <= 0 {
+            *is_data_available = false;
         }
     }
 
