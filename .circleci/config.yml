@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/rust:last
+      - image: cimg/rust:1.72.1
     steps:
       - checkout
       - run: cargo --version
