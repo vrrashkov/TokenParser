@@ -9,4 +9,3 @@ pub const color_rgb_a_v2: &str = "rgb_a_v2";
 pub const color_hex: &str = "hex";
 
 pub const optional_value: &str = "%value";
-

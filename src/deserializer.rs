@@ -1,21 +1,21 @@
-use serde::{de, Serialize, Deserialize, Deserializer};
+use convert_case::{Case, Casing};
+use serde::de::{value, IntoDeserializer};
+use serde::{de, Deserialize, Deserializer, Serialize};
 use serde_json::Number;
 use std::default;
 use std::fmt::Debug;
 use std::fmt::Display;
 use std::str::FromStr;
-use convert_case::{Case, Casing};
-use serde::de::{value, IntoDeserializer};
 
 use crate::general;
 use crate::global;
 
 #[derive(Default, Deserialize, Debug)]
-pub struct TokensConfig { 
+pub struct TokensConfig {
     #[serde(default, alias = "global")]
     pub global: ConfigTokensGlobal,
     #[serde(alias = "templates")]
-    pub templates: Vec<ConfigTokensTemplates>
+    pub templates: Vec<ConfigTokensTemplates>,
 }
 
 #[derive(Default, Deserialize, Debug)]
@@ -26,16 +26,15 @@ pub struct ConfigTokensTemplates {
     pub settings_general: ConfigTemplateSettingsGeneral,
     #[serde(alias = "settings_custom")]
     pub settings_custom: ConfigTemplateSettingsCustom,
-    
 }
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTemplateSettingsCustom {
     pub header: Vec<String>,
     pub footer: Vec<String>,
     #[serde(alias = "template_type")]
-    pub template_type: Vec<CustomConfigTempalteType>
+    pub template_type: Vec<CustomConfigTempalteType>,
 }
-#[derive( Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct CustomConfigTempalteType {
     #[serde(alias = "type")]
     pub t_type: String,
@@ -46,7 +45,7 @@ pub struct CustomConfigTempalteType {
 #[serde(untagged)]
 pub enum CustomConfigTempalteTypeValue {
     Value(String),
-    Values(Vec<String>)
+    Values(Vec<String>),
 }
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobal {
@@ -55,13 +54,13 @@ pub struct ConfigTokensGlobal {
     #[serde(alias = "figma_output_paths")]
     pub figma_output_paths: Vec<ConfigTokensGlobalOtherPathWithMode>,
     #[serde(alias = "style_output_path")]
-    pub style_output_path: String
+    pub style_output_path: String,
 }
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPathWithMode {
     #[serde(alias = "combine")]
-    pub combine: ConfigTokensGlobalOtherPathCombineWithMode
+    pub combine: ConfigTokensGlobalOtherPathCombineWithMode,
 }
 
 #[derive(Default, Deserialize, Debug)]
@@ -72,22 +71,20 @@ pub struct ConfigTokensGlobalOtherPathCombineWithMode {
     pub file_name: Option<String>,
     pub merge: Vec<String>,
     #[serde(alias = "files")]
-    pub files: Vec<GlobalOtherPathCombine>
+    pub files: Vec<GlobalOtherPathCombine>,
 }
 
-#[derive( Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct GlobalOtherPathCombine {
     pub path: String,
     pub mode: Option<String>,
 }
 
-
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPath {
     #[serde(alias = "combine")]
-    pub combine: ConfigTokensGlobalOtherPathCombine
+    pub combine: ConfigTokensGlobalOtherPathCombine,
 }
-
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTokensGlobalOtherPathCombine {
@@ -96,13 +93,13 @@ pub struct ConfigTokensGlobalOtherPathCombine {
     #[serde(default)]
     pub file_name: Option<String>,
     #[serde(alias = "files")]
-    pub files: Vec<String>
+    pub files: Vec<String>,
 }
 #[derive(Default, Serialize, Deserialize, Debug)]
-#[serde(tag = "type", rename_all="lowercase")]
+#[serde(tag = "type", rename_all = "lowercase")]
 pub enum ConfigGlobalType {
     #[default]
-    Default
+    Default,
 }
 
 #[derive(Default, Deserialize, Debug)]
@@ -119,18 +116,18 @@ pub struct ConfigTemplateSettingsGeneralFileName {
     #[serde(alias = "extension")]
     pub extension: String,
     #[serde(alias = "case")]
-    pub case: Option<String>
+    pub case: Option<String>,
 }
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTemplateSettingsJetpackCompose {
     pub object_name_prefix: Option<String>,
-    pub package_name: Option<String>
+    pub package_name: Option<String>,
 }
 
 #[derive(Default, Deserialize, Debug)]
 pub struct ConfigTemplateSettingsSwiftUI {
-    pub class_name_prefix: Option<String>
+    pub class_name_prefix: Option<String>,
 }
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Default, Debug)]
@@ -139,31 +136,34 @@ pub enum TokenDataType {
     Value(serde_json::Value),
     Values(Vec<serde_json::Value>),
     #[default]
-    None
+    None,
 }
 
 #[derive(Eq, PartialEq, Serialize, Clone, Deserialize, Debug)]
-pub struct TokenDataColorValue { 
-     pub hex: String,
-     // v1 is 0-1
-     pub v1_r: String,
-     pub v1_g: String,
-     pub v1_b: String, 
-     pub v1_a: String,
-     // v2 is 0-255
-     pub v2_r: String,
-     pub v2_g: String,
-     pub v2_b: String, 
-     pub v2_a: String,
+pub struct TokenDataColorValue {
+    pub hex: String,
+    // v1 is 0-1
+    pub v1_r: String,
+    pub v1_g: String,
+    pub v1_b: String,
+    pub v1_a: String,
+    // v2 is 0-255
+    pub v2_r: String,
+    pub v2_g: String,
+    pub v2_b: String,
+    pub v2_a: String,
 }
 
 impl TokensConfig {
-    pub fn format_extra(&self, style_name: &str, values: &[String]) -> Vec<String> { 
+    pub fn format_extra(&self, style_name: &str, values: &[String]) -> Vec<String> {
         let mut formatted_values: Vec<String> = vec![];
         for value in values {
             let mut formatted_value = value.to_owned();
-            
-            formatted_value.replace_range(..,&value.replace("{{style}}", style_name.to_case(Case::Pascal).as_str()));
+
+            formatted_value.replace_range(
+                ..,
+                &value.replace("{{style}}", style_name.to_case(Case::Pascal).as_str()),
+            );
 
             formatted_values.push(formatted_value);
         }
@@ -171,33 +171,46 @@ impl TokensConfig {
         return formatted_values;
     }
 
-    pub fn format_class_name_templated(file_name_formatted: &mut String, template_text: &str, type_name: &str, style_name: &str, settings_general: &ConfigTemplateSettingsGeneral) { 
-        
-        file_name_formatted.replace_range(..,&template_text.replace("{{type}}", type_name.to_case(Case::Pascal).as_str()).replace("{{style}}", style_name.to_case(Case::Pascal).as_str()));
+    pub fn format_class_name_templated(
+        file_name_formatted: &mut String,
+        template_text: &str,
+        type_name: &str,
+        style_name: &str,
+        settings_general: &ConfigTemplateSettingsGeneral,
+    ) {
+        file_name_formatted.replace_range(
+            ..,
+            &template_text
+                .replace("{{type}}", type_name.to_case(Case::Pascal).as_str())
+                .replace("{{style}}", style_name.to_case(Case::Pascal).as_str()),
+        );
 
-       let file_name_config= &settings_general.file_name;
+        let file_name_config = &settings_general.file_name;
         if let Some(file_name_case) = &file_name_config.case {
-            file_name_formatted.replace_range(.., &file_name_formatted.to_case(general::case_from_str(file_name_case)));
+            file_name_formatted.replace_range(
+                ..,
+                &file_name_formatted.to_case(general::case_from_str(file_name_case)),
+            );
         }
     }
 }
 
 #[derive(Clone, Debug)]
-pub struct TemplateFieldData { 
+pub struct TemplateFieldData {
     pub index: usize,
     pub key_full: String,
     pub key_without_index: String,
-    pub full_template: String
+    pub full_template: String,
 }
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum TemplateFieldDefault {
-    default
+    default,
 }
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum TemplateFieldVariantFontFamily {
     no_space,
-    default
+    default,
 }
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum TemplateFieldVariantColor {
@@ -213,7 +226,6 @@ pub enum TemplateFieldVariantColor {
 }
 impl TemplateFieldVariantColor {
     pub fn to_str(&self) -> &str {
-      
         match self {
             TemplateFieldVariantColor::rgb_r_v1 => global::color_rgb_r_v1,
             TemplateFieldVariantColor::rgb_g_v1 => global::color_rgb_g_v1,
@@ -225,9 +237,8 @@ impl TemplateFieldVariantColor {
             TemplateFieldVariantColor::rgb_a_v2 => global::color_rgb_a_v2,
             TemplateFieldVariantColor::hex => global::color_hex,
         }
-        
     }
-} 
+}
 
 #[derive(Eq, Clone, PartialEq, Serialize, Deserialize, Debug)]
 pub enum TemplateFieldVariantVariableName {
@@ -235,5 +246,5 @@ pub enum TemplateFieldVariantVariableName {
     lower,
     camel,
     snake,
-    kebab
-} 
+    kebab,
+}

@@ -24,8 +24,8 @@ impl Filter for AsTextOrNumberFilter {
         let num: std::result::Result<f64, std::num::ParseFloatError> = value.parse::<f64>();
         return match num {
             Ok(val) => Ok(Value::scalar(val)),
-            Err(why) => Ok(Value::scalar(format!("\"{}\"", value)))
-        }
+            Err(why) => Ok(Value::scalar(format!("\"{}\"", value))),
+        };
     }
 }
 
@@ -40,7 +40,7 @@ mod tests {
             liquid_core::value!(2.4)
         );
     }
-    
+
     #[test]
     fn number_in_quotes() {
         assert_eq!(
@@ -48,7 +48,7 @@ mod tests {
             liquid_core::value!(2.4)
         );
     }
-    
+
     #[test]
     fn text() {
         assert_eq!(

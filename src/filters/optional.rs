@@ -8,12 +8,15 @@ use liquid_core::{
 use liquid_core::{Error, Result};
 use liquid_core::{Value, ValueView};
 
-use crate::{deserializer, global};
 use crate::utils;
+use crate::{deserializer, global};
 
 #[derive(Debug, FilterParameters)]
 struct OptionalArgs {
-    #[parameter(description = "The format to return the optional value in.", arg_type = "str")]
+    #[parameter(
+        description = "The format to return the optional value in.",
+        arg_type = "str"
+    )]
     format: Expression,
 }
 
@@ -32,7 +35,6 @@ struct OptionalFilter {
     #[parameters]
     args: OptionalArgs,
 }
-
 
 impl Filter for OptionalFilter {
     fn evaluate(&self, input: &dyn ValueView, runtime: &dyn Runtime) -> Result<Value> {
@@ -59,7 +61,7 @@ mod tests {
             liquid_core::value!("")
         );
     }
-    
+
     #[test]
     fn optional_with_args() {
         assert_eq!(

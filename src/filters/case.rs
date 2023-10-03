@@ -26,7 +26,6 @@ impl Filter for KebabCaseFilter {
     }
 }
 
-
 #[derive(Clone, ParseFilter, FilterReflection)]
 #[filter(
     name = "pascal",
@@ -45,7 +44,6 @@ impl Filter for PascalCaseFilter {
         Ok(Value::scalar(s.to_string().to_case(Case::Pascal)))
     }
 }
-
 
 #[derive(Clone, ParseFilter, FilterReflection)]
 #[filter(

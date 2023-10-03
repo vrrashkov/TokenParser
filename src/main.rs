@@ -4,29 +4,28 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 ///////////
+use clap::{arg, command, Arg, ArgAction, Command};
 use std::env;
-use clap::{arg, command, Command, ArgAction, Arg};
 ///////////
-mod setup;
 mod deserializer;
-mod general;
-mod template;
 mod figma_parser;
-mod utils;
+mod general;
 mod global;
+mod setup;
+mod template;
+mod utils;
 mod filters {
     pub mod as_text_or_number;
-    pub mod remove_space;
-    pub mod color;
     pub mod case;
-    pub mod optional;
+    pub mod color;
     pub mod empty;
+    pub mod optional;
+    pub mod remove_space;
 }
 ////////////
-/// 
+///
 // cargo run --release  --  --generate --config "assets/design_tokens_config.yaml"
 fn main() {
-
     env::set_var("RUST_BACKTRACE", "1");
 
     // Covert to usable code
@@ -34,8 +33,19 @@ fn main() {
         .version("3.1.8")
         .author("Vladislav R. <vrrashkov@gmail.com>")
         .about("Parses figma design tokens to usable code")
-        .arg(Arg::new("config").short('c').long("config").action(ArgAction::Set).required(true))
-        .arg(Arg::new("generate").short('g').long("generate").action(ArgAction::SetTrue))
+        .arg(
+            Arg::new("config")
+                .short('c')
+                .long("config")
+                .action(ArgAction::Set)
+                .required(true),
+        )
+        .arg(
+            Arg::new("generate")
+                .short('g')
+                .long("generate")
+                .action(ArgAction::SetTrue),
+        )
         .get_matches();
 
     let config_file = matches.get_one::<String>("config").expect("required");
@@ -55,5 +65,4 @@ fn main() {
         }
     }
     setup::init(&token_config);
-
 }
