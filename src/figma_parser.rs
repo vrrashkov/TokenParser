@@ -51,7 +51,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
         let mut pure_values: HashMap<String, String> = HashMap::new();
 
         for file in &files {
-            let data_object: serde_json::Value = general::get_json(&file);
+            let data_object: serde_json::Value = general::get_json(file);
 
             filter_sub_properties("", &data_object, &mut pure_values, vec![]);
         }

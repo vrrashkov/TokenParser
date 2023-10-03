@@ -51,7 +51,7 @@ pub struct TokenValueType {
 
 impl TokenValue {
     pub fn variable_name(&self) -> String {
-        format!("{}_{}", self.path.join("_"), self.name.replace("/", " "))
+        format!("{}_{}", self.path.join("_"), self.name.replace('/', " "))
     }
 }
 #[derive(Clone, Debug, Default)]
@@ -113,13 +113,13 @@ pub fn set_optional_global(
             }
             serde_json::Value::Array(pure_value) => {
                 let obj = liquid_core::to_value(&pure_value)
-                    .with_context(|| format!("Cannot convert to value"))
+                    .with_context(|| "Cannot convert to value".to_string())
                     .unwrap();
                 value_transformed = obj.to_owned();
             }
             serde_json::Value::Object(pure_value) => {
                 let obj = liquid_core::to_value(&pure_value)
-                    .with_context(|| format!("Cannot convert to value"))
+                    .with_context(|| "Cannot convert to value".to_string())
                     .unwrap();
                 value_transformed = obj.to_owned();
             }

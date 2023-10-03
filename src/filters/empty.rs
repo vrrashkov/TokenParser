@@ -17,6 +17,6 @@ struct EmptyFilter;
 
 impl Filter for EmptyFilter {
     fn evaluate(&self, input: &dyn ValueView, _runtime: &dyn Runtime) -> Result<Value> {
-        return Ok(Value::Nil);
+        Ok(Value::Nil)
     }
 }

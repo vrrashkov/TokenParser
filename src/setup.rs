@@ -110,7 +110,7 @@ fn template_content_custom(
     }
 
     if let Some(values) = &current_template.values {
-        if values.len() <= 0 {
+        if values.len() == 0 {
             *is_data_available = false;
         }
     }
@@ -278,7 +278,6 @@ pub fn template_set_values(
                                 _ => {}
                             };
                         }
-                    } else {
                     }
 
                     template::set_optional_global(globals, field_name, pure_value.cloned(), "");

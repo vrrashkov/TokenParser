@@ -168,7 +168,7 @@ impl TokensConfig {
             formatted_values.push(formatted_value);
         }
 
-        return formatted_values;
+        formatted_values
     }
 
     pub fn format_class_name_templated(

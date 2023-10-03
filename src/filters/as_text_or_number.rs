@@ -22,10 +22,10 @@ impl Filter for AsTextOrNumberFilter {
         }
         let value = input.to_kstr().to_string();
         let num: std::result::Result<f64, std::num::ParseFloatError> = value.parse::<f64>();
-        return match num {
+        match num {
             Ok(val) => Ok(Value::scalar(val)),
             Err(why) => Ok(Value::scalar(format!("\"{}\"", value))),
-        };
+        }
     }
 }
 
