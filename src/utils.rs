@@ -47,11 +47,8 @@ pub fn color_to_hex(color: &str) -> Hex {
                 }
                 Err(_) => {
                     let rgbResult: Result<HSLA, _> = color.try_into();
-                    match rgbResult {
-                        Ok(color_value_hsla) => {
-                            hex = color_value_hsla.to_hex();
-                        }
-                        Err(_) => {}
+                    if let Ok(color_value_hsla) = rgbResult {
+                        hex = color_value_hsla.to_hex();
                     }
                 }
             }

@@ -60,7 +60,7 @@ pub fn generate_tokens(
 
         let output_json = get_json(&output_path);
 
-        res.merge(output_json);
+        res.merge(&output_json);
         let token_data_list = filter_properties(&res);
 
         let token_data_wrapper: template::TokenDataWrapper = template::TokenDataWrapper {

@@ -1,9 +1,9 @@
 {
-    "default": {
-        "height": {
-            "type": "float",
-            "value": "{size.u40}",
-            "description": ""
-        }
+  "default": {
+    "height": {
+      "type": "float",
+      "value": "{size.u40}",
+      "description": ""
     }
+  }
 }

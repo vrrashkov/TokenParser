@@ -1,5 +1,5 @@
 # cargo run --release  --  --generate --config "assets/design_tokens_config.yaml"
-global: 
+global:
   # Figma source paths
   # These are the pure files from Figma, they can contain aliases
   # For example if we have aliases we will need the actual value and not the alias
@@ -7,7 +7,7 @@ global:
   # So if we have button-md and button-big with the same trees but different values with aliases that need to be accesed from core.json
   # this should be the setup
   # Look at the figma/variables and figma/generated_styles for better understanding how it works
-  figma_source_paths: 
+  figma_source_paths:
     - combine:
         file_name: "button-lg"
         files:
@@ -87,7 +87,7 @@ global:
           - path: "assets/figma/variables/color-status-danger.json"
             mode: "danger"
           - path: "assets/figma/variables/color-dark.json"
-  #Output path 
+  #Output path
   style_output_path: "assets/generated_styles/"
 templates:
   - settings_general:
@@ -98,10 +98,10 @@ templates:
         #case: "kebab"
     settings_custom:
       # For header and footer {{style}} is a secial variable that can be used
-      header: 
+      header:
         - "import SwiftUI"
-        - "public class DSCore{{style}} {" 
-      footer: 
+        - "public class DSCore{{style}} {"
+      footer:
         - "}"
       template_type:
         # For themes
@@ -109,10 +109,10 @@ templates:
           value: "public static let {{variable_name | camel}} = {{value | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}  {{description | optional: '// desc = %value'}}"
         - type: boxShadow
           value:
-            - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
-            - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
+            - 'public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}}))'
+            - 'public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: "{{color-1 | color: ''hex''}}"), radius: CGFloat({{blur-1}}))]'
         - type: float
-          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
+          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
           source: ["button-md", "button-sm"]
   - settings_general:
       generate_file_path: "assets/generated_templates"
@@ -122,10 +122,10 @@ templates:
         #case: "kebab"
     settings_custom:
       # For header and footer {{style}} is a secial variable that can be used
-      header: 
+      header:
         - "import SwiftUI"
-        - "public class DSCore{{style}} {" 
-      footer: 
+        - "public class DSCore{{style}} {"
+      footer:
         - "}"
       template_type:
         # For themes
@@ -133,18 +133,18 @@ templates:
           value: "public static let {{variable_name | camel}} = {{value | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}  {{description | optional: '// desc = %value'}}"
         - type: boxShadow
           value:
-            - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
-            - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
+            - 'public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}}))'
+            - 'public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: "{{color-1 | color: ''hex''}}"), radius: CGFloat({{blur-1}}))]'
         - type: float
-          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
+          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
           source: ["button-md", "button-sm"]
-       #  # For Core
+        #  # For Core
       #   - type: string
-      #     value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
+      #     value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"
       #   - type: float
-      #     value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
+      #     value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
       #   - type: boolean
-      #     value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
+      #     value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"
       #   # More complex templates
       #   # Object
       #   # {{easingFunction | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
@@ -155,7 +155,7 @@ templates:
       #       x2: CGFloat({{easingFunction.x2}}),
       #       y1: CGFloat({{easingFunction.y1}}),
       #       y2: CGFloat({{easingFunction.y2}}))
-      #     " 
+      #     "
       #   # Array
       #   # {{stops | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
       #   - type: "custom-gradient"
@@ -173,11 +173,9 @@ templates:
       #     color2: Style2(
       #       {% assign colors = stops | map: 'color' %}
       #       {% for item in colors %}
-            
+
       #       {{item | color: 'Color(red: rgb_r_v2, green: rgb_g_v2, blue: rgb_b_v2, opacity: rgb_a_v2)'}}
       #       {% if forloop.last == false -%}, {% endif %}
       #       {% endfor %}
       #     )
-      #     " 
-        
-   
+      #     "

@@ -1,153 +1,153 @@
 {
-    "success": {
-        "hover": {
-            "bg": {
-                "type": "color",
-                "value": "{light.success.hover}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.success.fr.l65}",
-                "description": ""
-            }
-        },
-        "disabled": {
-            "bg": {
-                "type": "color",
-                "value": "{light.success.fr.l45}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.success.bg}",
-                "description": ""
-            }
-        },
-        "text": {
-            "type": "color",
-            "value": "{light.success.fr.l65}",
-            "description": ""
-        },
-        "bg": {
-            "type": "color",
-            "value": "{light.success.bg}",
-            "description": ""
-        }
+  "success": {
+    "hover": {
+      "bg": {
+        "type": "color",
+        "value": "{light.success.hover}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.success.fr.l65}",
+        "description": ""
+      }
     },
-    "danger": {
-        "hover": {
-            "bg": {
-                "type": "color",
-                "value": "{light.danger.hover}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.danger.fr.l75}",
-                "description": ""
-            }
-        },
-        "disabled": {
-            "bg": {
-                "type": "color",
-                "value": "{light.danger.fr.l30}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.danger.bg}",
-                "description": ""
-            }
-        },
-        "text": {
-            "type": "color",
-            "value": "{light.danger.fr.l75}",
-            "description": ""
-        },
-        "bg": {
-            "type": "color",
-            "value": "{light.danger.bg}",
-            "description": ""
-        }
+    "disabled": {
+      "bg": {
+        "type": "color",
+        "value": "{light.success.fr.l45}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.success.bg}",
+        "description": ""
+      }
     },
-    "secondary": {
-        "hover": {
-            "bg": {
-                "type": "color",
-                "value": "{light.accent2.hover}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.accent2.fr.l90}",
-                "description": ""
-            }
-        },
-        "disabled": {
-            "bg": {
-                "type": "color",
-                "value": "{light.accent2.fr.l60}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.accent2.bg}",
-                "description": ""
-            }
-        },
-        "bg": {
-            "type": "color",
-            "value": "{light.accent2.bg}",
-            "description": ""
-        },
-        "text": {
-            "type": "color",
-            "value": "{light.accent2.fr.l90}",
-            "description": ""
-        }
+    "text": {
+      "type": "color",
+      "value": "{light.success.fr.l65}",
+      "description": ""
     },
-    "primary": {
-        "hover": {
-            "bg": {
-                "type": "color",
-                "value": "{light.accent1.hover}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{light.accent1.fr.l75}",
-                "description": ""
-            }
-        },
-        "disabled": {
-            "text": {
-                "type": "color",
-                "value": "{light.accent1.bg}",
-                "description": ""
-            },
-            "bg": {
-                "type": "color",
-                "value": "{light.accent1.fr.l60}",
-                "description": ""
-            }
-        },
-        "text": {
-            "type": "color",
-            "value": "{light.accent1.fr.l75}",
-            "description": ""
-        },
-        "bg": {
-            "type": "color",
-            "value": "{light.accent1.bg}",
-            "description": ""
-        }
-    },
-    "box": {
-        "neutral1": {
-            "type": "color",
-            "value": "{light.n1.bg}",
-            "description": ""
-        }
+    "bg": {
+      "type": "color",
+      "value": "{light.success.bg}",
+      "description": ""
     }
+  },
+  "danger": {
+    "hover": {
+      "bg": {
+        "type": "color",
+        "value": "{light.danger.hover}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.danger.fr.l75}",
+        "description": ""
+      }
+    },
+    "disabled": {
+      "bg": {
+        "type": "color",
+        "value": "{light.danger.fr.l30}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.danger.bg}",
+        "description": ""
+      }
+    },
+    "text": {
+      "type": "color",
+      "value": "{light.danger.fr.l75}",
+      "description": ""
+    },
+    "bg": {
+      "type": "color",
+      "value": "{light.danger.bg}",
+      "description": ""
+    }
+  },
+  "secondary": {
+    "hover": {
+      "bg": {
+        "type": "color",
+        "value": "{light.accent2.hover}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.accent2.fr.l90}",
+        "description": ""
+      }
+    },
+    "disabled": {
+      "bg": {
+        "type": "color",
+        "value": "{light.accent2.fr.l60}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.accent2.bg}",
+        "description": ""
+      }
+    },
+    "bg": {
+      "type": "color",
+      "value": "{light.accent2.bg}",
+      "description": ""
+    },
+    "text": {
+      "type": "color",
+      "value": "{light.accent2.fr.l90}",
+      "description": ""
+    }
+  },
+  "primary": {
+    "hover": {
+      "bg": {
+        "type": "color",
+        "value": "{light.accent1.hover}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{light.accent1.fr.l75}",
+        "description": ""
+      }
+    },
+    "disabled": {
+      "text": {
+        "type": "color",
+        "value": "{light.accent1.bg}",
+        "description": ""
+      },
+      "bg": {
+        "type": "color",
+        "value": "{light.accent1.fr.l60}",
+        "description": ""
+      }
+    },
+    "text": {
+      "type": "color",
+      "value": "{light.accent1.fr.l75}",
+      "description": ""
+    },
+    "bg": {
+      "type": "color",
+      "value": "{light.accent1.bg}",
+      "description": ""
+    }
+  },
+  "box": {
+    "neutral1": {
+      "type": "color",
+      "value": "{light.n1.bg}",
+      "description": ""
+    }
+  }
 }

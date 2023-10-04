@@ -4,7 +4,7 @@
 
 ## Overview
 
-Token Parser is a universal tool for generating runnable code for any language from your Figma Tokens. It is written in Rust so you have the freedom to use it anywhere you would like without having **node.js** or anything else installed other than the executable on your system. The full configuration is happening through a **configuration yaml** file from which you can customize to build for as many different languages as you want from a single place. 
+Token Parser is a universal tool for generating runnable code for any language from your Figma Tokens. It is written in Rust so you have the freedom to use it anywhere you would like without having **node.js** or anything else installed other than the executable on your system. The full configuration is happening through a **configuration yaml** file from which you can customize to build for as many different languages as you want from a single place.
 
 ## Tested with
 
@@ -18,7 +18,7 @@ Token Parser is a universal tool for generating runnable code for any language f
 
 ## Setup
 
-You can get the whole project and build it yourself or if you don't have Rust or just don't want to deal with the builds yourself, go in the Release section and get the executables from there. 
+You can get the whole project and build it yourself or if you don't have Rust or just don't want to deal with the builds yourself, go in the Release section and get the executables from there.
 
 1. Setup the **`assts/design_tokens_config.yaml`** file
 2. Run with: for windows (`WIN_design_token_parser.exe`) for MAC (`MAC_design_token_parser`) you can find them in Release section
@@ -53,7 +53,7 @@ If you have already generated the usable json files you can just run the end cod
 ##### Input/Output paths for loading and generation
 
 ```yaml
-global: 
+global:
   # Figma source paths
   # These are the pure files from Figma, they can contain aliases
   # For example if we have aliases we will need the actual value and not the alias
@@ -61,7 +61,7 @@ global:
   # So if we have button-md and button-big with the same trees but different values with aliases that need to be accesed from core.json
   # this should be the setup
   # Look at the figma/variables and figma/generated_styles for better understanding how it works
-  figma_source_paths: 
+  figma_source_paths:
     - combine:
         file_name: "button-lg"
         files:
@@ -141,7 +141,7 @@ global:
           - path: "assets/figma/variables/color-status-danger.json"
             mode: "danger"
           - path: "assets/figma/variables/color-dark.json"
-  #Output path 
+  #Output path
   style_output_path: "assets/generated_styles/"
 ```
 
@@ -157,10 +157,10 @@ templates:
         #case: "kebab"
     settings_custom:
       # For header and footer {{style}} is a secial variable that can be used
-      header: 
+      header:
         - "import SwiftUI"
         - "public class DSCore{{style}} {"
-      footer: 
+      footer:
         - "}"
       template_type:
         # For themes
@@ -168,82 +168,82 @@ templates:
           value: "public static let {{variable_name | camel}} = {{value | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}  {{description | optional: '// desc = %value'}}"
         # For Core
         - type: string
-          value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"   
+          value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"
         - type: float
-          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
+          value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
         - type: boolean
-          value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// des        c = %value'}}"   
+          value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// des        c = %value'}}"
         - type: composition
           value: "{% if verticalPadding != '' %} test1: {{verticalPadding | optional: 'vertical-padding-test-first: %value'}} {% endif %}"
         - type: composition
           value: "{% if verticalPadding != '' %} test2: {{verticalPadding | optional: 'vartical-padding-test-second: %value'}} {% endif %}"
         - type: boxShadow
-          value: 
+          value:
             - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
             - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
 
-You can use every type multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something. 
+You can use every type multiple times for more clean way of creating your values. There are many **filters** that can help you create the template you want (check them bellow). Also because this tool is using [Liquid](https://github.com/cobalt-org/liquid-rust) you can expect every filter/tags/blocks to be usable in your templates. As you can see from the above code there are if statements that check if a variable is present and if it is display something.
 
 Optional values can be added with the **optional** filter. Instead of using if statements sometimes it's easier to just use the **optional** filter and display the value only if it exists.
 
 ##### Valid JSON
 
-Both type of jsons are valid and represent the same structure becase of the forward slash, you can have infinite amount of nesting or no nesting at all.  
+Both type of jsons are valid and represent the same structure becase of the forward slash, you can have infinite amount of nesting or no nesting at all.
 
 ```json
 {
-    "size/XL": {
-        "type": "float",
-        "value": "56",
-        "description": ""
-    },
-    "text/fr": {
-        "type": "string",
-        "value": "Some Text",
-        "description": ""
-    },
-    "color/bg": {
-        "type": "color",
-        "value": "#000000",
-        "description": ""
-    }
+  "size/XL": {
+    "type": "float",
+    "value": "56",
+    "description": ""
+  },
+  "text/fr": {
+    "type": "string",
+    "value": "Some Text",
+    "description": ""
+  },
+  "color/bg": {
+    "type": "color",
+    "value": "#000000",
+    "description": ""
+  }
 }
 ```
 
 ```json
 {
-    "size": {
-        "XL": {
-            "type": "float",
-            "value": "56",
-            "description": ""
-        }
-    },
-    "text": {
-        "fr": {
-            "type": "string",
-            "value": "Some Text",
-            "description": ""
-        }
-    },
-    "color": {
-        "bg": {
-            "type": "color",
-            "value": "#000000",
-            "description": ""
-        }
+  "size": {
+    "XL": {
+      "type": "float",
+      "value": "56",
+      "description": ""
     }
+  },
+  "text": {
+    "fr": {
+      "type": "string",
+      "value": "Some Text",
+      "description": ""
+    }
+  },
+  "color": {
+    "bg": {
+      "type": "color",
+      "value": "#000000",
+      "description": ""
+    }
+  }
 }
 ```
 
 ##### JSON value format
 
-> You can have as much nesting of the tree as you want as long as the end node contains `value`and `type`(`description`is optional) 
+> You can have as much nesting of the tree as you want as long as the end node contains `value`and `type`(`description`is optional)
 
 ###### Valid Examples and how to use JSON -> Template
 
------------------------------------------
+---
 
 ```json
    "XL": {
@@ -255,11 +255,11 @@ Both type of jsons are valid and represent the same structure becase of the forw
 
 ```yaml
 - type: float
-  value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"   
+  value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
 ```
 
 ```swift
-public static let xl = CGFloat(56) 
+public static let xl = CGFloat(56)
 ```
 
 ---
@@ -279,7 +279,7 @@ public static let xl = CGFloat(56)
 
 ```yaml
 - type: typography
-  value: "public static let {{variable_name | camel}} = TextStyle(name: \"{{fontFamily}}\", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})"
+  value: 'public static let {{variable_name | camel}} = TextStyle(name: "{{fontFamily}}", size: {{fontSize}}, weight: TextStyle.Weight({{fontWeight | as_text_or_number}}), lineHeight: {{lineHeight}})'
 ```
 
 ```swift
@@ -314,10 +314,9 @@ public static let bold = TextStyle(name: "Noir Pro", size: 16, weight: TextStyle
 
 ```yaml
 - type: boxShadow
-  value: 
-    - "public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}}))"
-    - "public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: \"{{color-0 | color: 'hex'}}\"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: \"{{color-1 | color: 'hex'}}\"), radius: CGFloat({{blur-1}}))]"
-      
+  value:
+    - 'public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}}))'
+    - 'public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: "{{color-1 | color: ''hex''}}"), radius: CGFloat({{blur-1}}))]'
 ```
 
 ```swift
@@ -353,12 +352,13 @@ public static let shadowTabBar = [Shadow(x: CGFloat(0), y: CGFloat(0), color: Co
     x2: CGFloat({{easingFunction.x2}}),
     y1: CGFloat({{easingFunction.y1}}),
     y2: CGFloat({{easingFunction.y2}}))
-  " 
+  "
 ```
 
 ```swift
-public static let dissolve = CustomTransition(duration: 0.45,  x1: CGFloat(0.6968395709991455), x2: CGFloat(0.06683959811925888), y1: CGFloat(0.05232666060328483), y2: CGFloat(0.9323266744613647)) 
+public static let dissolve = CustomTransition(duration: 0.45,  x1: CGFloat(0.6968395709991455), x2: CGFloat(0.06683959811925888), y1: CGFloat(0.05232666060328483), y2: CGFloat(0.9323266744613647))
 ```
+
 ---
 
 ```json
@@ -410,26 +410,26 @@ public static let dissolve = CustomTransition(duration: 0.45,  x1: CGFloat(0.696
   color2: Style2(
     {% assign colors = stops | map: 'color' %}
     {% for item in colors %}
-    
+
     {{item | color: 'Color(red: rgb_r_v2, green: rgb_g_v2, blue: rgb_b_v2, opacity: rgb_a_v2)'}}
     {% if forloop.last == false -%}, {% endif %}
     {% endfor %}
   )
-  " 
+  "
 ```
 
 ```swift
-public static let defaultGradientSingleWithMultipleColorStops = CustomGradient(gradientType: radial, rotation: 180, 
-color1: Style1( 
-Color(red: 1.000, green: 0.722, blue: 0.000, opacity: 1.000) ,  
-Color(red: 1.000, green: 0.541, blue: 0.000, opacity: 1.000) ,  
-Color(red: 1.000, green: 0.180, blue: 0.000, opacity: 1.000) ,  
+public static let defaultGradientSingleWithMultipleColorStops = CustomGradient(gradientType: radial, rotation: 180,
+color1: Style1(
+Color(red: 1.000, green: 0.722, blue: 0.000, opacity: 1.000) ,
+Color(red: 1.000, green: 0.541, blue: 0.000, opacity: 1.000) ,
+Color(red: 1.000, green: 0.180, blue: 0.000, opacity: 1.000) ,
 Color(red: 1.000, green: 0.000, blue: 0.000, opacity: 1.000)  ),
-color2: Style2(  
-Color(red: 255, green: 184, blue: 0, opacity: 184) ,  
-Color(red: 255, green: 138, blue: 0, opacity: 138) ,  
-Color(red: 255, green: 46, blue: 0, opacity: 46) ,  
-Color(red: 255, green: 0, blue: 0, opacity: 0)   ) 
+color2: Style2(
+Color(red: 255, green: 184, blue: 0, opacity: 184) ,
+Color(red: 255, green: 138, blue: 0, opacity: 138) ,
+Color(red: 255, green: 46, blue: 0, opacity: 46) ,
+Color(red: 255, green: 0, blue: 0, opacity: 0)   )
 }
 ```
 
@@ -458,13 +458,13 @@ Arrays have a bit different take on how you shuld template them. For example in 
 ```yaml
 # All the color related values from above
 # For every new line of the boxShadow value, a new index can be used. For example:
-# On line 1 you have only values with index 0 
+# On line 1 you have only values with index 0
 # On line 2 you have values with index 0 and 1
-# On line 3 you have values with index 0, 1 and 2 and etc.. 
+# On line 3 you have values with index 0, 1 and 2 and etc..
 # All possible variants should be made with a template
 # If there is a missing one you will be notified with an error to add it
 - type: boxShadow
-  value: 
+  value:
     - "{{variable_name}} {{color-0 | color: 'hex'}} blur: {{blur-0}} x: {{x-0}}"
     - "{{variable_name}} {{color-0 | color: 'hex'}} {{color-1 | color: 'hex'}}  blur: {{blur-0}} x: {{x-0}} blur: {{blur-1}} x: {{x-1}}"
 ```
@@ -479,4 +479,4 @@ Check the available filters/blocks and etc.. for the liquid templating from here
 
 ##### More
 
-For any ideas or issues please don't hasitate to ask/report. 
+For any ideas or issues please don't hasitate to ask/report.
