@@ -47,7 +47,9 @@ jobs:
         run: mv target/${{ matrix.platform.target }}/release/design_token_parser.exe target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
         if: matrix.platform.os_name == 'Windows-x86_64'
       - name: Generate Tar Gz
-        run: tar -czf target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
+        run: tar -czf ${{ matrix.platform.bin }}.tar.gz ${{ matrix.platform.bin }}
+        working-directory: target/${{ matrix.platform.target }}/release/
+        if: matrix.platform.os_name != 'Windows-x86_64'
       - name: Generate SHA-256
         run: shasum -a 256 target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz | cut -d ' ' -f 1 > target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz.sha256
       - name: Release binary and SHA-256 checksum to GitHub
