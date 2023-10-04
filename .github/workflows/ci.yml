@@ -49,10 +49,10 @@ jobs:
       - name: Generate Tar Gz
         run: tar -czf target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
       - name: Generate SHA-256
-        run: shasum -a 256 target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz | cut -d ' ' -f 1 > target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.sha256
+        run: shasum -a 256 target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz | cut -d ' ' -f 1 > target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz.sha256
       - name: Release binary and SHA-256 checksum to GitHub
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
-            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.sha256
+            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz
+            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz.sha256
