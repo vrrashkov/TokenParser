@@ -50,10 +50,7 @@ fn main() {
 
     let config_file = matches.get_one::<String>("config").expect("required");
 
-    // println!(
-    //     "config: {:?}",
-    //     &config_file
-    // );
+    println!("config: {:?}", &config_file);
 
     // Deserialize the config file
     let token_config: deserializer::TokensConfig = general::get_config(config_file);

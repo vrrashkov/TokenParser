@@ -152,10 +152,10 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                 }
 
                 if let Some(modeName) = &fileData.mode {
-                    let wrapperJson = json!({ modeName: data_to_merge_with });
-                    data_object.merge(wrapperJson);
+                    let wrapperJson: serde_json::Value = json!({ modeName: data_to_merge_with });
+                    data_object.merge(&wrapperJson);
                 } else {
-                    data_object.merge(data_to_merge_with);
+                    data_object.merge(&data_to_merge_with);
                 }
 
                 if data_object != serde_json::Value::Null {
