@@ -1,38 +1,38 @@
 {
-    "status": {
-        "hover": {
-            "bg": {
-                "type": "color",
-                "value": "{danger.hover.bg}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{danger.hover.text}",
-                "description": ""
-            }
-        },
-        "disabled": {
-            "text": {
-                "type": "color",
-                "value": "{danger.disabled.text}",
-                "description": ""
-            },
-            "bg": {
-                "type": "color",
-                "value": "{danger.disabled.bg}",
-                "description": ""
-            }
-        },
-        "text": {
-            "type": "color",
-            "value": "{danger.text}",
-            "description": ""
-        },
-        "bg": {
-            "type": "color",
-            "value": "{danger.bg}",
-            "description": ""
-        }
+  "status": {
+    "hover": {
+      "bg": {
+        "type": "color",
+        "value": "{danger.hover.bg}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{danger.hover.text}",
+        "description": ""
+      }
+    },
+    "disabled": {
+      "text": {
+        "type": "color",
+        "value": "{danger.disabled.text}",
+        "description": ""
+      },
+      "bg": {
+        "type": "color",
+        "value": "{danger.disabled.bg}",
+        "description": ""
+      }
+    },
+    "text": {
+      "type": "color",
+      "value": "{danger.text}",
+      "description": ""
+    },
+    "bg": {
+      "type": "color",
+      "value": "{danger.bg}",
+      "description": ""
     }
+  }
 }

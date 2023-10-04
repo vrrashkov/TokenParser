@@ -1,233 +1,233 @@
 {
-    "border": {
-        "radius": {
-            "default": {
-                "type": "float",
-                "value": "{size.default}",
-                "description": ""
-            }
-        }
-    },
-    "size": {
-        "u752": {
-            "type": "float",
-            "value": "752",
-            "description": ""
-        },
-        "u448": {
-            "type": "float",
-            "value": "448",
-            "description": ""
-        },
-        "u416": {
-            "type": "float",
-            "value": "416",
-            "description": ""
-        },
-        "u384": {
-            "type": "float",
-            "value": "384",
-            "description": ""
-        },
-        "u352": {
-            "type": "float",
-            "value": "352",
-            "description": ""
-        },
-        "u320": {
-            "type": "float",
-            "value": "320",
-            "description": ""
-        },
-        "u288": {
-            "type": "float",
-            "value": "288",
-            "description": ""
-        },
-        "u256": {
-            "type": "float",
-            "value": "256",
-            "description": ""
-        },
-        "u224": {
-            "type": "float",
-            "value": "224",
-            "description": ""
-        },
-        "u480": {
-            "type": "float",
-            "value": "480",
-            "description": ""
-        },
-        "u192": {
-            "type": "float",
-            "value": "192",
-            "description": ""
-        },
-        "u608": {
-            "type": "float",
-            "value": "608",
-            "description": ""
-        },
-        "u176": {
-            "type": "float",
-            "value": "176",
-            "description": ""
-        },
-        "u160": {
-            "type": "float",
-            "value": "160",
-            "description": ""
-        },
-        "u512": {
-            "type": "float",
-            "value": "512",
-            "description": ""
-        },
-        "u144": {
-            "type": "float",
-            "value": "144",
-            "description": ""
-        },
-        "u128": {
-            "type": "float",
-            "value": "128",
-            "description": ""
-        },
-        "u112": {
-            "type": "float",
-            "value": "112",
-            "description": ""
-        },
-        "d033": {
-            "type": "float",
-            "value": "0.33000001311302185",
-            "description": ""
-        },
-        "d1": {
-            "type": "float",
-            "value": "1",
-            "description": ""
-        },
-        "d2": {
-            "type": "float",
-            "value": "2",
-            "description": ""
-        },
-        "d4": {
-            "type": "float",
-            "value": "4",
-            "description": ""
-        },
-        "d6": {
-            "type": "float",
-            "value": "6",
-            "description": ""
-        },
-        "u96": {
-            "type": "float",
-            "value": "96",
-            "description": ""
-        },
-        "u560": {
-            "type": "float",
-            "value": "560",
-            "description": ""
-        },
-        "u64": {
-            "type": "float",
-            "value": "64",
-            "description": ""
-        },
-        "u704": {
-            "type": "float",
-            "value": "704",
-            "description": ""
-        },
-        "u56": {
-            "type": "float",
-            "value": "56",
-            "description": ""
-        },
-        "u48": {
-            "type": "float",
-            "value": "48",
-            "description": ""
-        },
-        "u44": {
-            "type": "float",
-            "value": "44",
-            "description": ""
-        },
-        "u40": {
-            "type": "float",
-            "value": "40",
-            "description": ""
-        },
-        "u36": {
-            "type": "float",
-            "value": "36",
-            "description": ""
-        },
-        "u28": {
-            "type": "float",
-            "value": "28",
-            "description": ""
-        },
-        "u24": {
-            "type": "float",
-            "value": "24",
-            "description": ""
-        },
-        "u12": {
-            "type": "float",
-            "value": "12",
-            "description": ""
-        },
-        "u32": {
-            "type": "float",
-            "value": "32",
-            "description": ""
-        },
-        "u16": {
-            "type": "float",
-            "value": "16",
-            "description": ""
-        },
-        "u20": {
-            "type": "float",
-            "value": "20",
-            "description": ""
-        },
-        "default": {
-            "type": "float",
-            "value": "8",
-            "description": ""
-        },
-        "u656": {
-            "type": "float",
-            "value": "656",
-            "description": ""
-        },
-        "u80": {
-            "type": "float",
-            "value": "80",
-            "description": ""
-        },
-        "u14": {
-            "type": "float",
-            "value": "14",
-            "description": ""
-        },
-        "u10": {
-            "type": "float",
-            "value": "10",
-            "description": ""
-        },
-        "u72": {
-            "type": "float",
-            "value": "72",
-            "description": ""
-        }
+  "border": {
+    "radius": {
+      "default": {
+        "type": "float",
+        "value": "{size.default}",
+        "description": ""
+      }
     }
+  },
+  "size": {
+    "u752": {
+      "type": "float",
+      "value": "752",
+      "description": ""
+    },
+    "u448": {
+      "type": "float",
+      "value": "448",
+      "description": ""
+    },
+    "u416": {
+      "type": "float",
+      "value": "416",
+      "description": ""
+    },
+    "u384": {
+      "type": "float",
+      "value": "384",
+      "description": ""
+    },
+    "u352": {
+      "type": "float",
+      "value": "352",
+      "description": ""
+    },
+    "u320": {
+      "type": "float",
+      "value": "320",
+      "description": ""
+    },
+    "u288": {
+      "type": "float",
+      "value": "288",
+      "description": ""
+    },
+    "u256": {
+      "type": "float",
+      "value": "256",
+      "description": ""
+    },
+    "u224": {
+      "type": "float",
+      "value": "224",
+      "description": ""
+    },
+    "u480": {
+      "type": "float",
+      "value": "480",
+      "description": ""
+    },
+    "u192": {
+      "type": "float",
+      "value": "192",
+      "description": ""
+    },
+    "u608": {
+      "type": "float",
+      "value": "608",
+      "description": ""
+    },
+    "u176": {
+      "type": "float",
+      "value": "176",
+      "description": ""
+    },
+    "u160": {
+      "type": "float",
+      "value": "160",
+      "description": ""
+    },
+    "u512": {
+      "type": "float",
+      "value": "512",
+      "description": ""
+    },
+    "u144": {
+      "type": "float",
+      "value": "144",
+      "description": ""
+    },
+    "u128": {
+      "type": "float",
+      "value": "128",
+      "description": ""
+    },
+    "u112": {
+      "type": "float",
+      "value": "112",
+      "description": ""
+    },
+    "d033": {
+      "type": "float",
+      "value": "0.33000001311302185",
+      "description": ""
+    },
+    "d1": {
+      "type": "float",
+      "value": "1",
+      "description": ""
+    },
+    "d2": {
+      "type": "float",
+      "value": "2",
+      "description": ""
+    },
+    "d4": {
+      "type": "float",
+      "value": "4",
+      "description": ""
+    },
+    "d6": {
+      "type": "float",
+      "value": "6",
+      "description": ""
+    },
+    "u96": {
+      "type": "float",
+      "value": "96",
+      "description": ""
+    },
+    "u560": {
+      "type": "float",
+      "value": "560",
+      "description": ""
+    },
+    "u64": {
+      "type": "float",
+      "value": "64",
+      "description": ""
+    },
+    "u704": {
+      "type": "float",
+      "value": "704",
+      "description": ""
+    },
+    "u56": {
+      "type": "float",
+      "value": "56",
+      "description": ""
+    },
+    "u48": {
+      "type": "float",
+      "value": "48",
+      "description": ""
+    },
+    "u44": {
+      "type": "float",
+      "value": "44",
+      "description": ""
+    },
+    "u40": {
+      "type": "float",
+      "value": "40",
+      "description": ""
+    },
+    "u36": {
+      "type": "float",
+      "value": "36",
+      "description": ""
+    },
+    "u28": {
+      "type": "float",
+      "value": "28",
+      "description": ""
+    },
+    "u24": {
+      "type": "float",
+      "value": "24",
+      "description": ""
+    },
+    "u12": {
+      "type": "float",
+      "value": "12",
+      "description": ""
+    },
+    "u32": {
+      "type": "float",
+      "value": "32",
+      "description": ""
+    },
+    "u16": {
+      "type": "float",
+      "value": "16",
+      "description": ""
+    },
+    "u20": {
+      "type": "float",
+      "value": "20",
+      "description": ""
+    },
+    "default": {
+      "type": "float",
+      "value": "8",
+      "description": ""
+    },
+    "u656": {
+      "type": "float",
+      "value": "656",
+      "description": ""
+    },
+    "u80": {
+      "type": "float",
+      "value": "80",
+      "description": ""
+    },
+    "u14": {
+      "type": "float",
+      "value": "14",
+      "description": ""
+    },
+    "u10": {
+      "type": "float",
+      "value": "10",
+      "description": ""
+    },
+    "u72": {
+      "type": "float",
+      "value": "72",
+      "description": ""
+    }
+  }
 }

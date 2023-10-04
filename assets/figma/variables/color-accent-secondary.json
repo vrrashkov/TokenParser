@@ -1,38 +1,38 @@
 {
-    "accent": {
-        "hover": {
-            "bg": {
-                "type": "color",
-                "value": "{secondary.hover.bg}",
-                "description": ""
-            },
-            "text": {
-                "type": "color",
-                "value": "{secondary.hover.text}",
-                "description": ""
-            }
-        },
-        "disabled": {
-            "text": {
-                "type": "color",
-                "value": "{secondary.disabled.text}",
-                "description": ""
-            },
-            "bg": {
-                "type": "color",
-                "value": "{secondary.disabled.bg}",
-                "description": ""
-            }
-        },
-        "text": {
-            "type": "color",
-            "value": "{secondary.text}",
-            "description": ""
-        },
-        "bg": {
-            "type": "color",
-            "value": "{secondary.bg}",
-            "description": ""
-        }
+  "accent": {
+    "hover": {
+      "bg": {
+        "type": "color",
+        "value": "{secondary.hover.bg}",
+        "description": ""
+      },
+      "text": {
+        "type": "color",
+        "value": "{secondary.hover.text}",
+        "description": ""
+      }
+    },
+    "disabled": {
+      "text": {
+        "type": "color",
+        "value": "{secondary.disabled.text}",
+        "description": ""
+      },
+      "bg": {
+        "type": "color",
+        "value": "{secondary.disabled.bg}",
+        "description": ""
+      }
+    },
+    "text": {
+      "type": "color",
+      "value": "{secondary.text}",
+      "description": ""
+    },
+    "bg": {
+      "type": "color",
+      "value": "{secondary.bg}",
+      "description": ""
     }
+  }
 }
