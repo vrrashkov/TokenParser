@@ -16,10 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - os_name: Linux-x86_64
-            os: ubuntu-20.04
-            target: x86_64-unknown-linux-gnu
-            bin: figctl-linux-amd64
           - os_name: Windows-x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
@@ -44,7 +40,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           args: "--locked --release"
           strip: true
-      - name: Rename binary (linux and macos)
+      - name: Rename binary (macos)
         run: mv target/${{ matrix.platform.target }}/release/figctl target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
         if: matrix.platform.os_name != 'Windows-x86_64'
       - name: Rename binary (windows)
