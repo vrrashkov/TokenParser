@@ -19,15 +19,15 @@ jobs:
           - os_name: Windows-x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
-            bin: design_token_parser-amd64.exe
+            bin: design_token_parse.exe
           - os_name: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
-            bin: design_token_parser-darwin-amd64
+            bin: design_token_parser
           - os_name: macOS-aarch64
             os: macOS-latest
             target: aarch64-apple-darwin
-            bin: design_token_parser-darwin-arm64
+            bin: design_token_parser
         toolchain:
           - stable
     steps:
@@ -47,7 +47,7 @@ jobs:
         run: mv target/${{ matrix.platform.target }}/release/design_token_parser.exe target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
         if: matrix.platform.os_name == 'Windows-x86_64'
       - name: Generate Tar Gz
-        run: tar -czf ${{ matrix.platform.bin }}.tar.gz ${{ matrix.platform.bin }}
+        run: tar -czf ${{ matrix.platform.bin }}-${{ matrix.platform.target }}.tar.gz ${{ matrix.platform.bin }}
         working-directory: target/${{ matrix.platform.target }}/release/
       - name: Generate SHA-256
         run: shasum -a 256 target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz | cut -d ' ' -f 1 > target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz.sha256
