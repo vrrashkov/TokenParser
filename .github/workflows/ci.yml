@@ -19,7 +19,7 @@ jobs:
           - os_name: Windows-x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
-            bin: design_token_parse.exe
+            bin: design_token_parser.exe
           - os_name: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
@@ -55,5 +55,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz
-            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}.tar.gz.sha256
+            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ matrix.platform.target }}.tar.gz
+            target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}-${{ matrix.platform.target }}.tar.gz.sha256
