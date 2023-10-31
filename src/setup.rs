@@ -55,18 +55,32 @@ fn template_content_custom(
     let mut template_content: Option<String> = Default::default();
 
     let custom_template = &template_config.settings_custom;
+    let mut default_globals = liquid::object!({});
+    let mut globals = default_globals.clone();
+
+    let header_values = token_config.format_extra(
+        &token_data_wrapper.style_name,
+        &custom_template.header.to_owned(),
+    );
+
+    let mut header_full = header_values.join("\n");
+    header_full = parse_template_with_liquid(&globals, header_full);
+
+    let mut footer_values = token_config.format_extra(
+        &token_data_wrapper.style_name,
+        &custom_template.footer.to_owned(),
+    );
+
+    let mut footer_full = footer_values.join("\n");
+    footer_full = parse_template_with_liquid(&globals, footer_full);
+
     let mut current_template: CustomTemplate = CustomTemplate {
-        headers: token_config.format_extra(
-            &token_data_wrapper.style_name,
-            &custom_template.header.to_owned(),
-        ),
-        footers: token_config.format_extra(
-            &token_data_wrapper.style_name,
-            &custom_template.footer.to_owned(),
-        ),
+        headers: vec![header_full],
+        footers: vec![footer_full],
         values: None,
     };
 
+    let mut globals = default_globals.clone();
     for template in &custom_template.template_type {
         let template_type = &template.t_type;
         let template_source = &template.source;
@@ -192,33 +206,39 @@ fn template_replaced_values(
 
         if let Some(current) = current_optional {
             //print!("current: {}", &current);
-            let template_parsed = liquid::ParserBuilder::with_stdlib()
-                .filter(filters::remove_space::RemoveSpace)
-                .filter(filters::as_text_or_number::AsTextOrNumber)
-                .filter(filters::color::Color)
-                .filter(filters::case::CamelCase)
-                .filter(filters::case::PascalCase)
-                .filter(filters::case::KebabCase)
-                .filter(filters::optional::Optional)
-                .filter(filters::empty::Empty)
-                .build()
-                .with_context(|| "Error with template setup build")
-                .unwrap()
-                .parse(&current)
-                .with_context(|| "Error with template setup parse")
-                .unwrap();
 
-            let output = template_parsed
-                .render(&globals)
-                .with_context(|| "Error with template setup render globals")
-                .unwrap();
-            //dbg!(&globals);
+            let output = parse_template_with_liquid(&globals, current);
+
             if !output.is_empty() {
                 values_content.push(output);
             }
         }
     }
     values_content
+}
+fn parse_template_with_liquid(globals: &liquid::Object, value: String) -> String {
+    let template_parsed = liquid::ParserBuilder::with_stdlib()
+        .filter(filters::remove_space::RemoveSpace)
+        .filter(filters::as_text_or_number::AsTextOrNumber)
+        .filter(filters::color::Color)
+        .filter(filters::case::CamelCase)
+        .filter(filters::case::PascalCase)
+        .filter(filters::case::KebabCase)
+        .filter(filters::optional::Optional)
+        .filter(filters::empty::Empty)
+        .build()
+        .with_context(|| "Error with template setup build")
+        .unwrap()
+        .parse(&value)
+        .with_context(|| "Error with template setup parse")
+        .unwrap();
+
+    let output = template_parsed
+        .render(&globals)
+        .with_context(|| "Error with template setup render globals")
+        .unwrap();
+
+    return output;
 }
 
 fn template_pure_values(

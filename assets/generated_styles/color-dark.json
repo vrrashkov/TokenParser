@@ -78,6 +78,19 @@
       "value": "#fdeded"
     }
   },
+  "navigationBar": {
+    "type": "boxShadow",
+    "value": [
+      {
+        "blur": "30",
+        "color": "rgba(0,0,0,0.1)",
+        "spread": "0",
+        "type": "dropShadow",
+        "x": "4",
+        "y": "4"
+      }
+    ]
+  },
   "primary": {
     "accent": {
       "bg": {
@@ -293,5 +306,26 @@
       "type": "color",
       "value": "#0f2418"
     }
+  },
+  "tabBar": {
+    "type": "boxShadow",
+    "value": [
+      {
+        "blur": "40",
+        "color": "rgba(0,0,0,0.1)",
+        "spread": "0",
+        "type": "dropShadow",
+        "x": "1",
+        "y": "1"
+      },
+      {
+        "blur": "8",
+        "color": "rgba(0,0,0,0.1)",
+        "spread": "0",
+        "type": "dropShadow",
+        "x": "12",
+        "y": "4"
+      }
+    ]
   }
 }

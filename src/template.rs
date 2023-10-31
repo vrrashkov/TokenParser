@@ -127,7 +127,6 @@ pub fn set_optional_global(
                 value_transformed = liquid::model::Value::scalar(default.to_string());
             }
         }
-
         globals.insert(key.to_owned().into(), value_transformed);
     } else {
         globals.insert(

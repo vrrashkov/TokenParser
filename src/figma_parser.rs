@@ -95,7 +95,7 @@ pub fn filter_properties(token_config: &deserializer::TokensConfig) {
                                                                               // the merged files are dependant on the config
 
         let mut file_name = String::from("");
-        'figma_output: for group in &token_config.global.figma_output_paths {
+        for group in &token_config.global.figma_output_paths {
             let mut data_object: serde_json::Value = serde_json::Value::Null;
             for (index, fileData) in group.combine.files.iter().enumerate() {
                 let combineFileName = &group
@@ -188,21 +188,21 @@ fn find_all_between(
     let full_template_value = format!("{{{}}}", found_template);
     let full_template_value_v2 = format!("{{{}.value}}", found_template);
 
+    let pure_value_variants: Vec<Option<&String>> = vec![
+        pure_values.get(found_template),
+        pure_values.get(format!("{}.value", found_template).as_str()),
+    ];
+
     let pure_value = pure_values.get(found_template);
     let pure_value_v2 = pure_values.get(format!("{}.value", found_template).as_str());
 
-    if let Some(number_text) = pure_value {
-        list.push(found_template.to_string());
-        let mut update_search = search_inside.replace(&full_template_value_v2, number_text);
-        update_search = update_search.replace(&full_template_value, number_text);
-        return find_all_between(update_search, list, pure_values);
-    }
-
-    if let Some(number_text) = pure_value_v2 {
-        list.push(found_template.to_string());
-        let mut update_search = search_inside.replace(&full_template_value_v2, number_text);
-        update_search = update_search.replace(&full_template_value, number_text);
-        return find_all_between(update_search, list, pure_values);
+    for variant_value in pure_value_variants {
+        if let Some(variant) = variant_value {
+            list.push(found_template.to_string());
+            let mut update_search = search_inside.replace(&full_template_value_v2, variant);
+            update_search = update_search.replace(&full_template_value, variant);
+            return find_all_between(update_search, list, pure_values);
+        }
     }
 
     (search_inside, list.to_owned())

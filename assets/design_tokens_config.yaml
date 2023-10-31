@@ -23,15 +23,6 @@ global:
         files:
           - "assets/figma/variables/button-sm.json"
           - "assets/figma/variables/core-.json"
-    # - combine:
-    #     file_name: "color-light"
-    #     files:
-    #       - "assets/figma/variables/color-accent-primary.json"
-    #       - "assets/figma/variables/color-accent-secondary.json"
-    #       - "assets/figma/variables/color-status-success.json"
-    #       - "assets/figma/variables/color-status-danger.json"
-    #       - "assets/figma/variables/color-light.json"
-    #       - "assets/figma/variables/palette-.json"
     - combine:
         file_name: "color-dark"
         files:
@@ -59,21 +50,6 @@ global:
         merge: ["button-sm"]
         files:
           - path: "assets/figma/variables/button-sm.json"
-    # - combine:
-    #     file_name: "color-light"
-    #     merge: ["color-light"]
-    #     files:
-    #       - path: "assets/figma/variables/color-accent-primary.json"
-    #         # if mode is set this will wrap the whole json object with a parent of the mode's value
-    #         # this helps if you have similar trees in multiple files
-    #         mode: "primary"
-    #       - path: "assets/figma/variables/color-accent-secondary.json"
-    #         mode: "secondary"
-    #       - path: "assets/figma/variables/color-status-success.json"
-    #         mode: "success"
-    #       - path: "assets/figma/variables/color-status-danger.json"
-    #         mode: "danger"
-    #       - path: "assets/figma/variables/color-light.json"
     - combine:
         file_name: "color-dark"
         merge: ["color-dark"]
@@ -115,7 +91,7 @@ templates:
           value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
           source: ["button-md", "button-sm"]
   - settings_general:
-      generate_file_path: "assets/generated_templates"
+      generate_file_path: "assets/generated_templates_kt"
       file_name:
         format: "DS{{style}}"
         extension: "swift"
@@ -124,58 +100,12 @@ templates:
       # For header and footer {{style}} is a secial variable that can be used
       header:
         - "import SwiftUI"
-        - "public class DSCore{{style}} {"
+        - "{% assign theme = '{{style}}' %} "
+        - "public class DSCore{{theme}} {"
       footer:
+        - ""
         - "}"
       template_type:
-        # For themes
-        - type: color
-          value: "public static let {{variable_name | camel}} = {{value | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}  {{description | optional: '// desc = %value'}}"
-        - type: boxShadow
-          value:
-            - 'public static let {{variable_name | camel}} = Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}}))'
-            - 'public static let {{variable_name | camel}} = [Shadow(x: CGFloat({{x-0}}), y: CGFloat({{y-0}}), color: Color(hex: "{{color-0 | color: ''hex''}}"), radius: CGFloat({{blur-0}})), Shadow(x: CGFloat({{x-1}}), y: CGFloat({{y-1}}), color: Color(hex: "{{color-1 | color: ''hex''}}"), radius: CGFloat({{blur-1}}))]'
         - type: float
           value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
-          source: ["button-md", "button-sm"]
-        #  # For Core
-      #   - type: string
-      #     value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"
-      #   - type: float
-      #     value: "public static let {{variable_name | camel}} = CGFloat({{value | as_text_or_number}})  {{description | optional: '// desc = %value'}}"
-      #   - type: boolean
-      #     value: "public static let {{variable_name | camel}} = {{value}}  {{description | optional: '// desc = %value'}}"
-      #   # More complex templates
-      #   # Object
-      #   # {{easingFunction | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
-      #   - type: "custom-transition"
-      #     value: "public static let {{variable_name | camel}} = CustomTransition(duration: {{duration}},
-      #       {{easingFunction | empty}}
-      #       x1: CGFloat({{easingFunction.x1}}),
-      #       x2: CGFloat({{easingFunction.x2}}),
-      #       y1: CGFloat({{easingFunction.y1}}),
-      #       y2: CGFloat({{easingFunction.y2}}))
-      #     "
-      #   # Array
-      #   # {{stops | empty}} use empty filter to initialize variable if you need it in the scope of the template without printing it
-      #   - type: "custom-gradient"
-      #     value: "public static let {{variable_name | camel}} = CustomGradient(gradientType: {{gradientType}}, rotation: {{rotation}},
-      #     {{stops | empty}}
-
-      #     color1: Style1(
-      #       {% for stop in stops %}
-
-      #       {{stop.color | color: 'Color(red: rgb_r_v1, green: rgb_g_v1, blue: rgb_b_v1, opacity: rgb_a_v1)'}}
-      #       {% if forloop.last == false -%}, {% endif %}
-      #       {% endfor -%}
-      #     ),
-
-      #     color2: Style2(
-      #       {% assign colors = stops | map: 'color' %}
-      #       {% for item in colors %}
-
-      #       {{item | color: 'Color(red: rgb_r_v2, green: rgb_g_v2, blue: rgb_b_v2, opacity: rgb_a_v2)'}}
-      #       {% if forloop.last == false -%}, {% endif %}
-      #       {% endfor %}
-      #     )
-      #     "
+          source: ["button-md"]

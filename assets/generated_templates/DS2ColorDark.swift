@@ -1,4 +1,5 @@
-import SwiftUI public class DSCoreColorDark { 
+import SwiftUI
+public class DSCoreColorDark { 
 public static let boxNeutral1 = Color(red: 0.102, green: 0.102, blue: 0.102, opacity: 1.000)  
 public static let dangerBg = Color(red: 0.918, green: 0.243, blue: 0.243, opacity: 1.000)  
 public static let dangerDisabledBg = Color(red: 0.965, green: 0.675, blue: 0.675, opacity: 1.000)  
@@ -47,4 +48,6 @@ public static let successStatusDisabledText = Color(red: 0.918, green: 0.243, bl
 public static let successStatusHoverBg = Color(red: 0.929, green: 0.349, blue: 0.349, opacity: 1.000)  
 public static let successStatusHoverText = Color(red: 0.992, green: 0.929, blue: 0.929, opacity: 1.000)  
 public static let successStatusText = Color(red: 0.992, green: 0.929, blue: 0.929, opacity: 1.000)  
-public static let successText = Color(red: 0.059, green: 0.141, blue: 0.094, opacity: 1.000)   } 
+public static let successText = Color(red: 0.059, green: 0.141, blue: 0.094, opacity: 1.000)  
+public static let navigationBar = Shadow(x: CGFloat(4), y: CGFloat(4), color: Color(hex: "#00000019"), radius: CGFloat(30))
+public static let tabBar = [Shadow(x: CGFloat(1), y: CGFloat(1), color: Color(hex: "#00000019"), radius: CGFloat(40)), Shadow(x: CGFloat(12), y: CGFloat(4), color: Color(hex: "#00000019"), radius: CGFloat(8))] } 
